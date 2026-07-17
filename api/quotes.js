@@ -1,8 +1,10 @@
-// Vercel Serverless Function —— 行情中转"跑腿小哥"
-// 作用:替网页去 Yahoo Finance 取行情/搜索,绕开浏览器的 CORS 限制。
+// Vercel Serverless Function —— 行情中转"跑腿小哥"(v2)
+// 作用:替网页去 Yahoo Finance 取行情/搜索,绕开浏览器 CORS。
+// v2 改动:报价改用更稳的 /v8/finance/chart 端点(逐个代码并发查),
+//          解决旧的 /v7/quote 返回空数组的问题。
 // 你不用改这个文件,直接连同 index.html 一起传到 GitHub 即可。
 //
-// 用法(网页会自动调用,你不用手动调):
+// 用法(网页自动调用):
 //   /api/quotes?symbols=AAPL,NVDA,0700.HK,600519.SS   → 批量行情
 //   /api/quotes?search=英伟达                          → 搜索股票代码
 
@@ -12,8 +14,39 @@ const YH_HEADERS = {
   Accept: "application/json",
 };
 
+// 取单个代码的行情(用 chart 端点)
+async function fetchOne(symbol) {
+  const url =
+    "https://query1.finance.yahoo.com/v8/finance/chart/" +
+    encodeURIComponent(symbol) +
+    "?range=1d&interval=1d";
+  try {
+    const r = await fetch(url, { headers: YH_HEADERS });
+    const data = await r.json();
+    const res = data && data.chart && data.chart.result && data.chart.result[0];
+    if (!res || !res.meta) return null;
+    const m = res.meta;
+    const price = m.regularMarketPrice;
+    const prev = m.chartPreviousClose != null ? m.chartPreviousClose : m.previousClose;
+    let change = null, changePercent = null;
+    if (price != null && prev != null && prev !== 0) {
+      change = price - prev;
+      changePercent = (change / prev) * 100;
+    }
+    return {
+      symbol: m.symbol || symbol,
+      name: m.shortName || m.longName || m.symbol || symbol,
+      price,
+      change,
+      changePercent,
+      currency: m.currency || "",
+    };
+  } catch (e) {
+    return null;
+  }
+}
+
 export default async function handler(req, res) {
-  // 允许你的网页跨域调用这个函数
   res.setHeader("Access-Control-Allow-Origin", "*");
   res.setHeader("Access-Control-Allow-Methods", "GET, OPTIONS");
   if (req.method === "OPTIONS") return res.status(200).end();
@@ -21,7 +54,7 @@ export default async function handler(req, res) {
   const { symbols, search } = req.query;
 
   try {
-    // ===== 模式一:搜索股票(返回代码候选) =====
+    // ===== 搜索模式 =====
     if (search) {
       const url =
         "https://query1.finance.yahoo.com/v1/finance/search?quotesCount=10&newsCount=0&q=" +
@@ -40,25 +73,12 @@ export default async function handler(req, res) {
       return res.status(200).json({ quotes });
     }
 
-    // ===== 模式二:批量取行情 =====
+    // ===== 批量行情模式(并发逐个查 chart) =====
     if (symbols) {
       const list = symbols.split(",").map((s) => s.trim()).filter(Boolean).slice(0, 40);
-      const url =
-        "https://query1.finance.yahoo.com/v7/finance/quote?symbols=" +
-        encodeURIComponent(list.join(","));
-      const r = await fetch(url, { headers: YH_HEADERS });
-      const data = await r.json();
-      const result = (data.quoteResponse && data.quoteResponse.result) || [];
-      const quotes = result.map((q) => ({
-        symbol: q.symbol,
-        name: q.shortName || q.longName || q.symbol,
-        price: q.regularMarketPrice,
-        change: q.regularMarketChange,
-        changePercent: q.regularMarketChangePercent,
-        currency: q.currency || "",
-        marketState: q.marketState || "",
-      }));
-      res.setHeader("Cache-Control", "s-maxage=15"); // 15秒缓存,减少请求
+      const settled = await Promise.all(list.map((s) => fetchOne(s)));
+      const quotes = settled.filter(Boolean);
+      res.setHeader("Cache-Control", "s-maxage=15");
       return res.status(200).json({ quotes });
     }
 
