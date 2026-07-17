@@ -1,0 +1,850 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>arin · 个人主页</title>
+<style>
+  :root {
+    --glass-bg: rgba(0, 0, 0, 0.25);
+    --glass-bg-hover: rgba(0, 0, 0, 0.4);
+    --glass-border: rgba(255, 255, 255, 0.1);
+    --text-main: rgba(255, 255, 255, 0.95);
+    --text-sub: rgba(255, 255, 255, 0.7);
+    --radius: 12px;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { height: 100%; }
+
+  body {
+    font-family: "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", -apple-system, sans-serif;
+    color: var(--text-main);
+    overflow-x: hidden;
+  }
+
+  /* ===== 背景层 ===== */
+  .bg-layer {
+    position: fixed; inset: 0; z-index: -2;
+    transition: opacity 2.5s ease;
+    background-size: cover; background-position: center;
+  }
+  #bg-a { opacity: 1; }
+  #bg-b { opacity: 0; }
+
+  body::after {
+    content: "";
+    position: fixed; inset: 0; z-index: -1;
+    background: radial-gradient(ellipse at center, transparent 40%, rgba(0,0,0,0.35) 100%);
+    pointer-events: none;
+  }
+
+  /* ===== 主布局 ===== */
+  .page {
+    min-height: 100vh;
+    display: flex; flex-direction: column;
+    max-width: 1200px; margin: 0 auto; padding: 0 40px;
+  }
+
+  main {
+    flex: 1;
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 48px; align-items: center;
+    padding: 60px 0 40px;
+  }
+
+  .left { display: flex; flex-direction: column; gap: 28px; }
+  .brand { display: flex; align-items: center; gap: 16px; }
+  .brand .avatar {
+    width: 72px; height: 72px; border-radius: 50%;
+    background: var(--glass-bg);
+    backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+    border: 2px solid rgba(255,255,255,0.85);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 30px; flex-shrink: 0;
+  }
+  .brand h1 {
+    font-size: 44px; font-weight: 700; letter-spacing: 1px;
+    text-shadow: 0 2px 12px rgba(0,0,0,0.3);
+  }
+  .brand h1 span { font-size: 20px; font-weight: 400; opacity: 0.85; margin-left: 6px; }
+
+  .quote-card {
+    background: var(--glass-bg);
+    backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+    border-radius: var(--radius);
+    padding: 22px 26px; line-height: 1.8;
+  }
+  .quote-card .hello { font-size: 19px; font-weight: 600; margin-bottom: 6px; }
+  .quote-card .desc { font-size: 15px; color: var(--text-sub); }
+
+  .social { display: flex; gap: 20px; }
+  .social a {
+    width: 40px; height: 40px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    color: var(--text-main);
+    background: var(--glass-bg);
+    backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+    text-decoration: none; font-size: 17px;
+    transition: background 0.25s, transform 0.25s;
+  }
+  .social a:hover { background: var(--glass-bg-hover); transform: translateY(-3px); }
+
+  .right { display: flex; flex-direction: column; gap: 20px; }
+  .top-row { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+
+  .card {
+    background: var(--glass-bg);
+    backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+    border-radius: var(--radius);
+    padding: 20px 24px;
+  }
+
+  .daily-line { display: flex; flex-direction: column; justify-content: center; line-height: 1.7; font-size: 15px; }
+  .daily-line .sign { text-align: right; font-size: 14px; color: var(--text-sub); margin-top: 8px; }
+
+  .clock-card { text-align: center; }
+  .clock-card .date { font-size: 15px; color: var(--text-sub); }
+  .clock-card .time {
+    font-size: 40px; font-weight: 700;
+    font-variant-numeric: tabular-nums; letter-spacing: 2px; margin: 4px 0;
+  }
+  .clock-card .slot-name { font-size: 14px; color: var(--text-sub); }
+
+  .grid-label { font-size: 15px; color: var(--text-sub); display: flex; align-items: center; gap: 8px; margin-top: 4px; }
+
+  .nav-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+  .nav-item {
+    background: var(--glass-bg);
+    backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+    border-radius: var(--radius);
+    border: 1px solid transparent;
+    padding: 26px 12px; text-align: center;
+    text-decoration: none; color: var(--text-main);
+    display: flex; flex-direction: column; align-items: center; gap: 10px;
+    transition: background 0.25s, transform 0.25s, border-color 0.25s;
+    cursor: pointer; font-family: inherit; font-size: inherit;
+  }
+  .nav-item:hover {
+    background: var(--glass-bg-hover);
+    transform: translateY(-4px);
+    border-color: var(--glass-border);
+  }
+  .nav-item .icon { font-size: 26px; line-height: 1; }
+  .nav-item .name { font-size: 16px; font-weight: 500; }
+  .nav-item .sub { font-size: 12px; color: var(--text-sub); }
+
+  footer { text-align: center; padding: 20px 0 24px; font-size: 13px; color: var(--text-sub); }
+
+  /* ===== 板块面板(全屏覆盖层) ===== */
+  .panel {
+    position: fixed; inset: 0; z-index: 60;
+    display: none;
+    background: rgba(10, 12, 24, 0.55);
+    backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px);
+    overflow-y: auto;
+  }
+  .panel.on { display: block; animation: panelIn 0.35s ease; }
+  @keyframes panelIn { from { opacity: 0; } to { opacity: 1; } }
+
+  .panel-inner { max-width: 860px; margin: 0 auto; padding: 64px 32px 80px; }
+  .panel-head { display: flex; align-items: center; gap: 14px; margin-bottom: 8px; }
+  .panel-head .p-icon { font-size: 34px; }
+  .panel-head h2 { font-size: 30px; font-weight: 700; }
+  .panel-intro { font-size: 15px; color: var(--text-sub); line-height: 1.8; margin-bottom: 28px; }
+
+  .panel-close {
+    position: fixed; top: 24px; right: 28px; z-index: 61;
+    width: 42px; height: 42px; border-radius: 50%;
+    background: var(--glass-bg); border: 1px solid var(--glass-border);
+    color: var(--text-main); font-size: 18px; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    transition: background 0.25s;
+  }
+  .panel-close:hover { background: var(--glass-bg-hover); }
+
+  .item-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; }
+  .link-card {
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    border-radius: var(--radius);
+    padding: 20px 22px;
+    color: var(--text-main); text-decoration: none;
+    display: flex; flex-direction: column; gap: 6px;
+    transition: background 0.25s, transform 0.25s;
+  }
+  .link-card:hover { background: var(--glass-bg-hover); transform: translateY(-3px); }
+  .link-card .lc-title { font-size: 16px; font-weight: 600; display: flex; align-items: center; gap: 8px; }
+  .link-card .lc-desc { font-size: 13px; color: var(--text-sub); line-height: 1.6; }
+  .link-card .tag {
+    display: inline-block; font-size: 11px;
+    padding: 2px 8px; border-radius: 10px;
+    background: rgba(255,255,255,0.14); color: var(--text-sub);
+    margin-left: auto;
+  }
+  .section-sub { font-size: 15px; color: var(--text-sub); margin: 28px 0 14px; display: flex; align-items: center; gap: 8px; }
+
+  /* 玄学:今日一卦 */
+  .fortune-box {
+    background: var(--glass-bg); border: 1px solid var(--glass-border);
+    border-radius: var(--radius); padding: 26px; text-align: center;
+    margin-bottom: 8px;
+  }
+  .fortune-box .f-name { font-size: 34px; font-weight: 700; letter-spacing: 8px; margin: 6px 0 10px; }
+  .fortune-box .f-desc { font-size: 14px; color: var(--text-sub); line-height: 1.8; }
+  .fortune-box .f-label { font-size: 13px; color: var(--text-sub); }
+
+  /* 投资:行情 */
+  .price-row {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 14px 4px; border-bottom: 1px solid rgba(255,255,255,0.08);
+    font-size: 15px;
+  }
+  .price-row:last-child { border-bottom: none; }
+  .price-row .coin { font-weight: 600; }
+  .price-row .chg-up { color: #7ee2a8; }
+  .price-row .chg-down { color: #f28a8a; }
+  .price-note { font-size: 12px; color: var(--text-sub); margin-top: 10px; }
+
+  /* ===== 冥想小屋 ===== */
+  .cabin {
+    position: fixed; left: 24px; bottom: 20px; z-index: 10;
+    cursor: pointer;
+    display: flex; flex-direction: column; align-items: center; gap: 4px;
+    background: none; border: none; padding: 0;
+    transition: transform 0.3s ease;
+  }
+  .cabin:hover { transform: translateY(-4px); }
+  .cabin svg { display: block; filter: drop-shadow(0 4px 12px rgba(0,0,0,0.35)); }
+  .cabin .cabin-label {
+    font-size: 12px; color: var(--text-sub); opacity: 0;
+    transition: opacity 0.3s; text-shadow: 0 1px 6px rgba(0,0,0,0.5);
+  }
+  .cabin:hover .cabin-label, .cabin:focus .cabin-label { opacity: 1; }
+  .cabin .win-glow { animation: winPulse 3s ease-in-out infinite; }
+  @keyframes winPulse { 0%,100% { opacity: 0.75; } 50% { opacity: 1; } }
+
+  .zen {
+    position: fixed; inset: 0; z-index: 100;
+    background: linear-gradient(160deg,#1c1f42 0%,#4a3a63 40%,#8c5566 70%,#c97b5d 100%);
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    gap: 26px;
+    opacity: 0; pointer-events: none;
+    transition: opacity 0.8s ease;
+  }
+  .zen.on { opacity: 1; pointer-events: auto; }
+
+  .zen-modes { display: flex; gap: 12px; }
+  .zen-mode-btn {
+    background: var(--glass-bg); border: 1px solid var(--glass-border);
+    color: var(--text-sub); border-radius: 20px;
+    padding: 7px 20px; font-size: 14px; cursor: pointer;
+    transition: background 0.25s, color 0.25s;
+  }
+  .zen-mode-btn.active { background: rgba(255,255,255,0.22); color: var(--text-main); }
+
+  .breath-wrap {
+    position: relative; width: 220px; height: 220px;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .breath-ring { position: absolute; inset: 0; border-radius: 50%; border: 2px solid rgba(255,255,255,0.35); }
+  .breath-ball {
+    width: 110px; height: 110px; border-radius: 50%;
+    background: radial-gradient(circle at 35% 35%, rgba(255,235,205,0.95), rgba(240,160,120,0.55));
+    box-shadow: 0 0 60px rgba(255,200,150,0.45);
+  }
+  /* 生理性叹息:吸气2.5s → 补吸1s → 长呼6.5s,共10s */
+  .zen.on.mode-sigh .breath-ball { animation: sigh 10s ease-in-out infinite; }
+  @keyframes sigh {
+    0%   { transform: scale(1); }
+    25%  { transform: scale(1.55); }
+    27%  { transform: scale(1.5); }
+    37%  { transform: scale(1.85); }
+    100% { transform: scale(1); }
+  }
+  /* 箱式呼吸:4-4-4-4,共16s */
+  .zen.on.mode-box .breath-ball { animation: box 16s ease-in-out infinite; }
+  @keyframes box {
+    0%   { transform: scale(1); }
+    25%  { transform: scale(1.85); }
+    50%  { transform: scale(1.85); }
+    75%  { transform: scale(1); }
+    100% { transform: scale(1); }
+  }
+
+  .zen .phase { font-size: 22px; letter-spacing: 6px; font-weight: 500; }
+  .zen .zen-hint { font-size: 13px; color: var(--text-sub); }
+  .zen .zen-timer { font-size: 15px; color: var(--text-sub); font-variant-numeric: tabular-nums; }
+  .zen .zen-exit {
+    margin-top: 4px;
+    background: var(--glass-bg);
+    backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+    border: 1px solid var(--glass-border);
+    color: var(--text-main); border-radius: 20px;
+    padding: 8px 24px; font-size: 14px; cursor: pointer;
+    transition: background 0.25s;
+  }
+  .zen .zen-exit:hover { background: var(--glass-bg-hover); }
+
+  @media (prefers-reduced-motion: reduce) {
+    .zen.on .breath-ball, .cabin .win-glow { animation: none !important; }
+    .bg-layer, .nav-item, .social a { transition: none; }
+  }
+
+  @media (max-width: 900px) {
+    .page { padding: 0 20px; }
+    main { grid-template-columns: 1fr; gap: 32px; padding: 48px 0 32px; }
+    .brand h1 { font-size: 34px; }
+    .nav-grid { grid-template-columns: repeat(2, 1fr); }
+    .top-row { grid-template-columns: 1fr; }
+    .item-grid { grid-template-columns: 1fr; }
+    .panel-inner { padding: 56px 20px 96px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="bg-layer" id="bg-a"></div>
+<div class="bg-layer" id="bg-b"></div>
+
+<div class="page">
+  <main>
+    <section class="left">
+      <div class="brand">
+        <div class="avatar">🌆</div>
+        <h1>arin<span>.space</span></h1>
+      </div>
+
+      <div class="quote-card">
+        <div class="hello">Hello, 欢迎光临 👋</div>
+        <div class="desc">在这里记录我的健身汗水、AI 脑洞、星盘碎语和 K 线心跳。</div>
+      </div>
+
+      <div class="social">
+        <!-- TODO: 小红书链接待补充 -->
+        <a href="#" title="小红书" aria-label="小红书">📕</a>
+        <a href="https://www.xiaoyuzhoufm.com/podcast/64af6a87bc9bb33dda938e36" target="_blank" rel="noopener" title="播客·反向历" aria-label="播客">🎙️</a>
+        <a href="#" title="GitHub" aria-label="GitHub">🐙</a>
+        <a href="mailto:wuyy365@mail2.sysu.edu.cn" title="邮箱" aria-label="邮箱">✉️</a>
+      </div>
+    </section>
+
+    <section class="right">
+      <div class="top-row">
+        <div class="card daily-line">
+          <div id="daily-quote">生活的意义,在于亲手把日子过成自己喜欢的样子。</div>
+          <div class="sign" id="daily-sign">—「今日一句」</div>
+        </div>
+        <div class="card clock-card">
+          <div class="date" id="date-line">—</div>
+          <div class="time" id="time-line">--:--:--</div>
+          <div class="slot-name" id="slot-line">—</div>
+        </div>
+      </div>
+
+      <div class="grid-label">🔗 板块导航</div>
+
+      <div class="nav-grid">
+        <button class="nav-item" data-panel="fitness">
+          <div class="icon">🏃</div>
+          <div class="name">健身</div>
+          <div class="sub">跑步 · 网球 · 力量</div>
+        </button>
+        <button class="nav-item" data-panel="ai">
+          <div class="icon">🤖</div>
+          <div class="name">AI</div>
+          <div class="sub">工具 · 导航 · 笔记</div>
+        </button>
+        <button class="nav-item" data-panel="mystic">
+          <div class="icon">🌙</div>
+          <div class="name">玄学</div>
+          <div class="sub">今日一卦 · 八字</div>
+        </button>
+        <button class="nav-item" data-panel="invest">
+          <div class="icon">📈</div>
+          <div class="name">投资</div>
+          <div class="sub">行情 · 认知框架</div>
+        </button>
+        <button class="nav-item" data-panel="aesthetic">
+          <div class="icon">🎨</div>
+          <div class="name">审美</div>
+          <div class="sub">素材 · 摄影 · 灵感</div>
+        </button>
+        <button class="nav-item" data-panel="about">
+          <div class="icon">🚪</div>
+          <div class="name">关于我</div>
+          <div class="sub">认知实验 · Agent</div>
+        </button>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    © 2026 arin · 存活于互联网边缘的小站
+  </footer>
+</div>
+
+<!-- ===== 板块面板 ===== -->
+
+<div class="panel" id="panel-aesthetic" role="dialog" aria-label="审美">
+  <button class="panel-close" data-close aria-label="关闭">✕</button>
+  <div class="panel-inner">
+    <div class="panel-head"><div class="p-icon">🎨</div><h2>审美</h2></div>
+    <p class="panel-intro">收集打动我的画面、声音和设计。好的审美是长期喂养出来的,这里是我的素材粮仓。</p>
+    <div class="item-grid">
+      <a class="link-card" href="https://www.ysjf.com/material" target="_blank" rel="noopener">
+        <div class="lc-title">🎬 影视飓风·素材站<span class="tag">外链</span></div>
+        <div class="lc-desc">免费高质量视频素材,空镜、转场、声音设计的灵感库。</div>
+      </a>
+      <a class="link-card" href="#" title="TODO: 填入UI灵感站链接">
+        <div class="lc-title">🖥️ UI 灵感收藏<span class="tag">整理中</span></div>
+        <div class="lc-desc">我觉得好看的网站与界面设计,持续收录。</div>
+      </a>
+      <a class="link-card" href="#">
+        <div class="lc-title">📷 我的摄影<span class="tag">即将上线</span></div>
+        <div class="lc-desc">胶片与数码,记录城市和天空的光。</div>
+      </a>
+      <a class="link-card" href="#">
+        <div class="lc-title">✨ AI 作品集<span class="tag">即将上线</span></div>
+        <div class="lc-desc">用 AI 创作的图像与视觉实验。</div>
+      </a>
+    </div>
+  </div>
+</div>
+
+<div class="panel" id="panel-ai" role="dialog" aria-label="AI">
+  <button class="panel-close" data-close aria-label="关闭">✕</button>
+  <div class="panel-inner">
+    <div class="panel-head"><div class="p-icon">🤖</div><h2>AI</h2></div>
+    <p class="panel-intro">作为 AI 产品经理的日常弹药库:好用的工具、值得逛的导航站,以及我自己的产品思考。</p>
+    <div class="item-grid">
+      <a class="link-card" href="https://aihot.virxact.com/" target="_blank" rel="noopener">
+        <div class="lc-title">🔥 AIHot<span class="tag">外链</span></div>
+        <div class="lc-desc">AI 热门工具与产品榜单。</div>
+      </a>
+      <a class="link-card" href="https://ai-bot.cn" target="_blank" rel="noopener">
+        <div class="lc-title">🧰 AI 工具集<span class="tag">外链</span></div>
+        <div class="lc-desc">分类齐全的中文 AI 工具导航站。</div>
+      </a>
+      <a class="link-card" href="#">
+        <div class="lc-title">📝 AI 产品笔记<span class="tag">即将上线</span></div>
+        <div class="lc-desc">做 AI PM 路上的观察与思考。</div>
+      </a>
+      <a class="link-card" href="#">
+        <div class="lc-title">🧪 我的 AI 实验<span class="tag">即将上线</span></div>
+        <div class="lc-desc">Prompt、Agent 与产品原型的试验田。</div>
+      </a>
+    </div>
+  </div>
+</div>
+
+<div class="panel" id="panel-mystic" role="dialog" aria-label="玄学">
+  <button class="panel-close" data-close aria-label="关闭">✕</button>
+  <div class="panel-inner">
+    <div class="panel-head"><div class="p-icon">🌙</div><h2>玄学</h2></div>
+    <p class="panel-intro">不迷信,但相信古人的观察里藏着关于人性与时间的智慧。当成一面自我觉察的镜子来玩。</p>
+    <div class="fortune-box">
+      <div class="f-label" id="f-date">—</div>
+      <div class="f-name" id="f-name">—</div>
+      <div class="f-desc" id="f-desc">—</div>
+    </div>
+    <div class="section-sub">🔮 更多工具</div>
+    <div class="item-grid">
+      <a class="link-card" href="#">
+        <div class="lc-title">📜 八字排盘<span class="tag">规划中</span></div>
+        <div class="lc-desc">输入生辰,生成命盘与解读。</div>
+      </a>
+      <a class="link-card" href="#">
+        <div class="lc-title">🌌 星盘 · 运势<span class="tag">规划中</span></div>
+        <div class="lc-desc">占星视角的周期与自我觉察记录。</div>
+      </a>
+    </div>
+  </div>
+</div>
+
+<div class="panel" id="panel-invest" role="dialog" aria-label="投资">
+  <button class="panel-close" data-close aria-label="关闭">✕</button>
+  <div class="panel-inner">
+    <div class="panel-head"><div class="p-icon">📈</div><h2>投资</h2></div>
+    <p class="panel-intro">记录课堂与书本里学到的投资认知,盯着自己感兴趣的市场。投资最重要的,是活得足够久。</p>
+    <div class="card" style="margin-bottom: 20px;">
+      <div class="section-sub" style="margin-top:0;">💹 实时行情</div>
+      <div id="price-list">
+        <div class="price-row"><span class="coin">加载中…</span></div>
+      </div>
+      <div class="price-note">数据来源 CoinGecko · 面板打开时刷新</div>
+    </div>
+    <div class="item-grid">
+      <a class="link-card" href="#">
+        <div class="lc-title">🧠 投资认知笔记<span class="tag">即将上线</span></div>
+        <div class="lc-desc">宏观框架、周期理论与课堂读书笔记。</div>
+      </a>
+      <a class="link-card" href="#">
+        <div class="lc-title">📊 我的观察清单<span class="tag">即将上线</span></div>
+        <div class="lc-desc">正在跟踪的资产与叙事。</div>
+      </a>
+    </div>
+  </div>
+</div>
+
+<div class="panel" id="panel-fitness" role="dialog" aria-label="健身">
+  <button class="panel-close" data-close aria-label="关闭">✕</button>
+  <div class="panel-inner">
+    <div class="panel-head"><div class="p-icon">🏃</div><h2>健身</h2></div>
+    <p class="panel-intro">身体是第一生产力。跑步、网球、力量训练——记录技巧、赛事和流汗的证据。</p>
+    <div class="item-grid">
+      <a class="link-card" href="#">
+        <div class="lc-title">🏅 跑步 · 马拉松<span class="tag">即将上线</span></div>
+        <div class="lc-desc">训练记录、配速心得与参赛日志。</div>
+      </a>
+      <a class="link-card" href="#">
+        <div class="lc-title">🎾 网球笔记<span class="tag">即将上线</span></div>
+        <div class="lc-desc">技术动作拆解与观赛笔记。</div>
+      </a>
+      <a class="link-card" href="#">
+        <div class="lc-title">🏋️ 健身房动作库<span class="tag">即将上线</span></div>
+        <div class="lc-desc">力量训练的动作要点与计划模板。</div>
+      </a>
+      <a class="link-card" href="#">
+        <div class="lc-title">📅 赛事日历<span class="tag">即将上线</span></div>
+        <div class="lc-desc">想跑的马拉松、想看的比赛。</div>
+      </a>
+    </div>
+  </div>
+</div>
+
+<div class="panel" id="panel-about" role="dialog" aria-label="关于我">
+  <button class="panel-close" data-close aria-label="关闭">✕</button>
+  <div class="panel-inner">
+    <div class="panel-head"><div class="p-icon">🚪</div><h2>关于我</h2></div>
+    <p class="panel-intro">比起履历,我更想分享认知——那些改变过我看世界方式的实验、工具和感悟。欢迎进来玩。</p>
+    <div class="item-grid">
+      <a class="link-card" href="#" title="TODO: 填入人生设计课Agent链接">
+        <div class="lc-title">🧭 人生设计课 Agent<span class="tag">可体验</span></div>
+        <div class="lc-desc">我做的人生设计实验,回答几个问题,一起重新设计你的人生原型。</div>
+      </a>
+      <a class="link-card" href="#" title="TODO: 填入拆解Agent链接">
+        <div class="lc-title">📚 读书拆解 Agent<span class="tag">可体验</span></div>
+        <div class="lc-desc">把一本书拆成认知增量,而不是内容摘要。</div>
+      </a>
+      <a class="link-card" href="#" title="TODO: 填入拆解Agent链接">
+        <div class="lc-title">🎧 播客拆解 Agent<span class="tag">可体验</span></div>
+        <div class="lc-desc">从长对话里萃取值得留下的思想切片。</div>
+      </a>
+      <a class="link-card" href="#">
+        <div class="lc-title">💭 认知感悟<span class="tag">即将上线</span></div>
+        <div class="lc-desc">一些改变过我的想法,不定期更新。</div>
+      </a>
+    </div>
+  </div>
+</div>
+
+<!-- 冥想小屋:左下角入口 -->
+<button class="cabin" id="cabin-btn" aria-label="进入冥想小屋" title="冥想小屋">
+  <svg width="86" height="78" viewBox="0 0 86 78" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <polygon points="43,4 8,34 78,34" fill="#8a5a44" stroke="#4c3226" stroke-width="2.5"/>
+    <rect x="8" y="32" width="70" height="4" fill="#6e4433" stroke="#4c3226" stroke-width="1.5"/>
+    <rect x="58" y="12" width="9" height="16" fill="#7a4f3a" stroke="#4c3226" stroke-width="2"/>
+    <circle cx="64" cy="8" r="3" fill="rgba(255,255,255,0.5)">
+      <animate attributeName="cy" values="8;2;8" dur="4s" repeatCount="indefinite"/>
+      <animate attributeName="opacity" values="0.5;0;0.5" dur="4s" repeatCount="indefinite"/>
+    </circle>
+    <rect x="16" y="36" width="54" height="36" fill="#f0e2c8" stroke="#4c3226" stroke-width="2.5"/>
+    <rect x="24" y="48" width="14" height="24" fill="#6e4433" stroke="#4c3226" stroke-width="2"/>
+    <circle cx="35" cy="61" r="1.6" fill="#f5d76e"/>
+    <rect class="win-glow" x="48" y="46" width="14" height="13" fill="#ffd98a" stroke="#4c3226" stroke-width="2"/>
+    <line x1="55" y1="46" x2="55" y2="59" stroke="#4c3226" stroke-width="1.5"/>
+    <line x1="48" y1="52.5" x2="62" y2="52.5" stroke="#4c3226" stroke-width="1.5"/>
+    <ellipse cx="43" cy="74" rx="34" ry="3.5" fill="rgba(0,0,0,0.25)"/>
+  </svg>
+  <span class="cabin-label">冥想小屋</span>
+</button>
+
+<!-- 冥想模式覆盖层 -->
+<div class="zen mode-sigh" id="zen" role="dialog" aria-label="冥想模式" aria-hidden="true">
+  <div class="zen-modes">
+    <button class="zen-mode-btn active" data-mode="sigh">生理性叹息</button>
+    <button class="zen-mode-btn" data-mode="box">箱式呼吸</button>
+  </div>
+  <div class="breath-wrap">
+    <div class="breath-ring"></div>
+    <div class="breath-ball"></div>
+  </div>
+  <div class="phase" id="zen-phase">吸气</div>
+  <div class="zen-hint" id="zen-hint">鼻子吸气 → 再补吸一小口 → 嘴巴缓慢呼尽</div>
+  <div class="zen-timer" id="zen-timer">00:00</div>
+  <button class="zen-exit" id="zen-exit">离开小屋</button>
+</div>
+
+<script>
+/* =========================================================
+   背景系统:按时段切换(渐变占位,换图见 USE_IMAGES)
+   ========================================================= */
+const USE_IMAGES = false;
+
+const SLOTS = [
+  { key: "dawn",      name: "黎明",  start: 5,  end: 8,
+    gradients: [
+      "linear-gradient(160deg,#2b2d52 0%,#7a5980 45%,#e8927c 80%,#f7c59f 100%)",
+      "linear-gradient(160deg,#37395e 0%,#8a6a8d 50%,#eda58a 100%)"
+    ], images: [] },
+  { key: "morning",   name: "上午",  start: 8,  end: 11,
+    gradients: [
+      "linear-gradient(160deg,#6db3d8 0%,#a8d4e8 55%,#f3ede0 100%)",
+      "linear-gradient(160deg,#7cbede 0%,#b5dcec 60%,#fdf6e3 100%)"
+    ], images: [] },
+  { key: "noon",      name: "正午",  start: 11, end: 14,
+    gradients: [
+      "linear-gradient(170deg,#4f9fd8 0%,#8ec6e6 60%,#dcedf5 100%)",
+      "linear-gradient(170deg,#5ba8dc 0%,#9fd0ea 65%,#e8f3f8 100%)"
+    ], images: [] },
+  { key: "afternoon", name: "下午",  start: 14, end: 17,
+    gradients: [
+      "linear-gradient(165deg,#5b8fc7 0%,#9db8d9 50%,#f0d9b5 100%)",
+      "linear-gradient(165deg,#6699cc 0%,#aec3dd 55%,#f5e2c0 100%)"
+    ], images: [] },
+  { key: "dusk",      name: "黄昏",  start: 17, end: 20,
+    gradients: [
+      "linear-gradient(155deg,#2f3d6b 0%,#7b5a8c 35%,#d96a5f 65%,#f5a35c 88%,#fbd3a2 100%)",
+      "linear-gradient(155deg,#39456f 0%,#8f5f85 40%,#e07a5f 70%,#f8b26a 100%)",
+      "linear-gradient(150deg,#26315e 0%,#6d4f82 38%,#c75d6a 66%,#ef9f63 100%)"
+    ], images: [] },
+  { key: "night",     name: "夜晚",  start: 20, end: 5,
+    gradients: [
+      "linear-gradient(170deg,#0d1230 0%,#1c2450 45%,#33406e 80%,#4a5580 100%)",
+      "linear-gradient(170deg,#101538 0%,#232c58 50%,#3b4878 100%)"
+    ], images: [] }
+];
+
+function getSlot(hour) {
+  for (const s of SLOTS) {
+    if (s.start < s.end) { if (hour >= s.start && hour < s.end) return s; }
+    else { if (hour >= s.start || hour < s.end) return s; }
+  }
+  return SLOTS[SLOTS.length - 1];
+}
+
+function hashCode(str) {
+  let h = 0;
+  for (let i = 0; i < str.length; i++) { h = (h << 5) - h + str.charCodeAt(i); h |= 0; }
+  return Math.abs(h);
+}
+
+function pickBackground(slot) {
+  const pool = (USE_IMAGES && slot.images.length) ? slot.images : slot.gradients;
+  const seed = new Date().toISOString().slice(0, 10) + slot.key;
+  const chosen = pool[hashCode(seed) % pool.length];
+  return (USE_IMAGES && slot.images.length) ? `url("${chosen}")` : chosen;
+}
+
+let activeLayer = "a";
+let currentSlotKey = null;
+
+function applyBackground(force) {
+  const slot = getSlot(new Date().getHours());
+  if (!force && slot.key === currentSlotKey) return;
+  currentSlotKey = slot.key;
+
+  const bg = pickBackground(slot);
+  const front = document.getElementById("bg-" + activeLayer);
+  const backKey = activeLayer === "a" ? "b" : "a";
+  const back = document.getElementById("bg-" + backKey);
+
+  back.style.backgroundImage = bg;
+  back.style.opacity = 1;
+  front.style.opacity = 0;
+  activeLayer = backKey;
+
+  document.getElementById("slot-line").textContent = slot.name + "好";
+}
+
+/* ===== 时钟 ===== */
+function tick() {
+  const now = new Date();
+  const week = ["日","一","二","三","四","五","六"][now.getDay()];
+  const p = n => String(n).padStart(2, "0");
+  document.getElementById("date-line").textContent =
+    `${now.getFullYear()} 年 ${p(now.getMonth()+1)} 月 ${p(now.getDate())} 日 星期${week}`;
+  document.getElementById("time-line").textContent =
+    `${p(now.getHours())}:${p(now.getMinutes())}:${p(now.getSeconds())}`;
+}
+
+/* ===== 今日一句 ===== */
+const DAILY = [
+  { t: "生活的意义,在于亲手把日子过成自己喜欢的样子。", s: "今日一句" },
+  { t: "慢慢来,比较快。", s: "今日一句" },
+  { t: "把注意力放在自己能控制的事情上。", s: "斯多葛学派" },
+  { t: "所有的伟大,都源于一个勇敢的开始。", s: "今日一句" },
+  { t: "身体和灵魂,总有一个要在路上。", s: "今日一句" },
+  { t: "投资最重要的,是活得足够久。", s: "市场箴言" },
+  { t: "月亮不会奔你而来,但你可以奔向月亮。", s: "今日一句" }
+];
+function setDaily() {
+  const seed = new Date().toISOString().slice(0, 10);
+  const q = DAILY[hashCode(seed) % DAILY.length];
+  document.getElementById("daily-quote").textContent = q.t;
+  document.getElementById("daily-sign").textContent = "—「" + q.s + "」";
+}
+
+/* ===== 板块面板 ===== */
+const panels = document.querySelectorAll(".panel");
+function openPanel(key) {
+  const p = document.getElementById("panel-" + key);
+  if (!p) return;
+  panels.forEach(x => x.classList.remove("on"));
+  p.classList.add("on");
+  document.body.style.overflow = "hidden";
+  if (key === "invest") loadPrices();
+  if (key === "mystic") setFortune();
+}
+function closePanels() {
+  panels.forEach(x => x.classList.remove("on"));
+  document.body.style.overflow = "";
+}
+document.querySelectorAll(".nav-item").forEach(btn => {
+  btn.addEventListener("click", () => openPanel(btn.dataset.panel));
+});
+document.querySelectorAll("[data-close]").forEach(btn => {
+  btn.addEventListener("click", closePanels);
+});
+
+/* ===== 玄学:今日一卦(小六壬,按日期起卦) ===== */
+const LIUREN = [
+  { name: "大安", desc: "身不动时,五行属木。宜静养蓄力,守成即是进取。诸事稳中有序,不必急于求变。" },
+  { name: "留连", desc: "人未归时,五行属水。事有拖延反复,不妨把节奏放慢,该等的等,该放的放。" },
+  { name: "速喜", desc: "人即至时,五行属火。好消息来得快,把握当下窗口,适合推进和表达。" },
+  { name: "赤口", desc: "官事凶时,五行属金。谨言慎行,少争执、缓决策,今天适合倾听多于表达。" },
+  { name: "小吉", desc: "人来喜时,五行属水。小顺小成,贵人在侧,适合合作与请教。" },
+  { name: "空亡", desc: "音信稀时,五行属土。谋事多虚,不如向内收摄,整理自己比追逐外物更有收获。" }
+];
+function setFortune() {
+  const now = new Date();
+  const seed = now.toISOString().slice(0, 10);
+  const g = LIUREN[hashCode(seed + "liuren") % LIUREN.length];
+  const p = n => String(n).padStart(2, "0");
+  document.getElementById("f-date").textContent =
+    `${now.getFullYear()} 年 ${p(now.getMonth()+1)} 月 ${p(now.getDate())} 日 · 今日一卦`;
+  document.getElementById("f-name").textContent = g.name;
+  document.getElementById("f-desc").textContent = g.desc + " (仅供自我觉察,不作决策依据)";
+}
+
+/* ===== 投资:CoinGecko 行情 ===== */
+let pricesLoaded = false;
+async function loadPrices() {
+  const listEl = document.getElementById("price-list");
+  try {
+    const url = "https://api.coingecko.com/api/v3/simple/price?ids=bitcoin,ethereum,solana&vs_currencies=usd&include_24hr_change=true";
+    const res = await fetch(url);
+    const data = await res.json();
+    const COINS = [
+      { id: "bitcoin",  label: "BTC" },
+      { id: "ethereum", label: "ETH" },
+      { id: "solana",   label: "SOL" }
+    ];
+    listEl.innerHTML = COINS.map(c => {
+      const d = data[c.id];
+      if (!d) return "";
+      const chg = d.usd_24h_change || 0;
+      const cls = chg >= 0 ? "chg-up" : "chg-down";
+      const sign = chg >= 0 ? "+" : "";
+      return `<div class="price-row">
+        <span class="coin">${c.label}</span>
+        <span>$${d.usd.toLocaleString()}</span>
+        <span class="${cls}">${sign}${chg.toFixed(2)}%</span>
+      </div>`;
+    }).join("");
+    pricesLoaded = true;
+  } catch (e) {
+    listEl.innerHTML = `<div class="price-row"><span class="coin">行情加载失败</span><span style="color:var(--text-sub);font-size:13px;">网络原因或接口限流,稍后再试</span></div>`;
+  }
+}
+
+/* ===== 冥想小屋:两种呼吸模式 ===== */
+const zen = document.getElementById("zen");
+const zenPhase = document.getElementById("zen-phase");
+const zenHint = document.getElementById("zen-hint");
+const zenTimer = document.getElementById("zen-timer");
+let zenStart = null, zenTick = null, phaseTick = null;
+let zenMode = "sigh";
+
+/* 生理性叹息(Huberman cyclic sighing):
+   鼻吸2.5s → 补吸1s → 嘴缓慢呼气6.5s,周期10s
+   箱式呼吸:吸4s → 屏4s → 呼4s → 屏4s,周期16s */
+const MODES = {
+  sigh: {
+    cycle: 10,
+    hint: "鼻子吸气 → 再补吸一小口 → 嘴巴缓慢呼尽",
+    phases: [
+      { name: "吸气", at: 0 },
+      { name: "再吸一口", at: 2.5 },
+      { name: "缓慢呼气", at: 3.7 }
+    ]
+  },
+  box: {
+    cycle: 16,
+    hint: "吸气 4 秒 → 屏息 4 秒 → 呼气 4 秒 → 屏息 4 秒",
+    phases: [
+      { name: "吸气", at: 0 },
+      { name: "屏息", at: 4 },
+      { name: "呼气", at: 8 },
+      { name: "屏息", at: 12 }
+    ]
+  }
+};
+
+function updatePhase() {
+  const m = MODES[zenMode];
+  const t = ((Date.now() - zenStart) / 1000) % m.cycle;
+  let current = m.phases[0].name;
+  for (const p of m.phases) if (t >= p.at) current = p.name;
+  zenPhase.textContent = current;
+}
+function updateZenTimer() {
+  const s = Math.floor((Date.now() - zenStart) / 1000);
+  const p = n => String(n).padStart(2, "0");
+  zenTimer.textContent = `${p(Math.floor(s / 60))}:${p(s % 60)}`;
+}
+function setZenMode(mode) {
+  zenMode = mode;
+  zen.classList.remove("mode-sigh", "mode-box");
+  zen.classList.add("mode-" + mode);
+  zenHint.textContent = MODES[mode].hint;
+  zenStart = Date.now(); /* 切模式时重置节奏,与动画同步 */
+  document.querySelectorAll(".zen-mode-btn").forEach(b =>
+    b.classList.toggle("active", b.dataset.mode === mode));
+}
+function enterZen() {
+  zenStart = Date.now();
+  zen.classList.add("on");
+  zen.setAttribute("aria-hidden", "false");
+  setZenMode(zenMode);
+  updatePhase(); updateZenTimer();
+  phaseTick = setInterval(updatePhase, 200);
+  zenTick = setInterval(updateZenTimer, 1000);
+}
+function exitZen() {
+  zen.classList.remove("on");
+  zen.setAttribute("aria-hidden", "true");
+  clearInterval(phaseTick); clearInterval(zenTick);
+}
+document.getElementById("cabin-btn").addEventListener("click", enterZen);
+document.getElementById("zen-exit").addEventListener("click", exitZen);
+document.querySelectorAll(".zen-mode-btn").forEach(b => {
+  b.addEventListener("click", () => setZenMode(b.dataset.mode));
+});
+document.addEventListener("keydown", e => {
+  if (e.key !== "Escape") return;
+  if (zen.classList.contains("on")) { exitZen(); return; }
+  closePanels();
+});
+
+/* ===== 启动 ===== */
+applyBackground(true);
+tick();
+setDaily();
+setInterval(tick, 1000);
+setInterval(() => applyBackground(false), 60 * 1000);
+</script>
+
+</body>
+</html>
