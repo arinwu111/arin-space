@@ -209,6 +209,135 @@
   .fortune-box .f-desc { font-size: 14px; color: var(--text-sub); line-height: 1.8; }
   .fortune-box .f-label { font-size: 13px; color: var(--text-sub); }
 
+  /* 今日黄历 宜忌 */
+  .yiji-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 10px; }
+  .yiji-col { background: rgba(255,255,255,0.05); border: 1px solid var(--glass-border); border-radius: 10px; padding: 12px 14px; }
+  .yiji-head { display: inline-block; width: 26px; height: 26px; line-height: 26px; text-align: center; border-radius: 6px; font-weight: 700; margin-bottom: 8px; }
+  .yiji-yi { background: rgba(120,220,160,0.2); color: #7fe0a4; }
+  .yiji-ji { background: rgba(240,120,130,0.2); color: #f28a94; }
+  .yiji-body { font-size: 14px; line-height: 1.8; color: var(--text-main); }
+
+  /* 塔罗 */
+  .tarot-card {
+    width: 130px; height: 210px; margin: 0 auto; border-radius: 12px;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    transition: transform 0.5s; position: relative;
+  }
+  .tarot-back {
+    background: linear-gradient(135deg,#2a2456,#4a3a6e);
+    border: 2px solid rgba(255,255,255,0.25);
+  }
+  .tarot-back-pattern { font-size: 40px; color: rgba(255,255,255,0.4); }
+  .tarot-face {
+    background: linear-gradient(160deg,#f4ecd8,#e6d3b0);
+    border: 2px solid #c9a86a; color: #3a2e1a; padding: 14px;
+    box-shadow: inset 0 0 0 2px rgba(201,168,106,0.4);
+  }
+  .tarot-face .t-emoji { font-size: 56px; line-height: 1; margin: 6px 0; }
+  .tarot-face .t-emoji.reversed { transform: rotate(180deg); }
+  .tarot-face .t-num { font-size: 12px; opacity: 0.7; }
+  .tarot-face .t-name { font-size: 17px; font-weight: 700; margin: 8px 0; text-align: center; }
+  .tarot-face .t-pos { font-size: 13px; padding: 2px 10px; border-radius: 10px; background: rgba(0,0,0,0.08); }
+  .tarot-meaning { margin-top: 14px; font-size: 14px; line-height: 1.8; color: var(--text-sub); text-align: left; }
+  .tarot-meaning strong { color: var(--text-main); }
+
+  /* 八字表单 */
+  .bazi-form { display: flex; flex-direction: column; gap: 12px; margin-bottom: 8px; }
+  .bazi-row { display: flex; align-items: center; gap: 12px; }
+  .bazi-row label { font-size: 14px; color: var(--text-sub); width: 96px; flex-shrink: 0; }
+  .bazi-row select, .bazi-row input {
+    flex: 1; background: rgba(255,255,255,0.08); border: 1px solid var(--glass-border);
+    border-radius: 10px; padding: 10px 12px; color: var(--text-main); font-size: 14px;
+    font-family: inherit; outline: none;
+  }
+  .bazi-row select option { background: #2a2c40; color: #fff; }
+  .bazi-pillars { display: grid; grid-template-columns: repeat(4,1fr); gap: 10px; margin: 16px 0; }
+  .pillar { background: rgba(255,255,255,0.05); border: 1px solid var(--glass-border); border-radius: 10px; padding: 14px 8px; text-align: center; }
+  .pillar .p-label { font-size: 12px; color: var(--text-sub); margin-bottom: 8px; }
+  .pillar .p-gz { font-size: 22px; font-weight: 700; letter-spacing: 2px; }
+  .pillar .p-gz small { display: block; font-size: 11px; color: var(--text-sub); font-weight: 400; margin-top: 4px; }
+  .bazi-meta { font-size: 13px; color: var(--text-sub); line-height: 1.9; margin-bottom: 14px; }
+  .bazi-prompt-box { position: relative; }
+  .bazi-prompt-box textarea {
+    width: 100%; height: 120px; background: rgba(0,0,0,0.25); border: 1px solid var(--glass-border);
+    border-radius: 10px; padding: 12px; color: var(--text-sub); font-size: 12px; line-height: 1.6;
+    font-family: inherit; resize: vertical;
+  }
+  .bazi-copy-btn { margin-top: 10px; }
+
+  /* 增强命盘卡 */
+  .bz-full { grid-template-columns: repeat(4,1fr); }
+  .bz-pillar { padding: 12px 6px; }
+  .bz-pillar .p-shishen { font-size: 11px; color: var(--text-sub); margin-bottom: 6px; min-height: 14px; }
+  .bz-pillar .p-gz { font-size: 26px; font-weight: 700; letter-spacing: 3px; line-height: 1.2; }
+  .bz-pillar .p-hide { font-size: 10px; color: var(--text-sub); margin-top: 6px; line-height: 1.4; }
+  .bz-pillar .p-nayin { font-size: 11px; color: var(--text-sub); margin-top: 6px; opacity: 0.8; }
+  .wx-row { margin-top: 8px; }
+  .wx-tag { display: inline-block; font-size: 12px; padding: 2px 8px; border-radius: 10px; border: 1px solid; margin-right: 6px; }
+  .shen-box { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 4px; }
+  .shen-tag { font-size: 12px; padding: 5px 10px; border-radius: 8px; background: rgba(255,255,255,0.06); border: 1px solid var(--glass-border); color: var(--text-sub); }
+
+  /* 今日健康清单 */
+  .health-group-label { font-size: 13px; color: var(--text-sub); font-weight: 600; margin: 18px 0 10px; display: flex; align-items: center; gap: 6px; }
+  .health-item {
+    display: flex; align-items: flex-start; gap: 12px;
+    padding: 12px 14px; margin-bottom: 10px;
+    background: rgba(255,255,255,0.05); border: 1px solid var(--glass-border);
+    border-radius: 10px; cursor: pointer; transition: background 0.2s, opacity 0.2s;
+  }
+  .health-item:hover { background: rgba(255,255,255,0.09); }
+  .health-item.done { opacity: 0.55; }
+  .health-check {
+    width: 22px; height: 22px; flex-shrink: 0; border-radius: 6px;
+    border: 2px solid var(--text-sub); display: flex; align-items: center; justify-content: center;
+    font-size: 14px; color: transparent; transition: all 0.2s; margin-top: 1px;
+  }
+  .health-item.done .health-check { background: #7fe0a4; border-color: #7fe0a4; color: #1a2a1e; }
+  .health-body .h-title { font-size: 15px; font-weight: 600; }
+  .health-item.done .h-title { text-decoration: line-through; }
+  .health-body .h-why { font-size: 12px; color: var(--text-sub); line-height: 1.6; margin-top: 3px; }
+  .health-body .h-time { font-size: 11px; color: var(--text-sub); opacity: 0.75; margin-top: 4px; }
+
+  /* 健身 AI 输入 */
+  .health-textarea {
+    width: 100%; height: 100px; background: rgba(0,0,0,0.22); border: 1px solid var(--glass-border);
+    border-radius: 10px; padding: 12px; color: var(--text-main); font-size: 13px; line-height: 1.6;
+    font-family: inherit; resize: vertical; outline: none;
+  }
+  .health-textarea::placeholder { color: var(--text-sub); }
+  .health-upload-row { display: flex; align-items: center; gap: 12px; margin-top: 10px; }
+  .health-upload-btn {
+    font-size: 13px; padding: 8px 14px; border-radius: 10px; cursor: pointer;
+    background: rgba(255,255,255,0.08); border: 1px solid var(--glass-border); color: var(--text-sub);
+  }
+  .health-upload-btn:hover { background: rgba(255,255,255,0.16); }
+
+  /* AI 设置 */
+  .ai-settings-fab {
+    position: fixed; right: 24px; bottom: 20px; z-index: 10;
+    background: var(--glass-bg); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+    border: 1px solid var(--glass-border); color: var(--text-main);
+    border-radius: 20px; padding: 8px 16px; font-size: 13px; cursor: pointer;
+    font-family: inherit; transition: background 0.25s, transform 0.25s;
+  }
+  .ai-settings-fab:hover { background: var(--glass-bg-hover); transform: translateY(-3px); }
+  .ai-modal {
+    position: fixed; inset: 0; z-index: 120; display: none;
+    background: rgba(10,12,24,0.55); backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
+  }
+  .ai-modal.on { display: flex; align-items: center; justify-content: center; }
+  .ai-modal-inner {
+    position: relative; width: 92%; max-width: 460px;
+    background: rgba(30,32,52,0.9); border: 1px solid var(--glass-border);
+    border-radius: 16px; padding: 28px 24px;
+  }
+  .ai-modal-inner .panel-close { position: absolute; top: 14px; right: 14px; }
+  .ai-modal-inner input[type=password] {
+    flex: 1; background: rgba(255,255,255,0.08); border: 1px solid var(--glass-border);
+    border-radius: 10px; padding: 10px 12px; color: var(--text-main); font-size: 14px;
+    font-family: inherit; outline: none;
+  }
+
   /* 投资:行情(红涨绿跌) */
   .price-row {
     display: flex; align-items: center; justify-content: space-between;
@@ -382,6 +511,7 @@
     .panel-inner { padding: 56px 20px 96px; }
   }
 </style>
+<script src="https://cdn.jsdelivr.net/npm/lunar-javascript@1.6.12/lunar.js"></script>
 </head>
 <body>
 
@@ -513,21 +643,80 @@
   <div class="panel-inner">
     <div class="panel-head"><div class="p-icon">🌙</div><h2>玄学</h2></div>
     <p class="panel-intro">不迷信,但相信古人的观察里藏着关于人性与时间的智慧。当成一面自我觉察的镜子来玩。</p>
+
+    <!-- 今日黄历 -->
+    <div class="card" style="margin-bottom:20px;">
+      <div class="section-sub" style="margin-top:0;">📅 今日黄历</div>
+      <div id="huangli-date" style="font-size:14px;color:var(--text-sub);margin-bottom:12px;">—</div>
+      <div class="yiji-grid">
+        <div class="yiji-col">
+          <div class="yiji-head yiji-yi">宜</div>
+          <div id="huangli-yi" class="yiji-body">—</div>
+        </div>
+        <div class="yiji-col">
+          <div class="yiji-head yiji-ji">忌</div>
+          <div id="huangli-ji" class="yiji-body">—</div>
+        </div>
+      </div>
+      <div id="huangli-extra" class="price-note">—</div>
+    </div>
+
+    <!-- 今日一卦 -->
     <div class="fortune-box">
       <div class="f-label" id="f-date">—</div>
       <div class="f-name" id="f-name">—</div>
       <div class="f-desc" id="f-desc">—</div>
     </div>
-    <div class="section-sub">🔮 更多工具</div>
-    <div class="item-grid">
-      <a class="link-card" href="#">
-        <div class="lc-title">📜 八字排盘<span class="tag">规划中</span></div>
-        <div class="lc-desc">输入生辰,生成命盘与解读。</div>
-      </a>
-      <a class="link-card" href="#">
-        <div class="lc-title">🌌 星盘 · 运势<span class="tag">规划中</span></div>
-        <div class="lc-desc">占星视角的周期与自我觉察记录。</div>
-      </a>
+
+    <!-- 塔罗抽牌 -->
+    <div class="card" style="margin:20px 0;">
+      <div class="section-sub" style="margin-top:0;">🃏 塔罗抽一张</div>
+      <p class="price-note" style="margin:0 0 12px;">静心想着你的问题,点下方抽一张牌,当作一面自我觉察的镜子。</p>
+      <div id="tarot-area" style="text-align:center;">
+        <div class="tarot-card tarot-back" id="tarot-card">
+          <div class="tarot-back-pattern">✦</div>
+        </div>
+        <button class="zen-mode-btn" id="tarot-draw-btn" style="margin-top:14px;">抽一张牌</button>
+      </div>
+    </div>
+
+    <!-- 八字命盘(免API) -->
+    <div class="card">
+      <div class="section-sub" style="margin-top:0;">📜 八字命盘</div>
+      <p class="price-note" style="margin:0 0 12px;">输入生辰,本地排出四柱八字与大运(信息不离开你的浏览器),再一键生成可交给任意 AI 的解读提示词。</p>
+      <div class="bazi-form">
+        <div class="bazi-row">
+          <label>性别</label>
+          <select id="bz-sex">
+            <option value="male">乾造(男)</option>
+            <option value="female">坤造(女)</option>
+          </select>
+        </div>
+        <div class="bazi-row">
+          <label>出生日期(公历)</label>
+          <input type="date" id="bz-date" min="1900-01-01" max="2099-12-31">
+        </div>
+        <div class="bazi-row">
+          <label>出生时辰</label>
+          <select id="bz-hour">
+            <option value="-1">不确定</option>
+            <option value="0">子时 23:00-01:00</option>
+            <option value="1">丑时 01:00-03:00</option>
+            <option value="2">寅时 03:00-05:00</option>
+            <option value="3">卯时 05:00-07:00</option>
+            <option value="4">辰时 07:00-09:00</option>
+            <option value="5">巳时 09:00-11:00</option>
+            <option value="6">午时 11:00-13:00</option>
+            <option value="7">未时 13:00-15:00</option>
+            <option value="8">申时 15:00-17:00</option>
+            <option value="9">酉时 17:00-19:00</option>
+            <option value="10">戌时 19:00-21:00</option>
+            <option value="11">亥时 21:00-23:00</option>
+          </select>
+        </div>
+        <button class="zen-mode-btn" id="bz-calc-btn" style="width:100%;margin-top:4px;">排盘</button>
+      </div>
+      <div id="bazi-result"></div>
     </div>
   </div>
 </div>
@@ -582,24 +771,32 @@
   <button class="panel-close" data-close aria-label="关闭">✕</button>
   <div class="panel-inner">
     <div class="panel-head"><div class="p-icon">🏃</div><h2>健身</h2></div>
-    <p class="panel-intro">身体是第一生产力。跑步、网球、力量训练——记录技巧、赛事和流汗的证据。</p>
-    <div class="item-grid">
-      <a class="link-card" href="#">
-        <div class="lc-title">🏅 跑步 · 马拉松<span class="tag">即将上线</span></div>
-        <div class="lc-desc">训练记录、配速心得与参赛日志。</div>
-      </a>
-      <a class="link-card" href="#">
-        <div class="lc-title">🎾 网球笔记<span class="tag">即将上线</span></div>
-        <div class="lc-desc">技术动作拆解与观赛笔记。</div>
-      </a>
-      <a class="link-card" href="#">
-        <div class="lc-title">🏋️ 健身房动作库<span class="tag">即将上线</span></div>
-        <div class="lc-desc">力量训练的动作要点与计划模板。</div>
-      </a>
-      <a class="link-card" href="#">
-        <div class="lc-title">📅 赛事日历<span class="tag">即将上线</span></div>
-        <div class="lc-desc">想跑的马拉松、想看的比赛。</div>
-      </a>
+    <p class="panel-intro">身体是第一生产力。下面的清单基于科学研究,你也可以上传自己的健康报告,让 AI 结合你的真实情况调整今日重点。</p>
+
+    <!-- AI 个性化输入 -->
+    <div class="card" style="margin-bottom:20px;">
+      <div class="section-sub" style="margin-top:0;">🩺 结合我的数据(AI 个性化)</div>
+      <p class="price-note" style="margin:0 0 12px;">贴入或上传任何和你身体/作息相关的数据:健康报告、体测结果、训练计划、你的目标或今天的安排都行。AI 会读懂后,把今日清单调成更贴合你的版本。</p>
+      <textarea id="health-input" class="health-textarea" placeholder="例如:最近睡眠平均6小时、静息心率62、体脂22%;本周私教练背和腿;我想备赛10公里跑,目标55分钟内…"></textarea>
+      <div class="health-upload-row">
+        <label class="health-upload-btn">
+          上传文件(txt / 图片 / pdf)
+          <input type="file" id="health-file" accept=".txt,.csv,image/*,.pdf" style="display:none;">
+        </label>
+        <span id="health-file-name" class="price-note" style="margin:0;"></span>
+      </div>
+      <button class="zen-mode-btn" id="health-ai-btn" style="width:100%;margin-top:12px;">让 AI 结合我的数据调整今日清单</button>
+      <div id="health-ai-note" class="price-note" style="margin-top:8px;"></div>
+    </div>
+
+    <!-- 今日清单 -->
+    <div class="card">
+      <div class="section-sub" style="margin-top:0;display:flex;align-items:center;justify-content:space-between;">
+        <span>✅ 今日健康清单</span>
+        <span id="health-progress" style="font-size:13px;color:var(--text-sub);">0 / 0</span>
+      </div>
+      <div id="health-list"></div>
+      <div class="price-note">清单每天自动重置 · 勾选状态保存在本机浏览器 · 依据 Huberman/哈佛等公开研究,仅为健康教育,不构成医疗建议</div>
     </div>
   </div>
 </div>
@@ -650,6 +847,33 @@
   </svg>
   <span class="cabin-label">冥想小屋</span>
 </button>
+
+<!-- AI 设置(选模型 + 填自己的 key) -->
+<button class="ai-settings-fab" id="ai-settings-fab" title="AI 设置" aria-label="AI 设置">⚙️ AI</button>
+<div class="ai-modal" id="ai-modal" role="dialog" aria-label="AI 设置" aria-hidden="true">
+  <div class="ai-modal-inner">
+    <button class="panel-close" id="ai-modal-close" aria-label="关闭">✕</button>
+    <div class="section-sub" style="margin-top:0;">⚙️ AI 设置</div>
+    <p class="price-note" style="margin:0 0 14px;">本站的 AI 功能(八字解读、健康报告分析等)需要一个大模型 key。<strong>你填的 key 只存在你自己的浏览器里,不会上传保存</strong>,用的是你自己的额度。</p>
+    <div class="bazi-row">
+      <label>选择模型</label>
+      <select id="ai-provider">
+        <option value="deepseek">DeepSeek(便宜·国内可用)</option>
+        <option value="openai">OpenAI (GPT)</option>
+        <option value="claude">Claude (Anthropic)</option>
+        <option value="qwen">通义千问 Qwen</option>
+        <option value="zhipu">智谱 GLM</option>
+      </select>
+    </div>
+    <div class="bazi-row" style="margin-top:12px;">
+      <label>你的 API Key</label>
+      <input type="password" id="ai-key" placeholder="粘贴你的 API key(sk-...)" autocomplete="off">
+    </div>
+    <button class="zen-mode-btn" id="ai-save-btn" style="width:100%;margin-top:14px;">保存</button>
+    <div id="ai-save-note" class="price-note" style="margin-top:8px;"></div>
+    <p class="price-note" style="margin-top:12px;">各家 key 获取:DeepSeek → platform.deepseek.com · OpenAI → platform.openai.com · Claude → console.anthropic.com · 通义 → dashscope 阿里云 · 智谱 → open.bigmodel.cn</p>
+  </div>
+</div>
 
 <!-- 冥想模式覆盖层 -->
 <div class="zen mode-sigh" id="zen" role="dialog" aria-label="冥想模式" aria-hidden="true">
@@ -786,8 +1010,9 @@ function openPanel(key) {
   p.classList.add("on");
   document.body.style.overflow = "hidden";
   if (key === "invest") loadInvest();
-  if (key === "mystic") setFortune();
+  if (key === "mystic") loadMystic();
   if (key === "ai") loadAIDaily();
+  if (key === "fitness") loadHealth();
 }
 function closePanels() {
   panels.forEach(x => x.classList.remove("on"));
@@ -818,6 +1043,223 @@ function setFortune() {
     `${now.getFullYear()} 年 ${p(now.getMonth()+1)} 月 ${p(now.getDate())} 日 · 今日一卦`;
   document.getElementById("f-name").textContent = g.name;
   document.getElementById("f-desc").textContent = g.desc + " (仅供自我觉察,不作决策依据)";
+}
+
+/* ===== 今日黄历(本地算,lunar-javascript) ===== */
+function setHuangli() {
+  const dateEl = document.getElementById("huangli-date");
+  const yiEl = document.getElementById("huangli-yi");
+  const jiEl = document.getElementById("huangli-ji");
+  const extraEl = document.getElementById("huangli-extra");
+  if (typeof Lunar === "undefined") {
+    dateEl.textContent = "黄历加载失败(部署到线上后正常)";
+    return;
+  }
+  try {
+    const now = new Date();
+    const l = Lunar.fromDate(now);
+    const p = n => String(n).padStart(2, "0");
+    dateEl.textContent =
+      `${now.getFullYear()} 年 ${p(now.getMonth()+1)} 月 ${p(now.getDate())} 日 · ` +
+      `农历${l.getMonthInChinese()}月${l.getDayInChinese()} · ${l.getYearInGanZhi()}年 ${l.getDayInGanZhi()}日`;
+    const yi = l.getDayYi() || [];
+    const ji = l.getDayJi() || [];
+    yiEl.textContent = yi.length ? yi.slice(0, 8).join("、") : "诸事不宜大动,宜静";
+    jiEl.textContent = ji.length ? ji.slice(0, 8).join("、") : "无特别禁忌";
+    // 附加:值神、星宿、冲煞
+    const parts = [];
+    try { parts.push("值神:" + l.getDayTianShen()); } catch(e){}
+    try { parts.push("冲:" + l.getDayChongDesc()); } catch(e){}
+    try { parts.push("星宿:" + l.getXiu() + l.getZheng() + l.getAnimal()); } catch(e){}
+    extraEl.textContent = parts.join(" · ") || "";
+  } catch (e) {
+    dateEl.textContent = "黄历计算出错";
+  }
+}
+
+/* ===== 塔罗抽牌(文字版,无版权图) ===== */
+const TAROT = [
+  ["愚者","🃏","新的开始、纯真、冒险、跳出舒适圈","天真、鲁莽、犹豫不前、错失机会"],
+  ["魔术师","🎩","创造力、行动力、资源到位、心想事成","操纵、拖延、力量未被善用"],
+  ["女祭司","🌙","直觉、潜意识、静观、内在智慧","忽视直觉、秘密、表里不一"],
+  ["女皇","👑","丰盛、滋养、创造、感性的力量","依赖、停滞、过度付出"],
+  ["皇帝","🏛️","秩序、权威、结构、掌控","专制、僵化、控制欲过强"],
+  ["教皇","📿","传统、指引、信念、体制","盲从、教条、打破常规的时刻"],
+  ["恋人","💞","选择、结合、价值观一致、爱","失衡、诱惑、错误的选择"],
+  ["战车","🛞","意志、前进、掌控方向、胜利","失控、方向不明、内耗"],
+  ["力量","🦁","温柔的力量、耐心、内在勇气","自我怀疑、失去耐性、逞强"],
+  ["隐者","🏮","内省、独处、寻找答案、沉淀","孤立、逃避、拒绝求助"],
+  ["命运之轮","🎡","转机、周期、顺势而为、时来运转","逆境、失控的变化、抗拒改变"],
+  ["正义","⚖️","公平、因果、理性抉择、责任","失衡、逃避责任、偏见"],
+  ["倒吊人","🙃","换位思考、放下、等待、牺牲","徒劳的坚持、拖延、受困"],
+  ["死神","🦋","结束与重生、转化、断舍离","抗拒结束、停滞、拖着不放"],
+  ["节制","🏺","平衡、调和、耐心、中庸","失衡、极端、缺乏耐性"],
+  ["恶魔","⛓️","欲望、束缚、执念、诱惑","觉醒、挣脱、直面阴影"],
+  ["塔","🗼","突变、崩塌、觉醒、旧结构瓦解","勉强维持、延迟的崩溃、逃避真相"],
+  ["星星","⭐","希望、疗愈、灵感、指引","失去信心、迷茫、能量枯竭"],
+  ["月亮","🌕","潜意识、幻象、不安、直觉","走出迷雾、看清真相、释放恐惧"],
+  ["太阳","☀️","喜悦、成功、光明、活力","短暂的低落、过度乐观、延迟的好运"],
+  ["审判","📯","觉醒、召唤、重新评估、复苏","自我批判、犹豫、拒绝改变"],
+  ["世界","🌍","圆满、完成、整合、新的循环","未竟之事、拖延、差临门一脚"]
+];
+function drawTarot() {
+  const card = document.getElementById("tarot-card");
+  const idx = Math.floor(Math.random() * TAROT.length);
+  const reversed = Math.random() < 0.5;
+  const [name, emoji, up, down] = TAROT[idx];
+  const meaning = reversed ? down : up;
+  const posText = reversed ? "逆位" : "正位";
+  card.className = "tarot-card tarot-face";
+  card.innerHTML = `
+    <div class="t-num">大阿卡纳 · ${idx}</div>
+    <div class="t-emoji ${reversed ? 'reversed' : ''}">${emoji}</div>
+    <div class="t-name">${name}</div>
+    <div class="t-pos">${posText}</div>`;
+  let m = document.getElementById("tarot-meaning");
+  if (!m) {
+    m = document.createElement("div");
+    m.id = "tarot-meaning";
+    m.className = "tarot-meaning";
+    document.getElementById("tarot-area").appendChild(m);
+  }
+  m.innerHTML = `<strong>${name}（${posText}）</strong>:${meaning}。<br><span style="opacity:0.7;">塔罗是一面镜子,牌意用来触发你自己的思考,而非预言结果。</span>`;
+  document.getElementById("tarot-draw-btn").textContent = "再抽一张";
+}
+
+/* ===== 八字命盘(本地排盘 + 生成提示词) ===== */
+// 天干地支 → 五行 → 颜色
+const WUXING_OF = {
+  "甲":"木","乙":"木","寅":"木","卯":"木",
+  "丙":"火","丁":"火","巳":"火","午":"火",
+  "戊":"土","己":"土","辰":"土","戌":"土","丑":"土","未":"土",
+  "庚":"金","辛":"金","申":"金","酉":"金",
+  "壬":"水","癸":"水","子":"水","亥":"水"
+};
+const WUXING_COLOR = { "木":"#5fd39a","火":"#f6707a","土":"#e6c46a","金":"#e8e2d0","水":"#6db4e8" };
+function wxColor(ch) { return WUXING_COLOR[WUXING_OF[ch]] || "var(--text-main)"; }
+function colorGZ(gz) {
+  return gz.split("").map(ch =>
+    `<span style="color:${wxColor(ch)}">${ch}</span>`).join("");
+}
+
+function calcBazi() {
+  const resultEl = document.getElementById("bazi-result");
+  const dateVal = document.getElementById("bz-date").value;
+  const hourSel = parseInt(document.getElementById("bz-hour").value, 10);
+  const sex = document.getElementById("bz-sex").value;
+  if (!dateVal) { resultEl.innerHTML = `<div class="watch-empty">请先选择出生日期。</div>`; return; }
+  if (typeof Solar === "undefined") { resultEl.innerHTML = `<div class="watch-empty">排盘库加载失败,部署到线上后正常。</div>`; return; }
+  try {
+    const [y, mo, d] = dateVal.split("-").map(Number);
+    const hourMap = [0,2,4,6,8,10,12,14,16,18,20,22];
+    const hh = hourSel >= 0 ? hourMap[hourSel] : 12;
+    const solar = Solar.fromYmdHms(y, mo, d, hh, 0, 0);
+    const lunar = solar.getLunar();
+    const ec = lunar.getEightChar();
+    const hasHour = hourSel >= 0;
+
+    const safe = (fn, dflt) => { try { const v = fn(); return v == null ? dflt : v; } catch(e){ return dflt; } };
+    const joinArr = (a) => Array.isArray(a) ? a.join("") : (a || "");
+
+    // 四柱数据
+    const cols = [
+      { label:"年柱", gz:ec.getYear(), ssg:safe(()=>ec.getYearShiShenGan(),"—"), ssz:safe(()=>joinArr(ec.getYearShiShenZhi()),"—"), hide:safe(()=>joinArr(ec.getYearHideGan()),"—"), ny:safe(()=>ec.getYearNaYin(),"—") },
+      { label:"月柱", gz:ec.getMonth(), ssg:safe(()=>ec.getMonthShiShenGan(),"—"), ssz:safe(()=>joinArr(ec.getMonthShiShenZhi()),"—"), hide:safe(()=>joinArr(ec.getMonthHideGan()),"—"), ny:safe(()=>ec.getMonthNaYin(),"—") },
+      { label:"日柱", gz:ec.getDay(), ssg:"日主", ssz:safe(()=>joinArr(ec.getDayShiShenZhi()),"—"), hide:safe(()=>joinArr(ec.getDayHideGan()),"—"), ny:safe(()=>ec.getDayNaYin(),"—") },
+      { label:"时柱", gz:hasHour?ec.getTime():"??", ssg:hasHour?safe(()=>ec.getTimeShiShenGan(),"—"):"—", ssz:hasHour?safe(()=>joinArr(ec.getTimeShiShenZhi()),"—"):"—", hide:hasHour?safe(()=>joinArr(ec.getTimeHideGan()),"—"):"—", ny:hasHour?safe(()=>ec.getTimeNaYin(),"—"):"—" }
+    ];
+    const dayMaster = ec.getDay().charAt(0);
+
+    const pillarsHtml = cols.map(c => `
+      <div class="pillar bz-pillar">
+        <div class="p-label">${c.label}</div>
+        <div class="p-shishen">${c.ssg}</div>
+        <div class="p-gz">${c.gz==="??" ? "??" : colorGZ(c.gz)}</div>
+        <div class="p-hide">藏干 ${c.hide==="—"?"—":colorGZ(c.hide)}</div>
+        <div class="p-hide">支神 ${c.ssz}</div>
+        <div class="p-nayin">${c.ny}</div>
+      </div>`).join("");
+
+    // 神煞 / 方位 / 命理杂项
+    const shen = [];
+    const addShen = (label, fn) => { const v = safe(fn, ""); if (v) shen.push(`${label}:${v}`); };
+    addShen("生肖", ()=>lunar.getYearShengXiao());
+    addShen("星座", ()=>solar.getXingZuo()+"座");
+    addShen("冲", ()=>lunar.getDayChongDesc());
+    addShen("喜神方位", ()=>lunar.getDayPositionXiDesc());
+    addShen("财神方位", ()=>lunar.getDayPositionCaiDesc());
+    addShen("福神方位", ()=>lunar.getDayPositionFuDesc());
+    addShen("星宿", ()=>lunar.getXiu()+lunar.getZheng()+lunar.getAnimal());
+    addShen("彭祖百忌", ()=>lunar.getPengZuGan()+" "+lunar.getPengZuZhi());
+    const shenHtml = shen.map(s => `<span class="shen-tag">${s}</span>`).join("");
+
+    // 五行统计(四柱天干地支)
+    const allChars = cols.map(c => c.gz).filter(g=>g!=="??").join("").split("");
+    const wxCount = {"木":0,"火":0,"土":0,"金":0,"水":0};
+    allChars.forEach(ch => { const w = WUXING_OF[ch]; if (w) wxCount[w]++; });
+    const wxHtml = Object.entries(wxCount).map(([w,n]) =>
+      `<span class="wx-tag" style="border-color:${WUXING_COLOR[w]};color:${WUXING_COLOR[w]}">${w} ${n}</span>`).join("");
+
+    // 提示词
+    const sexCn = sex === "male" ? "男(乾造)" : "女(坤造)";
+    const prompt =
+`你是一位精通八字命理的顾问,请基于以下命盘为我做一份解读。语言现代、亲和、不故弄玄虚,开头声明"仅供自我觉察参考,不构成人生/医疗/投资/法律决策依据"。
+
+【命盘】
+性别:${sexCn}
+公历:${y}年${mo}月${d}日${hasHour?"":"(时辰未知)"}
+四柱:${ec.getYear()} ${ec.getMonth()} ${ec.getDay()} ${hasHour?ec.getTime():"(时辰未知)"}
+日主:${dayMaster}(${WUXING_OF[dayMaster]||""})
+五行分布:${Object.entries(wxCount).map(([w,n])=>w+n).join(" ")}
+纳音:${cols.map(c=>c.ny).filter(v=>v!=="—").join(" ")}
+${shen.join(" · ")}
+
+【请分板块输出,每块3-5句】
+1. 性格特质  2. 事业与发展方向  3. 财富运势  4. 婚姻情感
+5. 健康提示  6. 六亲关系  7. 发展风水建议(方位/颜色/习惯)
+8. 币圈/风险投资运势(适合风格:现货/合约/长期;需注意流年)
+
+最后给一句鼓励行动的话。`;
+
+    resultEl.innerHTML = `
+      <div class="bazi-pillars bz-full">${pillarsHtml}</div>
+      <div class="bazi-meta">
+        日主 <strong style="color:${wxColor(dayMaster)}">${dayMaster}</strong>（${WUXING_OF[dayMaster]||""}）
+        ${hasHour?"":" · 未填时辰,时柱与部分分析精度受限"}
+        <div class="wx-row">五行 ${wxHtml}</div>
+      </div>
+      <div class="shen-box">${shenHtml}</div>
+      <div class="section-sub" style="margin-top:16px;">🤖 解读提示词(复制后发给任意 AI)</div>
+      <div class="bazi-prompt-box">
+        <textarea id="bazi-prompt" readonly>${prompt.replace(/</g,"&lt;")}</textarea>
+        <button class="zen-mode-btn bazi-copy-btn" id="bazi-copy-btn">复制提示词</button>
+      </div>
+      <div class="price-note">排盘在本地完成,你的生辰不会上传到任何服务器。命盘仅供自我觉察,不作决策依据。</div>`;
+
+    document.getElementById("bazi-copy-btn").addEventListener("click", () => {
+      const ta = document.getElementById("bazi-prompt");
+      ta.select();
+      navigator.clipboard.writeText(ta.value).then(() => {
+        document.getElementById("bazi-copy-btn").textContent = "已复制 ✓";
+      }).catch(() => {
+        document.execCommand("copy");
+        document.getElementById("bazi-copy-btn").textContent = "已复制 ✓";
+      });
+    });
+  } catch (e) {
+    resultEl.innerHTML = `<div class="watch-empty">排盘出错,请检查日期是否有效。</div>`;
+  }
+}
+
+let mysticInited = false;
+function loadMystic() {
+  setFortune();
+  setHuangli();
+  if (!mysticInited) {
+    document.getElementById("tarot-draw-btn").addEventListener("click", drawTarot);
+    document.getElementById("bz-calc-btn").addEventListener("click", calcBazi);
+    mysticInited = true;
+  }
 }
 
 /* ===== 投资:CoinGecko 行情 ===== */
@@ -1000,6 +1442,148 @@ function loadInvest() {
   }
 }
 
+/* ===== 健身:今日健康清单(基于科学协议) ===== */
+const HEALTH_PLAN = [
+  { group: "☀️ 晨间", items: [
+    { t: "起床后尽快到户外晒 10-30 分钟自然光", why: "晨间强光校准昼夜节律,提升白天清醒度、帮助当晚更早入睡(Huberman 反复强调的第一优先级)。阴天也要,时间加长。" },
+    { t: "醒后延后 90-120 分钟再摄入咖啡因", why: "睡醒后腺苷仍在代谢,立刻喝咖啡会造成午后能量崩溃;延后摄入能减少下午困倦与对咖啡的依赖。" }
+  ]},
+  { group: "🏃 白天", items: [
+    { t: "安排一段运动窗口(力量或有氧任一)", why: "规律运动改善胰岛素敏感、情绪与睡眠质量。哈佛公共卫生建议每周至少 150 分钟中等强度。" },
+    { t: "每工作 90 分钟起身活动 / 走动几分钟", why: "久坐抵消运动收益;短暂活动改善血糖与专注力,符合超日节律(ultradian)的工作-休息结构。" },
+    { t: "午餐后散步 10 分钟", why: "餐后步行显著降低血糖峰值,减少下午困倦(多项代谢研究支持)。" }
+  ]},
+  { group: "🧠 专注 / 多巴胺", items: [
+    { t: "选一个'深度工作'时段,期间远离手机与短视频", why: "碎片化刷屏拉高多巴胺基线,让平静的任务显得无聊。刻意留出低刺激的专注区间,能恢复对普通努力的耐受度。" },
+    { t: "把最难的任务放在多巴胺/精力最高的时段做", why: "顺应个人精力节律做重要事,比靠意志力硬扛更可持续。" }
+  ]},
+  { group: "🌙 晚间降刺激", items: [
+    { t: "睡前 1-2 小时调暗灯光、减少强光与屏幕", why: "夜间强光(尤其顶光/蓝光)抑制褪黑素、推迟入睡。暖光、低位光源更友好。" },
+    { t: "睡前 2-3 小时不再进食 / 不碰咖啡因、酒精", why: "咖啡因半衰期长达 5-6 小时;酒精破坏深睡与 REM。晚食影响体温下降与入睡。" },
+    { t: "固定就寝与起床时间(哪怕周末)", why: "睡眠'规律性'比单纯时长更能预测健康与死亡风险(近年大样本研究结论)。" }
+  ]}
+];
+
+function healthKey() {
+  return "arinrin_health_" + new Date().toISOString().slice(0, 10); // 按日期存,自动每天重置
+}
+function getHealthState() {
+  try { return JSON.parse(localStorage.getItem(healthKey())) || {}; }
+  catch (e) { return {}; }
+}
+function saveHealthState(s) { localStorage.setItem(healthKey(), JSON.stringify(s)); }
+
+function getTodayPlan() {
+  try {
+    const custom = JSON.parse(localStorage.getItem("arinrin_health_plan_" + new Date().toISOString().slice(0,10)));
+    if (custom && custom.length) return custom;
+  } catch (e) {}
+  return HEALTH_PLAN;
+}
+function renderHealth() {
+  const listEl = document.getElementById("health-list");
+  const plan = getTodayPlan();
+  const state = getHealthState();
+  let total = 0, done = 0;
+  let html = "";
+  plan.forEach((g, gi) => {
+    html += `<div class="health-group-label">${g.group}</div>`;
+    g.items.forEach((it, ii) => {
+      const id = gi + "-" + ii;
+      const isDone = !!state[id];
+      total++; if (isDone) done++;
+      html += `
+        <div class="health-item ${isDone ? 'done' : ''}" data-id="${id}">
+          <div class="health-check">✓</div>
+          <div class="health-body">
+            <div class="h-title">${it.t}</div>
+            <div class="h-why">${it.why}</div>
+          </div>
+        </div>`;
+    });
+  });
+  listEl.innerHTML = html;
+  document.getElementById("health-progress").textContent = done + " / " + total;
+  listEl.querySelectorAll(".health-item").forEach(item => {
+    item.addEventListener("click", () => {
+      const s = getHealthState();
+      const id = item.dataset.id;
+      s[id] = !s[id];
+      saveHealthState(s);
+      renderHealth();
+    });
+  });
+}
+function loadHealth() { renderHealth(); initHealthAI(); }
+
+/* ---- 健身 AI 个性化 ---- */
+let healthAIInited = false;
+function initHealthAI() {
+  if (healthAIInited) return;
+  // 文件上传:txt 直接读文字;图片/pdf 提示暂只支持文字
+  document.getElementById("health-file").addEventListener("change", (e) => {
+    const f = e.target.files[0];
+    if (!f) return;
+    document.getElementById("health-file-name").textContent = f.name;
+    if (f.type.startsWith("text") || f.name.endsWith(".txt") || f.name.endsWith(".csv")) {
+      const reader = new FileReader();
+      reader.onload = () => {
+        const ta = document.getElementById("health-input");
+        ta.value = (ta.value ? ta.value + "\n\n" : "") + reader.result.slice(0, 4000);
+      };
+      reader.readAsText(f);
+    } else {
+      document.getElementById("health-ai-note").textContent =
+        "图片/PDF 暂时无法自动读取内容,请把关键数字手动摘录到上方文本框(未来版本会支持图片识别)。";
+    }
+  });
+  document.getElementById("health-ai-btn").addEventListener("click", runHealthAI);
+  healthAIInited = true;
+}
+
+async function runHealthAI() {
+  const btn = document.getElementById("health-ai-btn");
+  const note = document.getElementById("health-ai-note");
+  const content = document.getElementById("health-input").value.trim();
+  if (!content) { note.textContent = "请先粘贴或上传你的报告内容。"; return; }
+  if (!hasAIKey()) { note.innerHTML = "还没设置 AI key。请点右下角「⚙️ AI」填入你自己的 key(用你自己的额度)。"; return; }
+  btn.textContent = "AI 分析中…"; btn.disabled = true; note.textContent = "";
+
+  const baseList = HEALTH_PLAN.map(g => g.group + ":" + g.items.map(i => i.t).join("；")).join("\n");
+  const prompt =
+`我有一份基于科学研究的通用每日健康清单如下:
+${baseList}
+
+现在这是我提供的个人数据/情况(可能包含健康报告、体测、训练计划、目标或日程):
+${content.slice(0, 3000)}
+
+请结合我的真实情况,给出一份"今日健康清单"(8-12 条),按 晨间/白天/专注/晚间 四个时段分组。每条包含一句具体行动 + 一句为什么(尽量结合我提供的数据)。
+严格只返回 JSON,格式:
+{"groups":[{"group":"☀️ 晨间","items":[{"t":"行动","why":"原因"}]}]}
+不要有 JSON 以外的任何文字。`;
+
+  try {
+    const raw = await callAI(prompt, "你是一位循证的健康与运动顾问,只返回规定格式的 JSON。");
+    let txt = (raw || "").trim().replace(/```json|```/g, "").trim();
+    const parsed = JSON.parse(txt);
+    if (parsed.groups && parsed.groups.length) {
+      localStorage.setItem("arinrin_health_plan_" + new Date().toISOString().slice(0,10), JSON.stringify(parsed.groups));
+      localStorage.removeItem(healthKey());
+      renderHealth();
+      note.textContent = "已根据你的数据生成个性化清单 ✓";
+    } else {
+      note.textContent = "AI 返回格式异常,请重试。";
+    }
+  } catch (e) {
+    note.textContent = "调用失败:" + (e.message || e) + "(本地打开无法调用,需线上环境)";
+  }
+  resetHealthBtn();
+}
+function resetHealthBtn() {
+  const btn = document.getElementById("health-ai-btn");
+  btn.textContent = "让 AI 结合报告调整今日清单"; btn.disabled = false;
+}
+
 /* ===== AI:AI HOT 每日动态 ===== */
 let aiLoaded = false;
 function escapeHtml(s) {
@@ -1012,7 +1596,7 @@ async function loadAIDaily() {
   const feedEl = document.getElementById("ai-daily-feed");
   feedEl.innerHTML = `<div class="ai-loading">正在拉取今天的 AI 动态…</div>`;
   try {
-    const res = await fetch("https://aihot.virxact.com/api/public/daily");
+    const res = await fetch("/api/aihot");
     const data = await res.json();
     dateEl.textContent = "📅 " + (data.date || "今日") + " · AI 日报";
     const sections = data.sections || [];
@@ -1083,12 +1667,13 @@ function updateZenTimer() {
   zenTimer.textContent = `${p(Math.floor(s / 60))}:${p(s % 60)}`;
 }
 function setZenMode(mode) {
+  if (!MODES[mode]) return; /* 非冥想按钮(塔罗/八字等共用了样式类)不处理 */
   zenMode = mode;
   zen.classList.remove("mode-sigh", "mode-box");
   zen.classList.add("mode-" + mode);
   zenHint.textContent = MODES[mode].hint;
   zenStart = Date.now(); /* 切模式时重置节奏,与动画同步 */
-  document.querySelectorAll(".zen-mode-btn").forEach(b =>
+  document.querySelectorAll("#zen .zen-mode-btn").forEach(b =>
     b.classList.toggle("active", b.dataset.mode === mode));
 }
 function enterZen() {
@@ -1107,7 +1692,7 @@ function exitZen() {
 }
 document.getElementById("cabin-btn").addEventListener("click", enterZen);
 document.getElementById("zen-exit").addEventListener("click", exitZen);
-document.querySelectorAll(".zen-mode-btn").forEach(b => {
+document.querySelectorAll("#zen .zen-mode-btn").forEach(b => {
   b.addEventListener("click", () => setZenMode(b.dataset.mode));
 });
 document.addEventListener("keydown", e => {
@@ -1115,6 +1700,46 @@ document.addEventListener("keydown", e => {
   if (zen.classList.contains("on")) { exitZen(); return; }
   closePanels();
 });
+
+/* ===== AI 设置 + 通用调用 ===== */
+function getAIConfig() {
+  return {
+    provider: localStorage.getItem("arinrin_ai_provider") || "deepseek",
+    apiKey: localStorage.getItem("arinrin_ai_key") || ""
+  };
+}
+async function callAI(prompt, system) {
+  const cfg = getAIConfig();
+  const res = await fetch("/api/ai", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ prompt, system: system || "", provider: cfg.provider, apiKey: cfg.apiKey })
+  });
+  const data = await res.json();
+  if (data.error) throw new Error(data.error);
+  return data.text || "";
+}
+function hasAIKey() { return !!localStorage.getItem("arinrin_ai_key"); }
+
+(function initAISettings() {
+  const fab = document.getElementById("ai-settings-fab");
+  const modal = document.getElementById("ai-modal");
+  const open = () => {
+    const cfg = getAIConfig();
+    document.getElementById("ai-provider").value = cfg.provider;
+    document.getElementById("ai-key").value = cfg.apiKey;
+    modal.classList.add("on"); modal.setAttribute("aria-hidden", "false");
+  };
+  const close = () => { modal.classList.remove("on"); modal.setAttribute("aria-hidden", "true"); };
+  fab.addEventListener("click", open);
+  document.getElementById("ai-modal-close").addEventListener("click", close);
+  modal.addEventListener("click", (e) => { if (e.target === modal) close(); });
+  document.getElementById("ai-save-btn").addEventListener("click", () => {
+    localStorage.setItem("arinrin_ai_provider", document.getElementById("ai-provider").value);
+    localStorage.setItem("arinrin_ai_key", document.getElementById("ai-key").value.trim());
+    document.getElementById("ai-save-note").textContent = "已保存 ✓ 现在可以使用 AI 功能了。";
+  });
+})();
 
 /* ===== 启动 ===== */
 applyBackground(true);
