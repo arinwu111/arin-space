@@ -269,6 +269,23 @@
   .watch-row .w-del:hover { color: #f6707a; }
   .watch-empty { font-size: 14px; color: var(--text-sub); padding: 16px 0; text-align: center; }
 
+  .refresh-btn {
+    font-size: 13px; color: var(--text-sub); cursor: pointer;
+    padding: 4px 10px; border-radius: 8px; transition: background 0.2s, color 0.2s;
+  }
+  .refresh-btn:hover { background: rgba(255,255,255,0.1); color: var(--text-main); }
+  .refresh-btn.spinning { animation: spin 0.8s linear; }
+  @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+
+  .quick-add-label { font-size: 12px; color: var(--text-sub); margin: 4px 0 8px; }
+  .quick-add-grid { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 16px; }
+  .quick-chip {
+    font-size: 13px; padding: 6px 12px; border-radius: 14px;
+    background: rgba(255,255,255,0.07); border: 1px solid var(--glass-border);
+    cursor: pointer; transition: background 0.2s;
+  }
+  .quick-chip:hover { background: rgba(255,255,255,0.16); }
+
 
   /* ===== 冥想小屋 ===== */
   .cabin {
@@ -522,22 +539,41 @@
     <p class="panel-intro">盯着自己关心的市场。投资最重要的,是活得足够久。(红涨绿跌)</p>
 
     <div class="card" style="margin-bottom: 20px;">
-      <div class="section-sub" style="margin-top:0;">🌍 宏观看板</div>
+      <div class="section-sub" style="margin-top:0;display:flex;align-items:center;justify-content:space-between;">
+        <span>🌍 宏观看板</span>
+        <span class="refresh-btn" id="macro-refresh-btn">↻ 刷新</span>
+      </div>
       <div id="macro-grid" class="macro-grid">
         <div class="watch-empty">加载中…</div>
       </div>
-      <div class="price-note">数据来源 Yahoo Finance · 打开面板时刷新</div>
+      <div class="price-note">数据来源 Yahoo Finance</div>
     </div>
 
     <div class="card">
-      <div class="section-sub" style="margin-top:0;">⭐ 我的自选</div>
+      <div class="section-sub" style="margin-top:0;display:flex;align-items:center;justify-content:space-between;">
+        <span>⭐ 我的自选</span>
+        <span class="refresh-btn" id="watch-refresh-btn">↻ 刷新</span>
+      </div>
       <div class="watch-search">
-        <input id="watch-input" type="text" placeholder="搜股票:苹果 / AAPL / 腾讯 / 茅台…" autocomplete="off">
+        <input id="watch-input" type="text" placeholder="搜英文名/代码,或直接输代码如 0700.HK" autocomplete="off">
         <button id="watch-search-btn">搜索</button>
       </div>
       <div id="watch-results" class="search-results"></div>
+
+      <div class="quick-add-label">常用速查(点击直接加入)</div>
+      <div class="quick-add-grid">
+        <span class="quick-chip" data-sym="0700.HK" data-name="腾讯控股">腾讯 0700.HK</span>
+        <span class="quick-chip" data-sym="600519.SS" data-name="贵州茅台">茅台 600519.SS</span>
+        <span class="quick-chip" data-sym="300750.SZ" data-name="宁德时代">宁德时代 300750.SZ</span>
+        <span class="quick-chip" data-sym="9988.HK" data-name="阿里巴巴">阿里 9988.HK</span>
+        <span class="quick-chip" data-sym="AAPL" data-name="Apple Inc.">苹果 AAPL</span>
+        <span class="quick-chip" data-sym="NVDA" data-name="NVIDIA Corporation">英伟达 NVDA</span>
+        <span class="quick-chip" data-sym="TSLA" data-name="Tesla Inc.">特斯拉 TSLA</span>
+        <span class="quick-chip" data-sym="MSFT" data-name="Microsoft Corporation">微软 MSFT</span>
+      </div>
+
       <div id="watch-list"></div>
-      <div class="price-note">自选列表保存在本机浏览器 · 港美股 A 股均可搜(A股/港股请认准代码,如 600519.SS / 0700.HK)</div>
+      <div class="price-note">自选保存在本机浏览器 · 中文名搜索有时搜不到(接口限制),可直接输代码或用上方速查</div>
     </div>
   </div>
 </div>
@@ -889,26 +925,57 @@ function addWatch(symbol, name) {
 }
 
 async function searchStock() {
-  const q = document.getElementById("watch-input").value.trim();
+  const raw = document.getElementById("watch-input").value.trim();
   const box = document.getElementById("watch-results");
-  if (!q) { box.innerHTML = ""; return; }
+  if (!raw) { box.innerHTML = ""; return; }
   box.innerHTML = `<div class="watch-empty">搜索中…</div>`;
   try {
-    const res = await fetch("/api/quotes?search=" + encodeURIComponent(q));
-    const data = await res.json();
-    const quotes = data.quotes || [];
-    if (!quotes.length) { box.innerHTML = `<div class="watch-empty">没找到,换个关键词或直接输代码试试。</div>`; return; }
-    box.innerHTML = quotes.map(r => `
-      <div class="search-item" data-sym="${r.symbol}" data-name="${(r.name||'').replace(/"/g,'')}">
-        <div class="si-info">${r.name}<span class="si-sym"> ${r.symbol} · ${r.exchange}</span></div>
-        <div class="si-add">+ 加入</div>
-      </div>`).join("");
+    // 股票代码通常是字母/数字/点/连字符,且 Yahoo 搜索对代码大小写敏感,
+    // 所以同时用"原文"和"转大写"两种方式搜,取结果更全的那个
+    const q1 = raw;
+    const q2 = raw.toUpperCase();
+    const urls = q1 === q2 ? [q1] : [q2, q1];
+    let quotes = [];
+    for (const q of urls) {
+      const res = await fetch("/api/quotes?search=" + encodeURIComponent(q));
+      const data = await res.json();
+      quotes = data.quotes || [];
+      if (quotes.length) break;
+    }
+    // 看起来像代码本身的输入(纯字母/数字/点/连字符,长度较短),
+    // 即使搜索没结果,也直接给一个"按代码添加"的选项兜底
+    const looksLikeSymbol = /^[A-Za-z0-9.\-]{1,12}$/.test(raw);
+    let html = "";
+    if (quotes.length) {
+      html += quotes.map(r => `
+        <div class="search-item" data-sym="${r.symbol}" data-name="${(r.name||'').replace(/"/g,'')}">
+          <div class="si-info">${r.name}<span class="si-sym"> ${r.symbol} · ${r.exchange}</span></div>
+          <div class="si-add">+ 加入</div>
+        </div>`).join("");
+    }
+    if (looksLikeSymbol && !quotes.some(r => r.symbol.toUpperCase() === q2)) {
+      html += `
+        <div class="search-item" data-sym="${q2}" data-name="${q2}">
+          <div class="si-info">按代码直接添加<span class="si-sym"> ${q2}</span></div>
+          <div class="si-add">+ 加入</div>
+        </div>`;
+    }
+    if (!html) {
+      html = `<div class="watch-empty">没找到。中文名搜索可能受限,试试直接输代码,或用下方常用速查。</div>`;
+    }
+    box.innerHTML = html;
     box.querySelectorAll(".search-item").forEach(item => {
       item.addEventListener("click", () => addWatch(item.dataset.sym, item.dataset.name));
     });
   } catch (e) {
     box.innerHTML = `<div class="watch-empty">搜索失败。本地打开无法调用,部署后正常。</div>`;
   }
+}
+
+function spinBtn(el) {
+  el.classList.remove("spinning");
+  void el.offsetWidth; /* 触发重绘,让动画能重复播放 */
+  el.classList.add("spinning");
 }
 
 let investInited = false;
@@ -919,6 +986,15 @@ function loadInvest() {
     document.getElementById("watch-search-btn").addEventListener("click", searchStock);
     document.getElementById("watch-input").addEventListener("keydown", e => {
       if (e.key === "Enter") searchStock();
+    });
+    document.getElementById("macro-refresh-btn").addEventListener("click", (e) => {
+      spinBtn(e.target); loadMacro();
+    });
+    document.getElementById("watch-refresh-btn").addEventListener("click", (e) => {
+      spinBtn(e.target); renderWatch();
+    });
+    document.querySelectorAll(".quick-chip").forEach(chip => {
+      chip.addEventListener("click", () => addWatch(chip.dataset.sym, chip.dataset.name));
     });
     investInited = true;
   }
