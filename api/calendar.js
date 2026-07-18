@@ -1,19 +1,43 @@
 // Vercel Serverless Function —— 日历(iCal/ICS)中转
 // 放到 api 文件夹,命名为 calendar.js,即 /api/calendar
 //
-// 作用:替网页去读一个 .ics 日历订阅链接(如 iCloud 公开日历),解析出近几天的事项。
-// 隐私:日历链接由前端传入(存在用户自己浏览器里),服务器不存储、不记录。
-//
-// 用法:POST /api/calendar  body: { "url": "<你的ics链接>", "days": 7 }
+// 用法:POST /api/calendar  body: { "url": "<你的ics链接>", "days": 1 }
 // 用 POST 而不是 GET,是为了让链接不出现在服务器访问日志里(隐私考虑)。
+//
+// 安全措施(防止被人当免费代理 / 探测内网):
+//   1) 只允许 http/https,拒绝 file: ftp: 等协议
+//   2) 拒绝 localhost、私有网段、云厂商元数据地址
+//   3) 10 秒超时,最大 2MB,防止被拖住或塞爆内存
+//   4) 响应必须看起来像日历,否则丢弃
+
+const MAX_BYTES = 2 * 1024 * 1024;   // 2MB 上限
+const TIMEOUT_MS = 10000;            // 10 秒超时
+
+// 拒绝内网 / 本机 / 云元数据地址
+function isBlockedHost(hostname) {
+  const h = hostname.toLowerCase();
+  if (h === "localhost" || h.endsWith(".localhost") || h.endsWith(".local")) return true;
+  if (h === "metadata.google.internal") return true;
+  // IPv6 本机
+  if (h === "::1" || h === "[::1]") return true;
+  // IPv4 字面量:检查私有段
+  const m = h.match(/^(\d{1,3})\.(\d{1,3})\.(\d{1,3})\.(\d{1,3})$/);
+  if (m) {
+    const a = +m[1], b = +m[2];
+    if (a === 127 || a === 0 || a === 10) return true;              // 本机 / 私有
+    if (a === 172 && b >= 16 && b <= 31) return true;               // 私有
+    if (a === 192 && b === 168) return true;                        // 私有
+    if (a === 169 && b === 254) return true;                        // 链路本地(含云元数据)
+    if (a >= 224) return true;                                      // 组播 / 保留
+  }
+  return false;
+}
 
 function unfold(text) {
-  // ICS 折行:以空格或制表符开头的行是上一行的延续
   return text.replace(/\r\n[ \t]/g, "").replace(/\n[ \t]/g, "");
 }
 
 function parseDT(v) {
-  // 支持 20260718T093000Z / 20260718T093000 / 20260718
   const m = v.match(/(\d{4})(\d{2})(\d{2})(?:T(\d{2})(\d{2})(\d{2})(Z)?)?/);
   if (!m) return null;
   const [, y, mo, d, hh, mi, ss, z] = m;
@@ -37,18 +61,48 @@ export default async function handler(req, res) {
 
   let body = req.body;
   if (typeof body === "string") { try { body = JSON.parse(body); } catch (e) { body = {}; } }
-  let url = body && body.url;
+  let raw_url = body && body.url;
   const days = body && body.days;
-  if (!url) return res.status(400).json({ error: "缺少日历链接" });
-  url = String(url).replace(/^webcal:\/\//i, "https://"); // webcal:// → https://
-  const range = Math.min(parseInt(days, 10) || 7, 31);
+  if (!raw_url) return res.status(400).json({ error: "缺少日历链接" });
+
+  raw_url = String(raw_url).trim().replace(/^webcal:\/\//i, "https://");
+  if (raw_url.length > 2000) return res.status(400).json({ error: "链接过长" });
+
+  // —— 安全校验 ——
+  let target;
+  try { target = new URL(raw_url); } catch (e) {
+    return res.status(400).json({ error: "链接格式不正确" });
+  }
+  if (target.protocol !== "http:" && target.protocol !== "https:") {
+    return res.status(400).json({ error: "只支持 http/https 链接" });
+  }
+  if (isBlockedHost(target.hostname)) {
+    return res.status(400).json({ error: "不允许访问该地址" });
+  }
+
+  const range = Math.min(parseInt(days, 10) || 1, 31);
 
   try {
-    const r = await fetch(url, {
+    const ctrl = new AbortController();
+    const timer = setTimeout(() => ctrl.abort(), TIMEOUT_MS);
+    const r = await fetch(target.toString(), {
       headers: { "User-Agent": "Mozilla/5.0", Accept: "text/calendar,*/*" },
+      redirect: "follow",
+      signal: ctrl.signal,
     });
+    clearTimeout(timer);
+
     if (!r.ok) return res.status(502).json({ error: "无法读取该日历链接(状态 " + r.status + ")" });
-    const raw = unfold(await r.text());
+
+    // 大小上限:先看声明的长度,再按实际读入截断
+    const declared = parseInt(r.headers.get("content-length") || "0", 10);
+    if (declared && declared > MAX_BYTES) {
+      return res.status(413).json({ error: "日历文件过大" });
+    }
+    let text = await r.text();
+    if (text.length > MAX_BYTES) text = text.slice(0, MAX_BYTES);
+
+    const raw = unfold(text);
     if (!raw.includes("BEGIN:VCALENDAR")) {
       return res.status(400).json({ error: "这不是一个有效的 .ics 日历链接" });
     }
@@ -61,9 +115,9 @@ export default async function handler(req, res) {
     const events = [];
 
     for (const b of blocks) {
-      const body = b.split("END:VEVENT")[0];
+      const bodyTxt = b.split("END:VEVENT")[0];
       const get = (key) => {
-        const m = body.match(new RegExp("^" + key + "[^:\\r\\n]*:(.*)$", "mi"));
+        const m = bodyTxt.match(new RegExp("^" + key + "[^:\\r\\n]*:(.*)$", "mi"));
         return m ? m[1].trim() : "";
       };
       const summary = get("SUMMARY");
@@ -78,8 +132,8 @@ export default async function handler(req, res) {
       const push = (d) => {
         if (d >= start && d < end) {
           events.push({
-            title: summary.replace(/\\,/g, ",").replace(/\\n/g, " "),
-            location: location.replace(/\\,/g, ","),
+            title: summary.replace(/\\,/g, ",").replace(/\\n/g, " ").slice(0, 200),
+            location: location.replace(/\\,/g, ",").slice(0, 200),
             start: d.toISOString(),
             allDay: dt.allDay,
             isToday: sameDay(d, now),
@@ -90,7 +144,6 @@ export default async function handler(req, res) {
       if (!rrule) {
         push(dt.date);
       } else {
-        // 简单展开重复事件(DAILY/WEEKLY/MONTHLY/YEARLY),只在查询范围内展开
         const freq = (rrule.match(/FREQ=(\w+)/) || [])[1];
         const interval = parseInt((rrule.match(/INTERVAL=(\d+)/) || [])[1] || "1", 10);
         const untilRaw = (rrule.match(/UNTIL=([\dTZ]+)/) || [])[1];
@@ -112,9 +165,10 @@ export default async function handler(req, res) {
     }
 
     events.sort((a, b) => new Date(a.start) - new Date(b.start));
-    res.setHeader("Cache-Control", "no-store"); // 含个人日程,不缓存
+    res.setHeader("Cache-Control", "no-store");
     return res.status(200).json({ events: events.slice(0, 60) });
   } catch (e) {
-    return res.status(502).json({ error: "读取日历失败", detail: String(e) });
+    const msg = (e && e.name === "AbortError") ? "读取超时" : "读取日历失败";
+    return res.status(502).json({ error: msg });
   }
 }

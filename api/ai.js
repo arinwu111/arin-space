@@ -7,8 +7,12 @@
 //
 // 支持的 provider:deepseek / openai / claude / qwen / zhipu
 //
-// 你自己要用的话,在 Vercel Settings → Environment Variables 里按你选的那家配一个:
-//   DEEPSEEK_API_KEY / OPENAI_API_KEY / ANTHROPIC_API_KEY / QWEN_API_KEY / ZHIPU_API_KEY
+// ⚠️ 安全:服务器端 key 默认【不启用】。
+//   如果你想让自己用服务器上的 key(省得每台设备都填),必须同时配置:
+//     OWNER_TOKEN = 一串你自己编的随机字符
+//     以及对应的  DEEPSEEK_API_KEY / OPENAI_API_KEY / ANTHROPIC_API_KEY / ...
+//   然后在自己浏览器里存下同一个 OWNER_TOKEN。没有它,别人调不到你的 key。
+//   最省心的做法:干脆不配环境变量,你自己也用页面上的 ⚙️AI 填 key。
 //
 // 前端请求 body:
 //   { "prompt":"...", "system":"...", "provider":"openai", "apiKey":"访客的key"(可选) }
@@ -19,6 +23,10 @@ const PROVIDERS = {
   claude:   { url: "https://api.anthropic.com/v1/messages", model: "claude-3-5-sonnet-20241022", env: "ANTHROPIC_API_KEY", style: "claude" },
   qwen:     { url: "https://dashscope.aliyuncs.com/compatible-mode/v1/chat/completions", model: "qwen-plus", env: "QWEN_API_KEY", style: "openai" },
   zhipu:    { url: "https://open.bigmodel.cn/api/paas/v4/chat/completions", model: "glm-4-flash", env: "ZHIPU_API_KEY", style: "openai" },
+  // 硅基流动:OpenAI 兼容格式
+  siliconflow: { url: "https://api.siliconflow.cn/v1/chat/completions", model: "deepseek-ai/DeepSeek-V3", env: "SILICONFLOW_API_KEY", style: "openai" },
+  // Gemini:自成一套格式
+  gemini:   { url: "https://generativelanguage.googleapis.com/v1beta/models", model: "gemini-2.0-flash", env: "GEMINI_API_KEY", style: "gemini" },
 };
 
 export default async function handler(req, res) {
@@ -39,14 +47,35 @@ export default async function handler(req, res) {
   if (!p) return res.status(400).json({ error: "不支持的 provider:" + providerName });
   if (!prompt) return res.status(400).json({ error: "缺少 prompt" });
 
-  const key = visitorKey || process.env[p.env];
+  // —— 谁的 key,花谁的钱 ——
+  // 默认只用访客自己填的 key。服务器上的 key(环境变量)必须同时带上 OWNER_TOKEN
+  // 才会启用,否则任何人都能 POST 这个接口刷爆站长的额度。
+  const ownerToken = process.env.OWNER_TOKEN;
+  const claimsOwner = body && body.ownerToken;
+  const isOwner = !!(ownerToken && claimsOwner && claimsOwner === ownerToken);
+
+  const key = visitorKey || (isOwner ? process.env[p.env] : "");
   if (!key) {
-    return res.status(401).json({ error: "缺少 API key。访客请在页面填写自己的 key;站长请在 Vercel 环境变量配置 " + p.env + "。" });
+    return res.status(401).json({
+      error: "请先在页面右下角「⚙️ AI」填入你自己的 API key(用你自己的额度)。",
+    });
+  }
+
+  // 简单的输入上限,避免有人塞超长内容拉高单次费用
+  if (prompt.length > 20000) {
+    return res.status(413).json({ error: "内容过长,请精简后再试。" });
   }
 
   try {
     let url = p.url, headers = { "Content-Type": "application/json" }, payload;
-    if (p.style === "claude") {
+    if (p.style === "gemini") {
+      url = `${p.url}/${p.model}:generateContent?key=${encodeURIComponent(key)}`;
+      payload = {
+        systemInstruction: { parts: [{ text: system }] },
+        contents: [{ role: "user", parts: [{ text: prompt }] }],
+        generationConfig: { temperature: 0.7, maxOutputTokens: 2000 },
+      };
+    } else if (p.style === "claude") {
       headers["x-api-key"] = key;
       headers["anthropic-version"] = "2023-06-01";
       payload = { model: p.model, max_tokens: 2000, system: system, messages: [{ role: "user", content: prompt }] };
@@ -59,7 +88,11 @@ export default async function handler(req, res) {
     const data = await r.json();
 
     let text = "";
-    if (p.style === "claude") {
+    if (p.style === "gemini") {
+      if (data.error) return res.status(502).json({ error: data.error.message || "AI 调用失败" });
+      const c = data.candidates && data.candidates[0];
+      text = c && c.content && c.content.parts ? c.content.parts.map(x => x.text || "").join("") : "";
+    } else if (p.style === "claude") {
       if (data.error) return res.status(502).json({ error: data.error.message || "AI 调用失败" });
       text = data.content && data.content[0] && data.content[0].text ? data.content[0].text : "";
     } else {

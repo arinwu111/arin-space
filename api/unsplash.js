@@ -22,7 +22,13 @@ export default async function handler(req, res) {
   const key = process.env.UNSPLASH_ACCESS_KEY;
   if (!key) return res.status(200).json({ error: "no_key" }); // 前端会自动降级,不报错
 
-  const query = (req.query.query || "sky").toString().slice(0, 60);
+  // 只允许本站用到的这几个关键词,防止被人当免费 Unsplash 搜索代理刷掉额度
+  const ALLOWED = [
+    "sunrise sky dawn", "blue sky clouds morning", "bright blue sky",
+    "golden hour sky", "sunset sky dusk clouds", "night sky stars", "sky",
+  ];
+  const asked = (req.query.query || "sky").toString().slice(0, 60);
+  const query = ALLOWED.indexOf(asked) !== -1 ? asked : "sky";
   const orientation = "landscape";
 
   try {
