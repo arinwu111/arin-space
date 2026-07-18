@@ -362,6 +362,25 @@
     font-family: inherit; outline: none;
   }
 
+  /* 今日关注事项(日历) */
+  .cal-event {
+    display: flex; align-items: flex-start; gap: 12px;
+    padding: 12px 4px; border-bottom: 1px solid rgba(255,255,255,0.08);
+  }
+  .cal-event:last-child { border-bottom: none; }
+  .cal-time {
+    flex-shrink: 0; font-size: 13px; color: var(--text-sub);
+    font-variant-numeric: tabular-nums; min-width: 62px; padding-top: 1px;
+  }
+  .cal-title { font-size: 15px; font-weight: 500; line-height: 1.5; }
+  .cal-loc { font-size: 12px; color: var(--text-sub); margin-top: 3px; }
+  .cal-daygroup { font-size: 13px; color: var(--text-sub); font-weight: 600; margin: 16px 0 8px; }
+  .cal-daygroup.today { color: #ffb3b8; }
+  .cal-help { margin-top: 12px; font-size: 12px; color: var(--text-sub); }
+  .cal-help summary { cursor: pointer; }
+  .cal-help div { margin-top: 8px; line-height: 1.9; padding-left: 4px; }
+  .cal-unlink { font-size: 12px; color: var(--text-sub); cursor: pointer; text-decoration: underline; }
+
   /* 人生设计课方法论 */
   .method-list { display: flex; flex-direction: column; gap: 12px; }
   .method-item { display: flex; gap: 12px; align-items: flex-start; font-size: 14px; line-height: 1.7; color: var(--text-sub); }
@@ -612,7 +631,7 @@
       <div class="top-row">
         <div class="card daily-line affirm-card" id="affirm-card" title="点一下换一句">
           <div id="daily-quote" class="affirm-text">I am becoming the person I want to be.</div>
-          <div class="sign" id="daily-sign">tap for another ✨</div>
+          <div class="sign" id="daily-sign">✨</div>
         </div>
         <div class="card clock-card">
           <div class="date" id="date-line">—</div>
@@ -649,10 +668,10 @@
           <div class="name">审美</div>
           <div class="sub">素材 · 摄影 · 灵感</div>
         </button>
-        <button class="nav-item" data-panel="about">
-          <div class="icon">🚪</div>
-          <div class="name">关于我</div>
-          <div class="sub">人生设计课</div>
+        <button class="nav-item" data-panel="explore">
+          <div class="icon">🧭</div>
+          <div class="name">探索</div>
+          <div class="sub">日程 · 方法论 · 杂物</div>
         </button>
       </div>
     </section>
@@ -905,12 +924,40 @@
   </div>
 </div>
 
-<div class="panel" id="panel-about" role="dialog" aria-label="关于我">
+<div class="panel" id="panel-explore" role="dialog" aria-label="探索">
   <button class="panel-close" data-close aria-label="关闭">✕</button>
   <div class="panel-inner">
-    <div class="panel-head"><div class="p-icon">🚪</div><h2>关于我</h2></div>
-    <p class="panel-intro">比起履历,我更想分享认知——那些改变过我看世界方式的实验、工具和感悟。这里先放一个我最想分享的:人生设计课。</p>
+    <div class="panel-head"><div class="p-icon">🧭</div><h2>探索</h2></div>
+    <p class="panel-intro">一些还没归类的东西:今天要做的事、值得反复咀嚼的方法论,以及各种杂七杂八的好玩意儿。</p>
 
+    <!-- 今日关注事项(日历) -->
+    <div class="card" style="margin-bottom:20px;">
+      <div class="section-sub" style="margin-top:0;display:flex;align-items:center;justify-content:space-between;">
+        <span>📆 今日关注事项</span>
+        <span class="refresh-btn" id="cal-refresh-btn">↻ 刷新</span>
+      </div>
+      <div id="cal-body"></div>
+      <div id="cal-setup" style="display:none;">
+        <p class="price-note" style="margin:0 0 10px;">接入你的日历(支持 iCloud / Google 等任何 .ics 订阅链接)。链接只存在你自己的浏览器里,别人看不到你的日程。</p>
+        <div class="watch-search">
+          <input id="cal-url" type="text" placeholder="粘贴 .ics 或 webcal:// 订阅链接" autocomplete="off">
+          <button id="cal-save-btn">连接</button>
+        </div>
+        <details class="cal-help">
+          <summary>怎么拿到 iCloud 日历链接?</summary>
+          <div>
+            1. 电脑打开 iCloud 日历(或 Mac 上的「日历」App)<br>
+            2. 在左侧某个日历名字旁点分享图标 → 勾选「公开日历」<br>
+            3. 复制出现的 webcal:// 链接,粘贴到上面<br><br>
+            ⚠️ 建议<b>专门新建一个日历</b>(比如「公开日程」)只放不敏感的事项再共享,
+            因为"公开日历"意味着拿到链接的人都能看到内容。<br>
+            ⚠️ iCloud 公开日历同步有延迟(可能几十分钟),不是实时的。
+          </div>
+        </details>
+      </div>
+    </div>
+
+    <!-- 人生设计课 -->
     <div class="card">
       <div class="section-sub" style="margin-top:0;display:flex;align-items:center;justify-content:space-between;">
         <span>🧭 人生设计课</span>
@@ -1173,6 +1220,7 @@ function openPanel(key) {
   if (key === "mystic") loadMystic();
   if (key === "ai") loadAIDaily();
   if (key === "fitness") loadHealth();
+  if (key === "explore") loadCalendar();
 }
 function closePanels() {
   panels.forEach(x => x.classList.remove("on"));
@@ -1964,6 +2012,104 @@ function resetHealthBtn() {
 }
 
 /* ===== AI:AI HOT 每日动态 ===== */
+/* ===== 今日关注事项(日历订阅) ===== */
+const CAL_KEY = "arinrin_cal_url";
+let calInited = false;
+
+function initCal() {
+  if (calInited) return;
+  document.getElementById("cal-save-btn").addEventListener("click", () => {
+    const v = document.getElementById("cal-url").value.trim();
+    if (!v) return;
+    localStorage.setItem(CAL_KEY, v);
+    loadCalendar(true);
+  });
+  document.getElementById("cal-url").addEventListener("keydown", e => {
+    if (e.key === "Enter") document.getElementById("cal-save-btn").click();
+  });
+  document.getElementById("cal-refresh-btn").addEventListener("click", (e) => {
+    spinBtn(e.target); loadCalendar(true);
+  });
+  calInited = true;
+}
+
+async function loadCalendar(force) {
+  initCal();
+  const body = document.getElementById("cal-body");
+  const setup = document.getElementById("cal-setup");
+  const url = localStorage.getItem(CAL_KEY);
+  if (!url) {
+    body.innerHTML = "";
+    setup.style.display = "block";
+    return;
+  }
+  setup.style.display = "none";
+  body.innerHTML = `<div class="watch-empty">正在读取日历…</div>`;
+  try {
+    const res = await fetch("/api/calendar", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      cache: "no-store",
+      body: JSON.stringify({ url, days: 7 })
+    });
+    const data = await res.json();
+    if (data.error) {
+      body.innerHTML = `<div class="watch-empty">${data.error}<br>
+        <span class="cal-unlink" id="cal-unlink">换一个链接</span></div>`;
+      bindUnlink();
+      return;
+    }
+    const evs = data.events || [];
+    if (!evs.length) {
+      body.innerHTML = `<div class="watch-empty">未来 7 天没有安排,享受空白 🌤<br>
+        <span class="cal-unlink" id="cal-unlink">换一个链接</span></div>`;
+      bindUnlink();
+      return;
+    }
+    // 按天分组
+    const today = new Date();
+    const groups = {};
+    evs.forEach(e => {
+      const d = new Date(e.start);
+      const k = d.toISOString().slice(0, 10);
+      (groups[k] = groups[k] || []).push({ ...e, d });
+    });
+    const p = n => String(n).padStart(2, "0");
+    const html = Object.keys(groups).sort().map(k => {
+      const list = groups[k];
+      const d0 = list[0].d;
+      const isToday = d0.toDateString() === today.toDateString();
+      const week = ["日","一","二","三","四","五","六"][d0.getDay()];
+      const label = isToday ? "今天 · 星期" + week
+        : `${d0.getMonth()+1}月${d0.getDate()}日 · 星期${week}`;
+      const rows = list.map(e => `
+        <div class="cal-event">
+          <div class="cal-time">${e.allDay ? "全天" : p(e.d.getHours()) + ":" + p(e.d.getMinutes())}</div>
+          <div>
+            <div class="cal-title">${escapeHtml(e.title)}</div>
+            ${e.location ? `<div class="cal-loc">📍 ${escapeHtml(e.location)}</div>` : ""}
+          </div>
+        </div>`).join("");
+      return `<div class="cal-daygroup ${isToday ? "today" : ""}">${label}</div>${rows}`;
+    }).join("");
+    body.innerHTML = html + `<div class="price-note" style="margin-top:12px;">
+      日历只存在你自己的浏览器里 · <span class="cal-unlink" id="cal-unlink">断开连接</span></div>`;
+    bindUnlink();
+  } catch (e) {
+    body.innerHTML = `<div class="watch-empty">读取失败(本地打开无法调用,需线上环境)。<br>
+      <span class="cal-unlink" id="cal-unlink">换一个链接</span></div>`;
+    bindUnlink();
+  }
+}
+function bindUnlink() {
+  const el = document.getElementById("cal-unlink");
+  if (el) el.addEventListener("click", () => {
+    localStorage.removeItem(CAL_KEY);
+    document.getElementById("cal-url").value = "";
+    loadCalendar();
+  });
+}
+
 function escapeHtml(s) {
   return String(s || "").replace(/[&<>"']/g, m =>
     ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[m]));
