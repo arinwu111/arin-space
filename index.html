@@ -207,6 +207,42 @@
   .ai-news .an-source { font-size: 12px; color: var(--text-sub); opacity: 0.75; margin-top: 8px; }
   .ai-loading { font-size: 14px; color: var(--text-sub); padding: 20px 0; }
 
+  /* AI 日报:导语 / 数据条 / 今日看点 / 快讯 */
+  .ai-lead {
+    background: rgba(255,255,255,0.05); border: 1px solid var(--glass-border);
+    border-radius: 12px; padding: 16px 18px; margin-bottom: 14px;
+  }
+  .ai-lead .lead-title { font-size: 16px; font-weight: 700; line-height: 1.6; margin-bottom: 8px; }
+  .ai-lead .lead-para { font-size: 13px; line-height: 1.85; color: var(--text-sub); }
+  .ai-stats { display: grid; grid-template-columns: repeat(4,1fr); gap: 10px; margin-bottom: 6px; }
+  .ai-stats .stat {
+    background: rgba(255,255,255,0.05); border: 1px solid var(--glass-border);
+    border-radius: 10px; padding: 12px 6px; text-align: center;
+  }
+  .ai-stats .stat b { display: block; font-size: 20px; font-weight: 700; font-variant-numeric: tabular-nums; }
+  .ai-stats .stat span { font-size: 11px; color: var(--text-sub); }
+  .ai-overview {
+    background: rgba(0,0,0,0.16); border: 1px solid var(--glass-border);
+    border-radius: 12px; padding: 6px 14px;
+  }
+  .ov-row { display: flex; align-items: center; gap: 12px; padding: 11px 0; border-bottom: 1px solid rgba(255,255,255,0.07); }
+  .ov-row:last-child { border-bottom: none; }
+  .ov-idx { font-size: 12px; color: var(--text-sub); font-variant-numeric: tabular-nums; flex-shrink: 0; }
+  .ov-main { flex: 1; min-width: 0; }
+  .ov-label { font-size: 14px; font-weight: 600; }
+  .ov-first { font-size: 12px; color: var(--text-sub); margin-top: 3px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .ov-count { font-size: 13px; color: var(--text-sub); flex-shrink: 0; font-variant-numeric: tabular-nums; }
+  .flash-row {
+    display: flex; align-items: baseline; gap: 8px; padding: 9px 4px;
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+    color: var(--text-main); text-decoration: none; font-size: 13px;
+  }
+  .flash-row:last-child { border-bottom: none; }
+  .flash-row:hover { background: rgba(255,255,255,0.05); }
+  .flash-dot { color: var(--text-sub); }
+  .flash-title { flex: 1; line-height: 1.6; }
+  .flash-src { font-size: 11px; color: var(--text-sub); flex-shrink: 0; }
+
   /* 玄学:今日一卦 */
   .fortune-box {
     background: var(--glass-bg); border: 1px solid var(--glass-border);
@@ -381,6 +417,95 @@
   .cal-help div { margin-top: 8px; line-height: 1.9; padding-left: 4px; }
   .cal-unlink { font-size: 12px; color: var(--text-sub); cursor: pointer; text-decoration: underline; }
 
+  /* The Five Whys */
+  .why-step { margin-bottom: 14px; }
+  .why-q {
+    display: flex; align-items: baseline; gap: 10px;
+    font-size: 15px; font-weight: 600; margin-bottom: 8px;
+  }
+  .why-q .wq-idx {
+    font-size: 12px; color: var(--text-sub); font-variant-numeric: tabular-nums;
+    flex-shrink: 0; min-width: 16px;
+  }
+  .why-step textarea {
+    width: 100%; min-height: 62px; background: rgba(0,0,0,0.22);
+    border: 1px solid var(--glass-border); border-radius: 10px;
+    padding: 10px 12px; color: var(--text-main); font-size: 14px; line-height: 1.7;
+    font-family: inherit; resize: vertical; outline: none;
+  }
+  .why-step textarea::placeholder { color: var(--text-sub); }
+  .why-step.answered textarea { background: rgba(255,255,255,0.05); }
+  .why-prev { font-size: 12px; color: var(--text-sub); margin-bottom: 6px; padding-left: 26px; line-height: 1.6; }
+  .why-actions { display: flex; gap: 10px; margin-top: 12px; }
+  .why-actions button { flex: 1; }
+  .why-root {
+    background: rgba(255,255,255,0.06); border: 1px solid var(--glass-border);
+    border-radius: 12px; padding: 16px 18px; margin-top: 14px;
+    font-size: 14px; line-height: 1.85;
+  }
+  .why-root .wr-head { font-weight: 700; margin-bottom: 6px; }
+  .why-hist-item {
+    padding: 12px 4px; border-bottom: 1px solid rgba(255,255,255,0.08);
+    cursor: pointer; font-size: 14px;
+  }
+  .why-hist-item:last-child { border-bottom: none; }
+  .why-hist-item:hover { background: rgba(255,255,255,0.05); }
+  .why-hist-item small { display: block; font-size: 12px; color: var(--text-sub); margin-top: 3px; }
+
+  /* 本周条 + 每日两课 */
+  .jn-toolbar { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
+  .jn-title { font-size: 15px; color: var(--text-sub); }
+  .jn-entry {
+    background: rgba(255,255,255,0.05); border: 1px solid var(--glass-border);
+    border-radius: 12px; padding: 16px 18px; margin-bottom: 12px;
+  }
+  .jn-date { font-size: 13px; color: var(--text-sub); margin-bottom: 10px; display: flex; justify-content: space-between; }
+  .jn-block { margin-bottom: 10px; }
+  .jn-block:last-child { margin-bottom: 0; }
+  .jn-block-head { font-size: 13px; font-weight: 600; margin-bottom: 5px; }
+  .jn-qa { font-size: 13px; line-height: 1.75; color: var(--text-sub); margin-bottom: 5px; }
+  .jn-qa b { color: var(--text-main); font-weight: 500; }
+  .jn-empty { font-size: 14px; color: var(--text-sub); text-align: center; padding: 20px 0; }
+  .week-bar { display: grid; grid-template-columns: repeat(7,1fr); gap: 8px; margin-bottom: 20px; }
+  .wd {
+    background: rgba(255,255,255,0.05); border: 1px solid var(--glass-border);
+    border-radius: 10px; padding: 10px 4px; text-align: center;
+  }
+  .wd .wd-name { font-size: 11px; color: var(--text-sub); }
+  .wd .wd-num { font-size: 16px; font-weight: 700; margin-top: 2px; font-variant-numeric: tabular-nums; }
+  .wd .wd-dot { width: 6px; height: 6px; border-radius: 50%; margin: 5px auto 0; background: rgba(255,255,255,0.18); }
+  .wd.done .wd-dot { background: #7fe0a4; }
+  .wd.today { border-color: rgba(255,255,255,0.45); }
+  .wd.today .wd-num { color: #ffb3b8; }
+
+  .daily-two { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 20px; }
+  .dcard {
+    border-radius: 14px; padding: 22px 20px; cursor: pointer; position: relative; overflow: hidden;
+    border: 1px solid var(--glass-border); transition: transform 0.25s, background 0.25s;
+  }
+  .dcard:hover { transform: translateY(-3px); }
+  .dcard.morning { background: linear-gradient(150deg, rgba(255,190,140,0.18), rgba(255,255,255,0.05)); }
+  .dcard.evening { background: linear-gradient(150deg, rgba(120,130,220,0.2), rgba(255,255,255,0.05)); }
+  .dcard .dc-icon { font-size: 24px; }
+  .dcard .dc-title { font-size: 17px; font-weight: 700; margin: 8px 0 4px; }
+  .dcard .dc-sub { font-size: 12px; color: var(--text-sub); }
+  .dcard .dc-done { position: absolute; top: 14px; right: 14px; font-size: 12px; color: #7fe0a4; }
+
+  .dq { margin-bottom: 16px; }
+  .dq-label { font-size: 14px; font-weight: 600; margin-bottom: 6px; }
+  .dq textarea {
+    width: 100%; min-height: 56px; background: rgba(0,0,0,0.22);
+    border: 1px solid var(--glass-border); border-radius: 10px; padding: 10px 12px;
+    color: var(--text-main); font-size: 13px; line-height: 1.7; font-family: inherit;
+    resize: vertical; outline: none;
+  }
+  .mood-row { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 16px; }
+  .mood-btn {
+    font-size: 20px; padding: 8px 12px; border-radius: 12px; cursor: pointer;
+    background: rgba(255,255,255,0.06); border: 1px solid var(--glass-border);
+  }
+  .mood-btn.sel { background: rgba(255,255,255,0.24); border-color: rgba(255,255,255,0.45); }
+
   /* 人生设计课方法论 */
   .method-list { display: flex; flex-direction: column; gap: 12px; }
   .method-item { display: flex; gap: 12px; align-items: flex-start; font-size: 14px; line-height: 1.7; color: var(--text-sub); }
@@ -548,24 +673,36 @@
     background: radial-gradient(circle at 35% 35%, rgba(255,235,205,0.95), rgba(240,160,120,0.55));
     box-shadow: 0 0 60px rgba(255,200,150,0.45);
   }
-  /* 生理性叹息:吸气2.5s → 补吸1s → 长呼6.5s,共10s */
-  .zen.on.mode-sigh .breath-ball { animation: sigh 10s ease-in-out infinite; }
-  @keyframes sigh {
-    0%   { transform: scale(1); }
-    25%  { transform: scale(1.55); }
-    27%  { transform: scale(1.5); }
-    37%  { transform: scale(1.85); }
-    100% { transform: scale(1); }
+  /* 光球由 JS 按各呼吸法节奏驱动缩放 */
+  .breath-ball { transition: transform 0.12s linear; }
+
+  /* 四种目的 */
+  .zen-purposes { display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; }
+  .zen-purpose {
+    position: relative; background: rgba(255,255,255,0.08);
+    border: 1px solid rgba(255,255,255,0.18); border-radius: 14px;
+    padding: 10px 18px 8px; cursor: pointer; font-family: inherit;
+    color: var(--text-sub); display: flex; flex-direction: column; align-items: center; gap: 2px;
+    transition: background 0.25s, color 0.25s, border-color 0.25s;
   }
-  /* 箱式呼吸:4-4-4-4,共16s */
-  .zen.on.mode-box .breath-ball { animation: box 16s ease-in-out infinite; }
-  @keyframes box {
-    0%   { transform: scale(1); }
-    25%  { transform: scale(1.85); }
-    50%  { transform: scale(1.85); }
-    75%  { transform: scale(1); }
-    100% { transform: scale(1); }
+  .zen-purpose.active { background: rgba(255,255,255,0.24); color: var(--text-main); border-color: rgba(255,255,255,0.45); }
+  .zen-purpose .zp-icon { font-size: 18px; }
+  .zen-purpose .zp-label { font-size: 13px; }
+  .zen-purpose .zp-tip {
+    position: absolute; top: -9px; right: -6px; font-size: 10px;
+    background: rgba(255,190,140,0.9); color: #3a2410;
+    padding: 1px 7px; border-radius: 8px; white-space: nowrap;
   }
+  .zen .zen-why { font-size: 12px; color: var(--text-sub); max-width: 340px; text-align: center; line-height: 1.75; opacity: 0.85; }
+  .zen .zen-stats { font-size: 12px; color: var(--text-sub); opacity: 0.75; }
+  .zen .zen-start {
+    background: rgba(255,255,255,0.9); color: #2a2340; border: none;
+    border-radius: 24px; padding: 12px 44px; font-size: 16px; font-weight: 600;
+    cursor: pointer; font-family: inherit; letter-spacing: 2px;
+    transition: transform 0.2s, background 0.2s;
+  }
+  .zen .zen-start:hover { transform: translateY(-2px); }
+  .zen .zen-start.running { background: rgba(255,255,255,0.16); color: var(--text-main); font-weight: 500; letter-spacing: 1px; padding: 10px 32px; font-size: 14px; }
 
   .zen .phase { font-size: 22px; letter-spacing: 6px; font-weight: 500; }
   .zen .zen-hint { font-size: 13px; color: var(--text-sub); }
@@ -930,6 +1067,22 @@
     <div class="panel-head"><div class="p-icon">🧭</div><h2>探索</h2></div>
     <p class="panel-intro">一些还没归类的东西:今天要做的事、值得反复咀嚼的方法论,以及各种杂七杂八的好玩意儿。</p>
 
+    <!-- 本周 -->
+    <div class="jn-toolbar">
+      <span class="jn-title">本周</span>
+      <span>
+        <span class="refresh-btn" id="jn-history-btn">📖 记录</span>
+        <span class="refresh-btn" id="jn-export-btn">⬇ 导出</span>
+        <span class="refresh-btn" id="jn-ai-btn">🤖 AI 复盘</span>
+      </span>
+    </div>
+    <div class="week-bar" id="week-bar"></div>
+    <div id="jn-output"></div>
+
+    <!-- 每日两课 -->
+    <div class="daily-two" id="daily-two"></div>
+    <div id="daily-form"></div>
+
     <!-- 今日关注事项(日历) -->
     <div class="card" style="margin-bottom:20px;">
       <div class="section-sub" style="margin-top:0;display:flex;align-items:center;justify-content:space-between;">
@@ -955,6 +1108,16 @@
           </div>
         </details>
       </div>
+    </div>
+
+    <!-- The Five Whys -->
+    <div class="card" style="margin-bottom:20px;">
+      <div class="section-sub" style="margin-top:0;display:flex;align-items:center;justify-content:space-between;">
+        <span>🔍 The Five Whys</span>
+        <span class="refresh-btn" id="whys-history-btn">历史记录</span>
+      </div>
+      <p class="price-note" style="margin:0 0 14px;">连问五次「为什么」,把一个念头、情绪或困境挖到根上。丰田发明的方法,用来做自我觉察同样好使——表层原因往往不是真正的原因。</p>
+      <div id="whys-body"></div>
     </div>
 
     <!-- 人生设计课 -->
@@ -1028,18 +1191,18 @@
 </div>
 
 <!-- 冥想模式覆盖层 -->
-<div class="zen mode-sigh" id="zen" role="dialog" aria-label="冥想模式" aria-hidden="true">
-  <div class="zen-modes">
-    <button class="zen-mode-btn active" data-mode="sigh">生理性叹息</button>
-    <button class="zen-mode-btn" data-mode="box">箱式呼吸</button>
-  </div>
+<div class="zen" id="zen" role="dialog" aria-label="冥想模式" aria-hidden="true">
+  <div class="zen-purposes" id="zen-purposes"></div>
   <div class="breath-wrap">
     <div class="breath-ring"></div>
     <div class="breath-ball"></div>
   </div>
-  <div class="phase" id="zen-phase">吸气</div>
-  <div class="zen-hint" id="zen-hint">鼻子吸气 → 再补吸一小口 → 嘴巴缓慢呼尽</div>
+  <div class="phase" id="zen-phase"></div>
+  <div class="zen-hint" id="zen-hint"></div>
+  <div class="zen-why" id="zen-why"></div>
   <div class="zen-timer" id="zen-timer">00:00</div>
+  <button class="zen-start" id="zen-start">开始</button>
+  <div class="zen-stats" id="zen-stats"></div>
   <button class="zen-exit" id="zen-exit">离开小屋</button>
 </div>
 
@@ -1220,7 +1383,7 @@ function openPanel(key) {
   if (key === "mystic") loadMystic();
   if (key === "ai") loadAIDaily();
   if (key === "fitness") loadHealth();
-  if (key === "explore") loadCalendar();
+  if (key === "explore") { loadDaily(); loadCalendar(); initWhys(); renderWhys(); }
 }
 function closePanels() {
   panels.forEach(x => x.classList.remove("on"));
@@ -2012,6 +2175,433 @@ function resetHealthBtn() {
 }
 
 /* ===== AI:AI HOT 每日动态 ===== */
+/* ===== The Five Whys ===== */
+const WHYS_KEY = "arinrin_fivewhys";
+const WHY_LABELS = ["Why?", "Why??", "Why???", "Why????", "Why?????"];
+let whysState = null;   // { topic, answers:[], insight, savedAt }
+let whysMode = "edit";  // edit | history
+
+function getWhysHistory() {
+  try { return JSON.parse(localStorage.getItem(WHYS_KEY)) || []; } catch (e) { return []; }
+}
+function saveWhysEntry(entry) {
+  const list = getWhysHistory();
+  list.unshift(entry);
+  localStorage.setItem(WHYS_KEY, JSON.stringify(list.slice(0, 30)));
+}
+
+function renderWhys() {
+  const box = document.getElementById("whys-body");
+  if (!box) return;
+
+  if (whysMode === "history") {
+    const list = getWhysHistory();
+    box.innerHTML = list.length
+      ? list.map((e, i) => `
+          <div class="why-hist-item" data-i="${i}">
+            ${escapeHtml(e.topic)}
+            <small>${new Date(e.savedAt).toLocaleDateString()} · 根因:${escapeHtml((e.answers[4] || e.answers[3] || "").slice(0, 40))}…</small>
+          </div>`).join("")
+      : `<div class="watch-empty">还没有记录。回去做一次五问吧。</div>`;
+    box.innerHTML += `<button class="zen-mode-btn" id="whys-back-btn" style="width:100%;margin-top:14px;">← 返回</button>`;
+    box.querySelectorAll(".why-hist-item").forEach(el => {
+      el.addEventListener("click", () => {
+        const e = getWhysHistory()[+el.dataset.i];
+        whysState = { topic: e.topic, answers: [...e.answers], insight: e.insight || "", readonly: true };
+        whysMode = "edit";
+        renderWhys();
+      });
+    });
+    document.getElementById("whys-back-btn").addEventListener("click", () => {
+      whysMode = "edit"; whysState = null; renderWhys();
+    });
+    return;
+  }
+
+  if (!whysState) {
+    box.innerHTML = `
+      <div class="why-step">
+        <div class="why-q"><span class="wq-idx">1</span>想深挖的一件事是什么?</div>
+        <textarea id="why-topic" placeholder="一个念头、一种反复出现的情绪、一个卡住你的困境…写具体一点。"></textarea>
+      </div>
+      <button class="zen-mode-btn" id="whys-start-btn" style="width:100%;">开始五问</button>`;
+    document.getElementById("whys-start-btn").addEventListener("click", () => {
+      const t = document.getElementById("why-topic").value.trim();
+      if (!t) return;
+      whysState = { topic: t, answers: ["", "", "", "", ""], insight: "" };
+      renderWhys();
+    });
+    return;
+  }
+
+  const s = whysState;
+  const ro = s.readonly ? "readonly" : "";
+  let html = `<div class="why-step answered">
+      <div class="why-q"><span class="wq-idx">1</span>主题</div>
+      <textarea readonly>${escapeHtml(s.topic)}</textarea>
+    </div>`;
+
+  // 只逐层展开:上一层答了才显示下一层
+  for (let i = 0; i < 5; i++) {
+    const prevFilled = i === 0 ? true : !!(s.answers[i - 1] || "").trim();
+    if (!prevFilled) break;
+    const prevText = i === 0 ? s.topic : s.answers[i - 1];
+    html += `<div class="why-step ${s.answers[i] ? "answered" : ""}">
+      <div class="why-q"><span class="wq-idx">${i + 2}</span>${WHY_LABELS[i]}</div>
+      <div class="why-prev">↑ ${escapeHtml((prevText || "").slice(0, 60))}${(prevText || "").length > 60 ? "…" : ""}</div>
+      <textarea data-why="${i}" ${ro} placeholder="因为…">${escapeHtml(s.answers[i] || "")}</textarea>
+    </div>`;
+  }
+
+  const allDone = s.answers.every(a => (a || "").trim());
+  if (allDone) {
+    html += `<div class="why-step ${s.insight ? "answered" : ""}">
+      <div class="why-q"><span class="wq-idx">7</span>你看到了什么新的东西?</div>
+      <textarea id="why-insight" ${ro} placeholder="关于这件事,你现在的理解和一开始有什么不同?">${escapeHtml(s.insight || "")}</textarea>
+    </div>`;
+    html += `<div class="why-root">
+      <div class="wr-head">🎯 你挖到的根因</div>
+      ${escapeHtml(s.answers[4])}
+    </div>`;
+  }
+
+  if (!s.readonly) {
+    html += `<div class="why-actions">
+      <button class="zen-mode-btn" id="whys-reset-btn">重新开始</button>
+      ${allDone ? `<button class="zen-mode-btn" id="whys-save-btn">保存这次记录</button>` : ""}
+      ${allDone ? `<button class="zen-mode-btn" id="whys-ai-btn">AI 帮我看看</button>` : ""}
+    </div>
+    <div id="whys-ai-out" class="price-note" style="margin-top:10px;"></div>`;
+  } else {
+    html += `<div class="why-actions">
+      <button class="zen-mode-btn" id="whys-reset-btn">做一次新的</button>
+    </div>`;
+  }
+
+  box.innerHTML = html;
+
+  box.querySelectorAll("textarea[data-why]").forEach(ta => {
+    ta.addEventListener("input", () => { whysState.answers[+ta.dataset.why] = ta.value; });
+    // 失焦时:只有"该展开新一层"或"该出现总结区"时才重绘,避免打断点击下一个输入框
+    ta.addEventListener("blur", () => {
+      const shown = box.querySelectorAll("textarea[data-why]").length;
+      let should = 0;
+      for (let i = 0; i < 5; i++) {
+        should = i + 1;
+        if (!(whysState.answers[i] || "").trim()) break;
+      }
+      const doneNow = whysState.answers.every(a => (a || "").trim());
+      const hasSummary = !!document.getElementById("why-insight");
+      if (should !== shown || doneNow !== hasSummary) renderWhys();
+    });
+  });
+  const ins = document.getElementById("why-insight");
+  if (ins) ins.addEventListener("input", () => { whysState.insight = ins.value; });
+
+  const resetBtn = document.getElementById("whys-reset-btn");
+  if (resetBtn) resetBtn.addEventListener("click", () => { whysState = null; renderWhys(); });
+
+  const saveBtn = document.getElementById("whys-save-btn");
+  if (saveBtn) saveBtn.addEventListener("click", () => {
+    saveWhysEntry({ topic: s.topic, answers: s.answers, insight: s.insight, savedAt: Date.now() });
+    saveBtn.textContent = "已保存 ✓";
+  });
+
+  const aiBtn = document.getElementById("whys-ai-btn");
+  if (aiBtn) aiBtn.addEventListener("click", async () => {
+    const out = document.getElementById("whys-ai-out");
+    if (!hasAIKey()) { out.textContent = "需要 AI:请点右下角「⚙️ AI」填入你自己的 key。"; return; }
+    aiBtn.textContent = "分析中…"; aiBtn.disabled = true;
+    try {
+      const prompt = `我用「五个为什么」挖了一件事,请你诚实地点评:
+主题:${s.topic}
+${s.answers.map((a, i) => `${WHY_LABELS[i]} ${a}`).join("\n")}
+我的觉察:${s.insight || "(未填)"}
+
+请用 150 字以内回答三点:①我这条推理链里有没有中途跑偏或停在表层的地方 ②真正的根因可能是什么 ③一个我可以马上验证的小行动。语气温和但不要迎合。`;
+      const raw = await callAI(prompt, "你是一位擅长追根溯源的教练,温暖但敢于点破自欺。");
+      out.innerHTML = `<div class="why-root"><div class="wr-head">🤖 AI 的看法</div>${escapeHtml(raw)}</div>`;
+    } catch (e) {
+      out.textContent = "分析失败:" + (e.message || e);
+    }
+    aiBtn.textContent = "AI 帮我看看"; aiBtn.disabled = false;
+  });
+}
+
+let whysInited = false;
+function initWhys() {
+  if (whysInited) return;
+  document.getElementById("whys-history-btn").addEventListener("click", () => {
+    whysMode = whysMode === "history" ? "edit" : "history";
+    renderWhys();
+  });
+  whysInited = true;
+}
+
+/* ===== 每日两课:晨间准备 / 晚间复盘 ===== */
+const JOURNAL_KEY = "arinrin_journal";
+function getJournal() { try { return JSON.parse(localStorage.getItem(JOURNAL_KEY)) || {}; } catch (e) { return {}; } }
+function saveJournal(j) { localStorage.setItem(JOURNAL_KEY, JSON.stringify(j)); }
+function todayKey() { return new Date().toISOString().slice(0, 10); }
+
+const DAILY_Q = {
+  morning: [
+    { k: "one", label: "今天最重要的一件事是什么?", ph: "如果今天只能完成一件事…" },
+    { k: "state", label: "你想以什么状态度过今天?", ph: "专注 / 松弛 / 果断…" },
+    { k: "block", label: "可能的阻碍是什么?打算怎么应对?", ph: "预判一下,别让它突袭你" }
+  ],
+  evening: [
+    { k: "done", label: "今天做成了什么?", ph: "哪怕很小,也写下来" },
+    { k: "drain", label: "什么消耗了你?", ph: "人、事、还是自己的念头" },
+    { k: "note", label: "一句话记录今天", ph: "留给未来的你" }
+  ]
+};
+const MOODS = ["😀", "🙂", "😐", "😔", "😤", "😴"];
+
+let dailyOpen = null; // morning | evening | null
+
+function renderWeekBar() {
+  const el = document.getElementById("week-bar");
+  if (!el) return;
+  const j = getJournal();
+  const names = ["日","一","二","三","四","五","六"];
+  const today = new Date();
+  const start = new Date(today); start.setDate(today.getDate() - today.getDay()); // 本周日起
+  let html = "";
+  for (let i = 0; i < 7; i++) {
+    const d = new Date(start); d.setDate(start.getDate() + i);
+    const k = d.toISOString().slice(0, 10);
+    const e = j[k];
+    const done = e && (e.morning || e.evening);
+    const isToday = d.toDateString() === today.toDateString();
+    html += `<div class="wd ${done ? "done" : ""} ${isToday ? "today" : ""}">
+      <div class="wd-name">${names[d.getDay()]}</div>
+      <div class="wd-num">${String(d.getDate()).padStart(2, "0")}</div>
+      <div class="wd-dot"></div>
+    </div>`;
+  }
+  el.innerHTML = html;
+}
+
+function renderDailyCards() {
+  const el = document.getElementById("daily-two");
+  if (!el) return;
+  const e = getJournal()[todayKey()] || {};
+  el.innerHTML = `
+    <div class="dcard morning" data-daily="morning">
+      ${e.morning ? `<div class="dc-done">已完成 ✓</div>` : ""}
+      <div class="dc-icon">🌅</div>
+      <div class="dc-title">晨间准备</div>
+      <div class="dc-sub">给今天定一个方向</div>
+    </div>
+    <div class="dcard evening" data-daily="evening">
+      ${e.evening ? `<div class="dc-done">已完成 ✓</div>` : ""}
+      <div class="dc-icon">🌙</div>
+      <div class="dc-title">晚间复盘</div>
+      <div class="dc-sub">把今天收进口袋</div>
+    </div>`;
+  el.querySelectorAll(".dcard").forEach(c =>
+    c.addEventListener("click", () => {
+      dailyOpen = dailyOpen === c.dataset.daily ? null : c.dataset.daily;
+      renderDailyForm();
+    }));
+}
+
+function renderDailyForm() {
+  const box = document.getElementById("daily-form");
+  if (!box) return;
+  if (!dailyOpen) { box.innerHTML = ""; return; }
+  const j = getJournal();
+  const entry = (j[todayKey()] || {})[dailyOpen] || {};
+  const isEve = dailyOpen === "evening";
+  const qs = DAILY_Q[dailyOpen];
+
+  box.innerHTML = `<div class="card" style="margin-bottom:20px;">
+    <div class="section-sub" style="margin-top:0;">${isEve ? "🌙 晚间复盘" : "🌅 晨间准备"}</div>
+    ${isEve ? `<div class="dq"><div class="dq-label">此刻的心情</div>
+      <div class="mood-row">${MOODS.map(m =>
+        `<span class="mood-btn ${entry.mood === m ? "sel" : ""}" data-mood="${m}">${m}</span>`).join("")}</div></div>` : ""}
+    ${qs.map(q => `<div class="dq">
+      <div class="dq-label">${q.label}</div>
+      <textarea data-dq="${q.k}" placeholder="${q.ph}">${escapeHtml(entry[q.k] || "")}</textarea>
+    </div>`).join("")}
+    ${isEve ? `<p class="price-note" style="margin:0 0 12px;">写不出来?先去左下角小屋呼吸两分钟再回来。</p>` : ""}
+    <button class="zen-mode-btn" id="daily-save-btn" style="width:100%;">保存</button>
+    <div id="daily-save-note" class="price-note" style="margin-top:8px;"></div>
+  </div>`;
+
+  const draft = { ...entry };
+  box.querySelectorAll("textarea[data-dq]").forEach(ta =>
+    ta.addEventListener("input", () => { draft[ta.dataset.dq] = ta.value; }));
+  box.querySelectorAll(".mood-btn").forEach(b =>
+    b.addEventListener("click", () => {
+      draft.mood = b.dataset.mood;
+      box.querySelectorAll(".mood-btn").forEach(x => x.classList.remove("sel"));
+      b.classList.add("sel");
+    }));
+  document.getElementById("daily-save-btn").addEventListener("click", () => {
+    const jj = getJournal();
+    const k = todayKey();
+    jj[k] = jj[k] || {};
+    jj[k][dailyOpen] = { ...draft, savedAt: Date.now() };
+    saveJournal(jj);
+    document.getElementById("daily-save-note").textContent = "已保存 ✓";
+    renderWeekBar(); renderDailyCards();
+  });
+}
+
+function loadDaily() { renderWeekBar(); renderDailyCards(); renderDailyForm(); initJournalTools(); }
+
+/* ---- 记录 / 导出 / AI 复盘 ---- */
+let jnHistoryOpen = false;
+let jnToolsInited = false;
+
+function collectEntries() {
+  const j = getJournal();
+  const whys = getWhysHistory();
+  const byDate = {};
+  Object.keys(j).forEach(d => { byDate[d] = { ...(byDate[d] || {}), ...j[d] }; });
+  whys.forEach(w => {
+    const d = new Date(w.savedAt).toISOString().slice(0, 10);
+    byDate[d] = byDate[d] || {};
+    (byDate[d].whys = byDate[d].whys || []).push(w);
+  });
+  return byDate;
+}
+
+function renderJournalHistory() {
+  const out = document.getElementById("jn-output");
+  if (!jnHistoryOpen) { out.innerHTML = ""; return; }
+  const byDate = collectEntries();
+  const dates = Object.keys(byDate).sort().reverse();
+  if (!dates.length) {
+    out.innerHTML = `<div class="card" style="margin-bottom:20px;"><div class="jn-empty">还没有记录。从今天的晨间准备或晚间复盘开始吧。</div></div>`;
+    return;
+  }
+  const qmap = {};
+  DAILY_Q.morning.forEach(q => qmap[q.k] = q.label);
+  DAILY_Q.evening.forEach(q => qmap[q.k] = q.label);
+
+  out.innerHTML = `<div class="card" style="margin-bottom:20px;">
+    <div class="section-sub" style="margin-top:0;">📖 我的记录 · 共 ${dates.length} 天</div>
+    ${dates.slice(0, 60).map(d => {
+      const e = byDate[d];
+      const dd = new Date(d + "T00:00:00");
+      const week = ["日","一","二","三","四","五","六"][dd.getDay()];
+      let inner = "";
+      ["morning", "evening"].forEach(kind => {
+        if (!e[kind]) return;
+        const ent = e[kind];
+        inner += `<div class="jn-block">
+          <div class="jn-block-head">${kind === "morning" ? "🌅 晨间准备" : "🌙 晚间复盘"} ${ent.mood ? ent.mood : ""}</div>
+          ${Object.keys(ent).filter(k => qmap[k] && ent[k]).map(k =>
+            `<div class="jn-qa"><b>${qmap[k]}</b><br>${escapeHtml(ent[k])}</div>`).join("")}
+        </div>`;
+      });
+      if (e.whys) {
+        e.whys.forEach(w => {
+          inner += `<div class="jn-block">
+            <div class="jn-block-head">🔍 五问:${escapeHtml(w.topic)}</div>
+            <div class="jn-qa">根因:${escapeHtml(w.answers[4] || "")}</div>
+            ${w.insight ? `<div class="jn-qa">觉察:${escapeHtml(w.insight)}</div>` : ""}
+          </div>`;
+        });
+      }
+      return `<div class="jn-entry">
+        <div class="jn-date"><span>${d} 星期${week}</span></div>
+        ${inner || `<div class="jn-qa">(空)</div>`}
+      </div>`;
+    }).join("")}
+  </div>`;
+}
+
+function journalToMarkdown() {
+  const byDate = collectEntries();
+  const dates = Object.keys(byDate).sort().reverse();
+  const qmap = {};
+  DAILY_Q.morning.forEach(q => qmap[q.k] = q.label);
+  DAILY_Q.evening.forEach(q => qmap[q.k] = q.label);
+  let md = `# 我的记录\n\n导出于 ${new Date().toLocaleString()}\n\n`;
+  dates.forEach(d => {
+    const e = byDate[d];
+    md += `## ${d}\n\n`;
+    ["morning", "evening"].forEach(kind => {
+      if (!e[kind]) return;
+      md += `### ${kind === "morning" ? "晨间准备" : "晚间复盘"}${e[kind].mood ? " " + e[kind].mood : ""}\n\n`;
+      Object.keys(e[kind]).filter(k => qmap[k] && e[kind][k]).forEach(k => {
+        md += `**${qmap[k]}**\n${e[kind][k]}\n\n`;
+      });
+    });
+    (e.whys || []).forEach(w => {
+      md += `### 五问:${w.topic}\n\n`;
+      w.answers.forEach((a, i) => { if (a) md += `${i + 1}. 为什么 → ${a}\n`; });
+      if (w.insight) md += `\n觉察:${w.insight}\n`;
+      md += `\n`;
+    });
+  });
+  return md;
+}
+
+function downloadFile(name, content, type) {
+  const blob = new Blob([content], { type });
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = name;
+  a.click();
+  setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+}
+
+async function jnAIReview() {
+  const out = document.getElementById("jn-output");
+  if (!hasAIKey()) {
+    out.innerHTML = `<div class="card" style="margin-bottom:20px;"><div class="jn-empty">需要 AI:请点右下角「⚙️ AI」填入你自己的 key。</div></div>`;
+    return;
+  }
+  const md = journalToMarkdown();
+  if (md.length < 80) {
+    out.innerHTML = `<div class="card" style="margin-bottom:20px;"><div class="jn-empty">记录还太少,先积累几天再来做复盘。</div></div>`;
+    return;
+  }
+  out.innerHTML = `<div class="card" style="margin-bottom:20px;"><div class="jn-empty">AI 正在读你的记录…</div></div>`;
+  try {
+    const prompt = `这是我最近的日课记录(晨间准备/晚间复盘/五问),请帮我做一次复盘:
+
+${md.slice(0, 6000)}
+
+请用 300 字以内回答:
+1. 反复出现的主题是什么(我一直在关心/纠结什么)
+2. 什么在持续消耗我,什么让我有成就感
+3. 我可能没意识到的一个模式
+4. 接下来一周,一个具体可执行的调整建议
+语气温和但诚实,不要泛泛而谈,要引用我记录里的具体内容。`;
+    const raw = await callAI(prompt, "你是一位善于从日记中看出模式的教练,温暖、具体、不迎合。");
+    out.innerHTML = `<div class="card" style="margin-bottom:20px;">
+      <div class="section-sub" style="margin-top:0;">🤖 AI 复盘</div>
+      <div class="committee-report">${escapeHtml(raw)}</div>
+      <div class="price-note" style="margin-top:10px;">这些内容发送给了你在 ⚙️AI 里设置的服务商。</div>
+    </div>`;
+  } catch (e) {
+    out.innerHTML = `<div class="card" style="margin-bottom:20px;"><div class="jn-empty">分析失败:${e.message || e}</div></div>`;
+  }
+}
+
+function initJournalTools() {
+  if (jnToolsInited) return;
+  document.getElementById("jn-history-btn").addEventListener("click", () => {
+    jnHistoryOpen = !jnHistoryOpen;
+    renderJournalHistory();
+  });
+  document.getElementById("jn-export-btn").addEventListener("click", () => {
+    const stamp = new Date().toISOString().slice(0, 10);
+    downloadFile(`我的记录-${stamp}.md`, journalToMarkdown(), "text/markdown;charset=utf-8");
+    downloadFile(`我的记录-备份-${stamp}.json`,
+      JSON.stringify({ journal: getJournal(), whys: getWhysHistory(), zen: getZenLog() }, null, 2),
+      "application/json");
+  });
+  document.getElementById("jn-ai-btn").addEventListener("click", jnAIReview);
+  jnToolsInited = true;
+}
+
 /* ===== 今日关注事项(日历订阅) ===== */
 const CAL_KEY = "arinrin_cal_url";
 let calInited = false;
@@ -2050,7 +2640,7 @@ async function loadCalendar(force) {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       cache: "no-store",
-      body: JSON.stringify({ url, days: 7 })
+      body: JSON.stringify({ url, days: 1 })
     });
     const data = await res.json();
     if (data.error) {
@@ -2061,39 +2651,31 @@ async function loadCalendar(force) {
     }
     const evs = data.events || [];
     if (!evs.length) {
-      body.innerHTML = `<div class="watch-empty">未来 7 天没有安排,享受空白 🌤<br>
+      body.innerHTML = `<div class="watch-empty">今天没有安排,享受空白 🌤<br>
         <span class="cal-unlink" id="cal-unlink">换一个链接</span></div>`;
       bindUnlink();
       return;
     }
-    // 按天分组
-    const today = new Date();
-    const groups = {};
-    evs.forEach(e => {
-      const d = new Date(e.start);
-      const k = d.toISOString().slice(0, 10);
-      (groups[k] = groups[k] || []).push({ ...e, d });
-    });
+    // 只显示今天:单日列表
+    const now = new Date();
+    const week = ["日","一","二","三","四","五","六"][now.getDay()];
     const p = n => String(n).padStart(2, "0");
-    const html = Object.keys(groups).sort().map(k => {
-      const list = groups[k];
-      const d0 = list[0].d;
-      const isToday = d0.toDateString() === today.toDateString();
-      const week = ["日","一","二","三","四","五","六"][d0.getDay()];
-      const label = isToday ? "今天 · 星期" + week
-        : `${d0.getMonth()+1}月${d0.getDate()}日 · 星期${week}`;
-      const rows = list.map(e => `
+    const rows = evs.map(e => {
+      const d = new Date(e.start);
+      return `
         <div class="cal-event">
-          <div class="cal-time">${e.allDay ? "全天" : p(e.d.getHours()) + ":" + p(e.d.getMinutes())}</div>
+          <div class="cal-time">${e.allDay ? "全天" : p(d.getHours()) + ":" + p(d.getMinutes())}</div>
           <div>
             <div class="cal-title">${escapeHtml(e.title)}</div>
             ${e.location ? `<div class="cal-loc">📍 ${escapeHtml(e.location)}</div>` : ""}
           </div>
-        </div>`).join("");
-      return `<div class="cal-daygroup ${isToday ? "today" : ""}">${label}</div>${rows}`;
+        </div>`;
     }).join("");
-    body.innerHTML = html + `<div class="price-note" style="margin-top:12px;">
-      日历只存在你自己的浏览器里 · <span class="cal-unlink" id="cal-unlink">断开连接</span></div>`;
+    body.innerHTML =
+      `<div class="cal-daygroup today">今天 · ${now.getMonth()+1}月${now.getDate()}日 星期${week} · ${evs.length} 项</div>` +
+      rows +
+      `<div class="price-note" style="margin-top:12px;">
+        日历只存在你自己的浏览器里 · <span class="cal-unlink" id="cal-unlink">断开连接</span></div>`;
     bindUnlink();
   } catch (e) {
     body.innerHTML = `<div class="watch-empty">读取失败(本地打开无法调用,需线上环境)。<br>
@@ -2114,46 +2696,131 @@ function escapeHtml(s) {
   return String(s || "").replace(/[&<>"']/g, m =>
     ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[m]));
 }
+/* AIHOT 日报每天北京时间 08:00 生成一次 → 拿到当天的就存起来,当天不再重复请求 */
+const AIHOT_CACHE_KEY = "arinrin_aihot_cache";
+function expectedDailyDate() {
+  // 按北京时间判断:08:00 前当天日报可能还没生成,预期最新的是昨天
+  const bj = new Date(Date.now() + (8 * 60 + new Date().getTimezoneOffset()) * 60000);
+  if (bj.getHours() < 8) bj.setDate(bj.getDate() - 1);
+  const p = n => String(n).padStart(2, "0");
+  return `${bj.getFullYear()}-${p(bj.getMonth() + 1)}-${p(bj.getDate())}`;
+}
+
 async function loadAIDaily(force) {
   const dateEl = document.getElementById("ai-daily-date");
   const feedEl = document.getElementById("ai-daily-feed");
-  feedEl.innerHTML = `<div class="ai-loading">正在拉取今天的 AI 动态…</div>`;
+
+  // 先看本地缓存:已经是"预期最新那期"就直接用,不再请求
+  if (!force) {
+    try {
+      const c = JSON.parse(localStorage.getItem(AIHOT_CACHE_KEY));
+      if (c && c.data && c.data.date === expectedDailyDate()) {
+        renderAIDaily(c.data, c.fetchedAt, true);
+        return;
+      }
+    } catch (e) {}
+  }
+
+  feedEl.innerHTML = `<div class="ai-loading">正在拉取 AI 日报…</div>`;
   try {
-    /* force=true 时加时间戳绕过缓存,强制拿最新 */
     const url = "/api/aihot" + (force ? "?t=" + Date.now() : "");
     const res = await fetch(url, force ? { cache: "no-store" } : {});
     const data = await res.json();
-    const now = new Date();
-    const p = n => String(n).padStart(2, "0");
-    dateEl.innerHTML = `<span>📅 ${escapeHtml(data.date || "今日")} · AI 日报</span>
-      <span style="font-size:12px;color:var(--text-sub);font-weight:400;">
-        更新于 ${p(now.getHours())}:${p(now.getMinutes())}
-        <span class="refresh-btn" id="ai-refresh-btn">↻ 刷新</span>
-      </span>`;
-    const bindRefresh = () => {
-      const btn = document.getElementById("ai-refresh-btn");
-      if (btn) btn.addEventListener("click", (e) => { spinBtn(e.target); loadAIDaily(true); });
-    };
-    const sections = data.sections || [];
-    if (!sections.length) {
-      feedEl.innerHTML = `<div class="ai-loading">今天还没有更新,去 AI HOT 看看往期吧。</div>`;
-      bindRefresh();
-      return;
-    }
-    feedEl.innerHTML = sections.map(sec => {
-      const items = (sec.items || []).slice(0, 3).map(it => `
-        <a class="ai-news" href="${escapeHtml(it.sourceUrl || it.permalink || '#')}" target="_blank" rel="noopener">
-          <div class="an-title">${escapeHtml(it.title)}</div>
-          <div class="an-summary">${escapeHtml(it.summary)}</div>
-          <div class="an-source">来源:${escapeHtml(it.sourceName || 'AI HOT')}</div>
-        </a>`).join("");
-      return `<div class="ai-group-label">${escapeHtml(sec.label)}</div>${items}`;
-    }).join("");
-    bindRefresh();
+    const fetchedAt = Date.now();
+    try { localStorage.setItem(AIHOT_CACHE_KEY, JSON.stringify({ data, fetchedAt })); } catch (e) {}
+    renderAIDaily(data, fetchedAt, false);
   } catch (e) {
     dateEl.textContent = "📅 AI 日报";
     feedEl.innerHTML = `<div class="ai-loading">动态加载失败(网络原因或接口限流)。你仍可点下方按钮直接前往 AI HOT。</div>`;
   }
+}
+
+function renderAIDaily(data, fetchedAt, fromCache) {
+  const dateEl = document.getElementById("ai-daily-date");
+  const feedEl = document.getElementById("ai-daily-feed");
+  const p = n => String(n).padStart(2, "0");
+  const t = new Date(fetchedAt || Date.now());
+
+  dateEl.innerHTML = `<span>📅 ${escapeHtml(data.date || "今日")} · AI 日报</span>
+    <span style="font-size:12px;color:var(--text-sub);font-weight:400;">
+      ${fromCache ? "已缓存" : "已更新"} ${p(t.getHours())}:${p(t.getMinutes())}
+      <span class="refresh-btn" id="ai-refresh-btn">↻ 刷新</span>
+    </span>`;
+  const bindRefresh = () => {
+    const btn = document.getElementById("ai-refresh-btn");
+    if (btn) btn.addEventListener("click", (e) => { spinBtn(e.target); loadAIDaily(true); });
+  };
+
+  const sections = data.sections || [];
+  const flashes = data.flashes || [];
+  if (!sections.length) {
+    feedEl.innerHTML = `<div class="ai-loading">这期还没有内容,去 AI HOT 看看往期吧。</div>`;
+    bindRefresh();
+    return;
+  }
+
+  // 统计维度
+  const allItems = sections.flatMap(s => s.items || []);
+  const totalEvents = allItems.length + flashes.length;
+  const modelCount = (sections.find(s => (s.label || "").includes("模型")) || {}).items?.length || 0;
+  const sources = new Set([...allItems, ...flashes].map(i => i.sourceName).filter(Boolean));
+
+  let html = "";
+
+  // 主编导语
+  if (data.lead && (data.lead.title || data.lead.leadParagraph)) {
+    html += `<div class="ai-lead">
+      ${data.lead.title ? `<div class="lead-title">${escapeHtml(data.lead.title)}</div>` : ""}
+      ${data.lead.leadParagraph ? `<div class="lead-para">${escapeHtml(data.lead.leadParagraph)}</div>` : ""}
+    </div>`;
+  }
+
+  // 数据条
+  html += `<div class="ai-stats">
+    <div class="stat"><b>${totalEvents}</b><span>今日事件</span></div>
+    <div class="stat"><b>${modelCount}</b><span>新模型</span></div>
+    <div class="stat"><b>${sources.size}</b><span>信源</span></div>
+    <div class="stat"><b>${sections.length}</b><span>版块</span></div>
+  </div>`;
+
+  // 今日看点(各版块 + 头条)
+  html += `<div class="ai-group-label">今日看点</div><div class="ai-overview">` +
+    sections.map((sec, i) => {
+      const first = (sec.items || [])[0];
+      return `<div class="ov-row">
+        <span class="ov-idx">${p(i + 1)}</span>
+        <div class="ov-main">
+          <div class="ov-label">${escapeHtml(sec.label)}</div>
+          ${first ? `<div class="ov-first">${escapeHtml(first.title)}</div>` : ""}
+        </div>
+        <span class="ov-count">${(sec.items || []).length}</span>
+      </div>`;
+    }).join("") + `</div>`;
+
+  // 正文
+  html += sections.map(sec => {
+    const items = (sec.items || []).slice(0, 3).map(it => `
+      <a class="ai-news" href="${escapeHtml(it.sourceUrl || it.permalink || '#')}" target="_blank" rel="noopener">
+        <div class="an-title">${escapeHtml(it.title)}</div>
+        <div class="an-summary">${escapeHtml(it.summary)}</div>
+        <div class="an-source">来源:${escapeHtml(it.sourceName || 'AI HOT')}</div>
+      </a>`).join("");
+    return `<div class="ai-group-label">${escapeHtml(sec.label)}</div>${items}`;
+  }).join("");
+
+  // 快讯
+  if (flashes.length) {
+    html += `<div class="ai-group-label">⚡ 快讯</div>` +
+      flashes.slice(0, 8).map(f => `
+        <a class="flash-row" href="${escapeHtml(f.sourceUrl || '#')}" target="_blank" rel="noopener">
+          <span class="flash-dot">•</span>
+          <span class="flash-title">${escapeHtml(f.title)}</span>
+          <span class="flash-src">${escapeHtml(f.sourceName || "")}</span>
+        </a>`).join("");
+  }
+
+  feedEl.innerHTML = html;
+  bindRefresh();
 }
 
 /* ===== 冥想小屋:两种呼吸模式 ===== */
@@ -2161,74 +2828,206 @@ const zen = document.getElementById("zen");
 const zenPhase = document.getElementById("zen-phase");
 const zenHint = document.getElementById("zen-hint");
 const zenTimer = document.getElementById("zen-timer");
-let zenStart = null, zenTick = null, phaseTick = null;
-let zenMode = "sigh";
+let zenTick = null, phaseTick = null;
+let zenCycleStart = null;   // 呼吸节奏起点(切换呼吸法时重置)
+let zenRunStart = null;     // 本段计时起点
+let zenElapsed = 0;         // 已累计秒数(跨暂停)
+let zenRunning = false;
+let zenMode = "calm";
 
 /* 生理性叹息(Huberman cyclic sighing):
    鼻吸2.5s → 补吸1s → 嘴缓慢呼气6.5s,周期10s
    箱式呼吸:吸4s → 屏4s → 呼4s → 屏4s,周期16s */
 const MODES = {
-  sigh: {
-    cycle: 10,
-    hint: "鼻子吸气 → 再补吸一小口 → 嘴巴缓慢呼尽",
-    phases: [
-      { name: "吸气", at: 0 },
-      { name: "再吸一口", at: 2.5 },
-      { name: "缓慢呼气", at: 3.7 }
+  energy: {
+    label: "提神", icon: "🔥", cycle: 6,
+    hint: "深深吸气 4 秒 → 快速呼出 2 秒",
+    why: "吸气长于呼气会小幅提升心率、唤起交感神经,适合早晨或午后犯困时。",
+    scale: [1, 1.9], inhaleEnd: 4, phases: [
+      { name: "吸气", at: 0 }, { name: "快呼", at: 4 }
     ]
   },
-  box: {
-    cycle: 16,
-    hint: "吸气 4 秒 → 屏息 4 秒 → 呼气 4 秒 → 屏息 4 秒",
-    phases: [
-      { name: "吸气", at: 0 },
-      { name: "屏息", at: 4 },
-      { name: "呼气", at: 8 },
-      { name: "屏息", at: 12 }
+  focus: {
+    label: "专注", icon: "🎯", cycle: 16,
+    hint: "吸气 4 → 屏息 4 → 呼气 4 → 屏息 4",
+    why: "箱式呼吸让吸呼等长,稳定自主神经,是特种部队用来在压力下保持清醒的方法。",
+    scale: [1, 1.85], inhaleEnd: 4, phases: [
+      { name: "吸气", at: 0 }, { name: "屏息", at: 4 },
+      { name: "呼气", at: 8 }, { name: "屏息", at: 12 }
+    ]
+  },
+  calm: {
+    label: "放松", icon: "🌊", cycle: 10,
+    hint: "鼻子吸气 → 再补吸一小口 → 嘴巴缓慢呼尽",
+    why: "生理性叹息:两段式吸气重新撑开肺泡,加倍延长的呼气快速降低唤起水平——降焦虑最快的一招。",
+    scale: [1, 1.85], inhaleEnd: 3.7, phases: [
+      { name: "吸气", at: 0 }, { name: "再吸一口", at: 2.5 }, { name: "缓慢呼气", at: 3.7 }
+    ]
+  },
+  sleep: {
+    label: "助眠", icon: "🌙", cycle: 19,
+    hint: "吸气 4 → 屏息 7 → 呼气 8",
+    why: "4-7-8 呼吸:长屏息与更长的呼气强化副交感活动,适合睡前让身体降档。",
+    scale: [1, 1.8], inhaleEnd: 4, phases: [
+      { name: "吸气", at: 0 }, { name: "屏息", at: 4 }, { name: "缓慢呼气", at: 11 }
     ]
   }
 };
 
+/* 按当前时段推荐 */
+function suggestMode() {
+  const h = new Date().getHours();
+  if (h >= 5 && h < 11) return "energy";
+  if (h >= 11 && h < 18) return "focus";
+  if (h >= 18 && h < 22) return "calm";
+  return "sleep";
+}
+
+/* 冥想记录 */
+const ZEN_LOG_KEY = "arinrin_zen_log";
+function getZenLog() { try { return JSON.parse(localStorage.getItem(ZEN_LOG_KEY)) || {}; } catch (e) { return {}; } }
+function logZenSession(seconds) {
+  if (seconds < 30) return; // 太短不计
+  const log = getZenLog();
+  const k = new Date().toISOString().slice(0, 10);
+  log[k] = (log[k] || 0) + Math.round(seconds);
+  localStorage.setItem(ZEN_LOG_KEY, JSON.stringify(log));
+}
+function zenStreak() {
+  const log = getZenLog();
+  let streak = 0;
+  const d = new Date();
+  for (;;) {
+    const k = d.toISOString().slice(0, 10);
+    if (log[k]) { streak++; d.setDate(d.getDate() - 1); } else break;
+  }
+  return streak;
+}
+function renderZenStats() {
+  const log = getZenLog();
+  const month = new Date().toISOString().slice(0, 7);
+  const days = Object.keys(log).filter(k => k.startsWith(month));
+  const mins = Math.round(days.reduce((s, k) => s + log[k], 0) / 60);
+  const st = zenStreak();
+  document.getElementById("zen-stats").textContent =
+    days.length ? `本月 ${days.length} 天 · ${mins} 分钟${st > 1 ? ` · 连续 ${st} 天` : ""}` : "";
+}
+
 function updatePhase() {
   const m = MODES[zenMode];
-  const t = ((Date.now() - zenStart) / 1000) % m.cycle;
+  const t = ((Date.now() - zenCycleStart) / 1000) % m.cycle;
   let current = m.phases[0].name;
   for (const p of m.phases) if (t >= p.at) current = p.name;
   zenPhase.textContent = current;
 }
+function zenTotalSeconds() {
+  return zenElapsed + (zenRunning ? (Date.now() - zenRunStart) / 1000 : 0);
+}
 function updateZenTimer() {
-  const s = Math.floor((Date.now() - zenStart) / 1000);
+  const s = Math.floor(zenTotalSeconds());
   const p = n => String(n).padStart(2, "0");
   zenTimer.textContent = `${p(Math.floor(s / 60))}:${p(s % 60)}`;
 }
 function setZenMode(mode) {
-  if (!MODES[mode]) return; /* 非冥想按钮(塔罗/八字等共用了样式类)不处理 */
+  if (!MODES[mode]) return;
   zenMode = mode;
-  zen.classList.remove("mode-sigh", "mode-box");
-  zen.classList.add("mode-" + mode);
-  zenHint.textContent = MODES[mode].hint;
-  zenStart = Date.now(); /* 切模式时重置节奏,与动画同步 */
-  document.querySelectorAll("#zen .zen-mode-btn").forEach(b =>
+  const m = MODES[mode];
+  zenHint.textContent = m.hint;
+  document.getElementById("zen-why").textContent = m.why;
+  zenCycleStart = Date.now();   // 换呼吸法时重置节奏,但不清空已计时长
+  // 用 JS 驱动光球缩放,不同呼吸法节奏各异,不再依赖固定 CSS 动画
+  document.querySelectorAll("#zen .zen-purpose").forEach(b =>
     b.classList.toggle("active", b.dataset.mode === mode));
+  if (!zenRunning) {
+    // 未开始/暂停时:光球停在静止大小,不自己动起来
+    document.querySelector(".breath-ball").style.transform = `scale(${m.scale[0]})`;
+  }
 }
-function enterZen() {
-  zenStart = Date.now();
-  zen.classList.add("on");
-  zen.setAttribute("aria-hidden", "false");
-  setZenMode(zenMode);
-  updatePhase(); updateZenTimer();
-  phaseTick = setInterval(updatePhase, 200);
+
+/* 光球随呼吸节奏缩放:吸气段放大,其余收缩 */
+function animateBall() {
+  const m = MODES[zenMode];
+  const t = ((Date.now() - zenCycleStart) / 1000) % m.cycle;
+  const [minS, maxS] = m.scale;
+  let s;
+  const holdEnd = (m.phases[1] && m.phases[1].name === "屏息") ? m.phases[2].at : m.inhaleEnd;
+  if (t <= m.inhaleEnd) {
+    s = minS + (maxS - minS) * (t / m.inhaleEnd);          // 吸气:放大
+  } else if (t < holdEnd) {
+    s = maxS;                                               // 屏息:保持
+  } else {
+    const p = (t - holdEnd) / (m.cycle - holdEnd);
+    s = maxS - (maxS - minS) * Math.min(p, 1);              // 呼气:收缩
+  }
+  document.querySelector(".breath-ball").style.transform = `scale(${s.toFixed(3)})`;
+}
+
+function renderZenPurposes() {
+  const box = document.getElementById("zen-purposes");
+  const suggested = suggestMode();
+  box.innerHTML = Object.entries(MODES).map(([k, m]) => `
+    <button class="zen-purpose ${k === zenMode ? "active" : ""}" data-mode="${k}">
+      <span class="zp-icon">${m.icon}</span>
+      <span class="zp-label">${m.label}</span>
+      ${k === suggested ? `<span class="zp-tip">此刻推荐</span>` : ""}
+    </button>`).join("");
+  box.querySelectorAll(".zen-purpose").forEach(b =>
+    b.addEventListener("click", () => setZenMode(b.dataset.mode)));
+}
+
+function startZen() {
+  if (zenRunning) return;
+  zenRunning = true;
+  zenRunStart = Date.now();
+  zenCycleStart = Date.now();
+  const btn = document.getElementById("zen-start");
+  btn.textContent = "暂停";
+  btn.classList.add("running");
+  updatePhase(); animateBall(); updateZenTimer();
+  phaseTick = setInterval(() => { updatePhase(); animateBall(); }, 100);
   zenTick = setInterval(updateZenTimer, 1000);
 }
+function pauseZen() {
+  if (!zenRunning) return;
+  zenElapsed += (Date.now() - zenRunStart) / 1000;
+  zenRunning = false;
+  clearInterval(phaseTick); clearInterval(zenTick);
+  const btn = document.getElementById("zen-start");
+  btn.textContent = "继续";
+  btn.classList.remove("running");
+  zenPhase.textContent = "已暂停";
+  document.querySelector(".breath-ball").style.transform = `scale(${MODES[zenMode].scale[0]})`;
+}
+
+function enterZen() {
+  zenMode = suggestMode();       // 按时段推荐,但不自动开始
+  zenElapsed = 0; zenRunning = false; zenRunStart = null;
+  zenCycleStart = Date.now();
+  zen.classList.add("on");
+  zen.setAttribute("aria-hidden", "false");
+  renderZenPurposes();
+  setZenMode(zenMode);
+  zenPhase.textContent = "";
+  zenTimer.textContent = "00:00";
+  const btn = document.getElementById("zen-start");
+  btn.textContent = "开始";
+  btn.classList.remove("running");
+  document.querySelector(".breath-ball").style.transform = `scale(${MODES[zenMode].scale[0]})`;
+  renderZenStats();
+}
 function exitZen() {
+  if (zenRunning) zenElapsed += (Date.now() - zenRunStart) / 1000;
+  zenRunning = false;
+  logZenSession(zenElapsed);
   zen.classList.remove("on");
   zen.setAttribute("aria-hidden", "true");
   clearInterval(phaseTick); clearInterval(zenTick);
+  renderZenStats();
 }
 document.getElementById("cabin-btn").addEventListener("click", enterZen);
 document.getElementById("zen-exit").addEventListener("click", exitZen);
-document.querySelectorAll("#zen .zen-mode-btn").forEach(b => {
-  b.addEventListener("click", () => setZenMode(b.dataset.mode));
+document.getElementById("zen-start").addEventListener("click", () => {
+  zenRunning ? pauseZen() : startZen();
 });
 document.addEventListener("keydown", e => {
   if (e.key !== "Escape") return;
