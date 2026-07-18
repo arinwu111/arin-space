@@ -103,6 +103,14 @@
   .daily-line { display: flex; flex-direction: column; justify-content: center; line-height: 1.7; font-size: 15px; }
   .daily-line .sign { text-align: right; font-size: 14px; color: var(--text-sub); margin-top: 8px; }
 
+  /* 肯定语卡片 */
+  .affirm-card { cursor: pointer; transition: background 0.25s, transform 0.25s; }
+  .affirm-card:hover { background: var(--glass-bg-hover); transform: translateY(-2px); }
+  .affirm-text {
+    font-size: 18px; font-weight: 500; line-height: 1.75;
+    transition: opacity 0.25s; letter-spacing: 0.3px;
+  }
+
   .clock-card { text-align: center; }
   .clock-card .date { font-size: 15px; color: var(--text-sub); }
   .clock-card .time {
@@ -312,6 +320,22 @@
   }
   .health-upload-btn:hover { background: rgba(255,255,255,0.16); }
 
+  /* 网球赛事 */
+  .tennis-row {
+    display: flex; align-items: center; justify-content: space-between; gap: 12px;
+    padding: 12px 4px; border-bottom: 1px solid rgba(255,255,255,0.08);
+  }
+  .tennis-row:last-child { border-bottom: none; }
+  .tennis-row.past { opacity: 0.5; }
+  .tn-main .tn-name { font-size: 15px; font-weight: 600; }
+  .tn-main small { display: block; font-size: 12px; color: var(--text-sub); margin-top: 3px; }
+  .tn-days {
+    flex-shrink: 0; font-size: 13px; padding: 5px 12px; border-radius: 12px;
+    background: rgba(255,255,255,0.1); color: var(--text-main); font-variant-numeric: tabular-nums;
+  }
+  .tn-days.soon { background: rgba(246,112,122,0.25); color: #ffb3b8; }
+  .tn-days.done { background: rgba(255,255,255,0.06); color: var(--text-sub); }
+
   /* AI 设置 */
   .ai-settings-fab {
     position: fixed; right: 24px; bottom: 20px; z-index: 10;
@@ -336,6 +360,16 @@
     flex: 1; background: rgba(255,255,255,0.08); border: 1px solid var(--glass-border);
     border-radius: 10px; padding: 10px 12px; color: var(--text-main); font-size: 14px;
     font-family: inherit; outline: none;
+  }
+
+  /* 人生设计课方法论 */
+  .method-list { display: flex; flex-direction: column; gap: 12px; }
+  .method-item { display: flex; gap: 12px; align-items: flex-start; font-size: 14px; line-height: 1.7; color: var(--text-sub); }
+  .method-item b { color: var(--text-main); }
+  .method-item .m-idx {
+    flex-shrink: 0; width: 24px; height: 24px; border-radius: 50%;
+    background: rgba(255,255,255,0.12); color: var(--text-main);
+    display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 700; margin-top: 1px;
   }
 
   /* 投资:行情(红涨绿跌) */
@@ -414,6 +448,38 @@
     cursor: pointer; transition: background 0.2s;
   }
   .quick-chip:hover { background: rgba(255,255,255,0.16); }
+
+  /* 投资原则墙 */
+  .principle-wall { display: flex; flex-direction: column; gap: 12px; }
+  .principle { font-size: 14px; line-height: 1.8; color: var(--text-sub); padding-left: 12px; border-left: 2px solid rgba(255,255,255,0.15); }
+  .principle .pr-who { display: inline-block; font-weight: 700; color: var(--text-main); margin-right: 8px; }
+
+  /* 投前冷静器 */
+  .cooler-q { margin-bottom: 16px; }
+  .cooler-q .cq-title { font-size: 14px; font-weight: 600; color: var(--text-main); margin-bottom: 4px; }
+  .cooler-q .cq-hint { font-size: 12px; color: var(--text-sub); margin-bottom: 8px; }
+  .cooler-q textarea, .cooler-q .cq-choices { width: 100%; }
+  .cooler-q textarea {
+    background: rgba(0,0,0,0.22); border: 1px solid var(--glass-border); border-radius: 10px;
+    padding: 10px 12px; color: var(--text-main); font-size: 13px; line-height: 1.6;
+    font-family: inherit; resize: vertical; min-height: 56px; outline: none;
+  }
+  .cooler-q textarea::placeholder { color: var(--text-sub); }
+  .cq-choices { display: flex; flex-wrap: wrap; gap: 8px; }
+  .cq-choice {
+    font-size: 13px; padding: 7px 14px; border-radius: 14px; cursor: pointer;
+    background: rgba(255,255,255,0.06); border: 1px solid var(--glass-border); color: var(--text-sub);
+  }
+  .cq-choice.sel { background: rgba(255,255,255,0.22); color: var(--text-main); border-color: rgba(255,255,255,0.4); }
+  .verdict-box { border-radius: 12px; padding: 18px; margin-top: 8px; font-size: 14px; line-height: 1.8; }
+  .verdict-pass { background: rgba(120,220,160,0.12); border: 1px solid rgba(120,220,160,0.4); }
+  .verdict-fail { background: rgba(246,112,122,0.12); border: 1px solid rgba(246,112,122,0.4); }
+  .verdict-box .v-head { font-size: 16px; font-weight: 700; margin-bottom: 6px; }
+  .committee-report {
+    background: rgba(0,0,0,0.2); border: 1px solid var(--glass-border); border-radius: 12px;
+    padding: 18px; margin-top: 14px; font-size: 13px; line-height: 1.85; color: var(--text-main);
+    white-space: pre-wrap;
+  }
 
 
   /* ===== 冥想小屋 ===== */
@@ -512,6 +578,8 @@
   }
 </style>
 <script src="https://cdn.jsdelivr.net/npm/lunar-javascript@1.6.12/lunar.js"></script>
+<!-- Vercel 访客统计:需在 Vercel 后台 Analytics 开启开关后生效 -->
+<script defer src="/_vercel/insights/script.js"></script>
 </head>
 <body>
 
@@ -542,9 +610,9 @@
 
     <section class="right">
       <div class="top-row">
-        <div class="card daily-line">
-          <div id="daily-quote">生活的意义,在于亲手把日子过成自己喜欢的样子。</div>
-          <div class="sign" id="daily-sign">—「今日一句」</div>
+        <div class="card daily-line affirm-card" id="affirm-card" title="点一下换一句">
+          <div id="daily-quote" class="affirm-text">I am becoming the person I want to be.</div>
+          <div class="sign" id="daily-sign">tap for another ✨</div>
         </div>
         <div class="card clock-card">
           <div class="date" id="date-line">—</div>
@@ -584,7 +652,7 @@
         <button class="nav-item" data-panel="about">
           <div class="icon">🚪</div>
           <div class="name">关于我</div>
-          <div class="sub">认知实验 · Agent</div>
+          <div class="sub">人生设计课</div>
         </button>
       </div>
     </section>
@@ -629,7 +697,7 @@
     <div class="panel-head"><div class="p-icon">🤖</div><h2>AI</h2></div>
     <p class="panel-intro">今天 AI 圈发生了什么 —— 每日精选 AI 动态,数据来自
       <a href="https://aihot.virxact.com/" target="_blank" rel="noopener" style="color:var(--text-main);text-decoration:underline;">AI HOT</a>。</p>
-    <div id="ai-daily-date" class="section-sub" style="margin-top:0;">📅 加载中…</div>
+    <div id="ai-daily-date" class="section-sub" style="margin-top:0;display:flex;align-items:center;justify-content:space-between;gap:10px;">📅 加载中…</div>
     <div id="ai-daily-feed"></div>
     <a class="link-card" href="https://aihot.virxact.com/daily" target="_blank" rel="noopener" style="margin-top:20px;">
       <div class="lc-title">🔗 去 AI HOT 看全部动态与日报<span class="tag">外链</span></div>
@@ -764,6 +832,35 @@
       <div id="watch-list"></div>
       <div class="price-note">自选保存在本机浏览器 · 中文名搜索有时搜不到(接口限制),可直接输代码或用上方速查</div>
     </div>
+
+    <!-- 投资原则墙 -->
+    <div class="card" style="margin-top:20px;">
+      <div class="section-sub" style="margin-top:0;">🧭 出手前,先想想他们说的</div>
+      <div class="principle-wall">
+        <div class="principle"><span class="pr-who">段永平</span>「本分。不懂不做,做对的事,把事做对。买股票就是买公司。」</div>
+        <div class="principle"><span class="pr-who">芒格</span>「反过来想,总是反过来想。如果我不能比最聪明的反方更好地反驳自己,我就没资格拥有这个观点。」</div>
+        <div class="principle"><span class="pr-who">巴菲特</span>「别人贪婪我恐惧,别人恐惧我贪婪。如果你不打算持有十年,就不要持有十分钟。」</div>
+        <div class="principle"><span class="pr-who">霍华德·马克斯</span>「你不能预测,但你可以准备。重要的不是会不会发生,而是万一发生你亏得起吗。」</div>
+      </div>
+    </div>
+
+    <!-- 投前冷静器 -->
+    <div class="card" style="margin-top:20px;">
+      <div class="section-sub" style="margin-top:0;">🧊 投前冷静器</div>
+      <p class="price-note" style="margin:0 0 12px;">想买某只标的时,先进来过一遍。诚实回答几个问题,AI 会审查你是不是在冲动。没通过 → 这只标的锁 6 小时,逼你冷静。</p>
+
+      <div id="cooler-start">
+        <div class="watch-search">
+          <input id="cooler-symbol" type="text" placeholder="输入你想买的标的(如 NVDA / 0700.HK / 茅台)" autocomplete="off">
+          <button id="cooler-go-btn">开始核查</button>
+        </div>
+        <div id="cooler-lock-note" class="price-note" style="margin-top:8px;"></div>
+      </div>
+
+      <div id="cooler-quiz" style="display:none;"></div>
+      <div id="cooler-verdict"></div>
+      <div id="committee-area"></div>
+    </div>
   </div>
 </div>
 
@@ -798,6 +895,13 @@
       <div id="health-list"></div>
       <div class="price-note">清单每天自动重置 · 勾选状态保存在本机浏览器 · 依据 Huberman/哈佛等公开研究,仅为健康教育,不构成医疗建议</div>
     </div>
+
+    <!-- 网球赛事日历 -->
+    <div class="card" style="margin-top:20px;">
+      <div class="section-sub" style="margin-top:0;">🎾 网球赛事日历</div>
+      <div id="tennis-list"></div>
+      <div class="price-note">2026 赛季主要赛事 · 日期以官方公布为准,可能微调</div>
+    </div>
   </div>
 </div>
 
@@ -805,24 +909,25 @@
   <button class="panel-close" data-close aria-label="关闭">✕</button>
   <div class="panel-inner">
     <div class="panel-head"><div class="p-icon">🚪</div><h2>关于我</h2></div>
-    <p class="panel-intro">比起履历,我更想分享认知——那些改变过我看世界方式的实验、工具和感悟。欢迎进来玩。</p>
-    <div class="item-grid">
-      <a class="link-card" href="#" title="TODO: 填入人生设计课Agent链接">
-        <div class="lc-title">🧭 人生设计课 Agent<span class="tag">可体验</span></div>
-        <div class="lc-desc">我做的人生设计实验,回答几个问题,一起重新设计你的人生原型。</div>
-      </a>
-      <a class="link-card" href="#" title="TODO: 填入拆解Agent链接">
-        <div class="lc-title">📚 读书拆解 Agent<span class="tag">可体验</span></div>
-        <div class="lc-desc">把一本书拆成认知增量,而不是内容摘要。</div>
-      </a>
-      <a class="link-card" href="#" title="TODO: 填入拆解Agent链接">
-        <div class="lc-title">🎧 播客拆解 Agent<span class="tag">可体验</span></div>
-        <div class="lc-desc">从长对话里萃取值得留下的思想切片。</div>
-      </a>
-      <a class="link-card" href="#">
-        <div class="lc-title">💭 认知感悟<span class="tag">即将上线</span></div>
-        <div class="lc-desc">一些改变过我的想法,不定期更新。</div>
-      </a>
+    <p class="panel-intro">比起履历,我更想分享认知——那些改变过我看世界方式的实验、工具和感悟。这里先放一个我最想分享的:人生设计课。</p>
+
+    <div class="card">
+      <div class="section-sub" style="margin-top:0;display:flex;align-items:center;justify-content:space-between;">
+        <span>🧭 人生设计课</span>
+        <span class="tag">即将上线</span>
+      </div>
+      <p style="font-size:14px;line-height:1.9;color:var(--text-main);margin:6px 0 14px;">
+        一套来自斯坦福最受欢迎的课程《斯坦福大学人生设计课》的方法论。它的前提是:<strong>人生更像一件可以反复设计、低成本试错的作品,而不是一道要算出标准答案的工程题。</strong>你不需要先想清楚自己热爱什么才能开始——我们会一边走一边把它找出来。
+      </p>
+      <div class="method-list">
+        <div class="method-item"><span class="m-idx">1</span><div><b>你在这里</b>——先看清健康、工作、娱乐、爱四个仪表盘的真实现状,承认自己当下所在的位置。</div></div>
+        <div class="method-item"><span class="m-idx">2</span><div><b>分清重力问题</b>——把无法改变的现实(重力问题)和可以动手设计的真问题分开,不在错的问题上死磕。</div></div>
+        <div class="method-item"><span class="m-idx">3</span><div><b>你的指南针</b>——梳理工作观与人生观,找到自己的"正北方向"。</div></div>
+        <div class="method-item"><span class="m-idx">4</span><div><b>能量地图</b>——用心流找出哪些事让你活过来、哪些在悄悄消耗你,区分擅长与热爱。</div></div>
+        <div class="method-item"><span class="m-idx">5</span><div><b>三个奥德赛计划</b>——生成三个完全不同却都愿意去过的五年人生版本,每个都是 A 计划,没有备胎。</div></div>
+        <div class="method-item"><span class="m-idx">6</span><div><b>原型行动</b>——用低成本尝试去试错,因为原型即使失败也会留下有用的信息,所以可以对失败免疫。</div></div>
+      </div>
+      <div class="price-note" style="margin-top:14px;">即将做成可对话体验的版本——像一位设计师一样,陪你一步步把前进的路造出来,最后生成一份属于你的《个人人生设计蓝图》。</div>
     </div>
   </div>
 </div>
@@ -984,21 +1089,76 @@ function tick() {
     `${p(now.getHours())}:${p(now.getMinutes())}:${p(now.getSeconds())}`;
 }
 
-/* ===== 今日一句 ===== */
-const DAILY = [
-  { t: "生活的意义,在于亲手把日子过成自己喜欢的样子。", s: "今日一句" },
-  { t: "慢慢来,比较快。", s: "今日一句" },
-  { t: "把注意力放在自己能控制的事情上。", s: "斯多葛学派" },
-  { t: "所有的伟大,都源于一个勇敢的开始。", s: "今日一句" },
-  { t: "身体和灵魂,总有一个要在路上。", s: "今日一句" },
-  { t: "投资最重要的,是活得足够久。", s: "市场箴言" },
-  { t: "月亮不会奔你而来,但你可以奔向月亮。", s: "今日一句" }
+/* ===== Daily affirmations(I am 风格:第一人称·现在时) ===== */
+const AFFIRMATIONS = [
+  "I am becoming the person I want to be.",
+  "I don't have to live up to anyone else's expectations.",
+  "My worth is not defined by any single success or failure.",
+  "I allow myself to move at my own pace.",
+  "Every small thing I do is taking me somewhere.",
+  "I am capable of handling whatever today brings.",
+  "I deserve kindness — especially from myself.",
+  "I can keep going even when I'm not at my best.",
+  "I trust my own judgment.",
+  "What I have is enough to take the next step.",
+  "I don't need all the answers to begin.",
+  "My effort is compounding, even when I can't see it yet.",
+  "I focus on what I can actually change.",
+  "I can say no without being a bad person.",
+  "My body is working for me, and I take care of it.",
+  "Doing one thing well today is enough.",
+  "I compare myself to who I was yesterday, no one else.",
+  "I am worthy of the life I'm working toward.",
+  "I can begin again — today, right now.",
+  "The quiet voice inside me deserves to be heard.",
+  "I am exactly where I need to be in my own timeline.",
+  "I am free to choose, and I own my choices.",
+  "Rest is part of the work, not a break from it.",
+  "I am allowed to want more, and to be grateful now."
 ];
+let lastAffirmIdx = -1;
+let affirmPool = AFFIRMATIONS;      /* 当前使用的池子:AI 生成的或内置的 */
+const AFFIRM_CACHE_KEY = "arinrin_affirm_";
+
+/* 每天首次打开时,用 AI 生成一批新的(一天一次调用,成本极低)。
+   没配 key / 调用失败 → 自动回退到内置池,功能不受影响。 */
+async function refreshAffirmPool() {
+  const key = AFFIRM_CACHE_KEY + new Date().toISOString().slice(0, 10);
+  try {
+    const cached = JSON.parse(localStorage.getItem(key));
+    if (cached && cached.length >= 10) { affirmPool = cached; return; }
+  } catch (e) {}
+  if (!hasAIKey()) return;          /* 没 key 就安静地用内置池 */
+  try {
+    const raw = await callAI(
+      `Write 20 short first-person affirmations in the style of the "I am" app.
+Rules: present tense, start with "I" where natural, one sentence each, under 12 words,
+warm but not cheesy, no numbering, no quotes.
+Return ONLY a JSON array of 20 strings, nothing else.`,
+      "You write concise, grounded affirmations. Return only a JSON array."
+    );
+    const arr = JSON.parse(raw.trim().replace(/```json|```/g, "").trim());
+    if (Array.isArray(arr) && arr.length >= 10) {
+      affirmPool = arr;
+      /* 只保留当天这一份,顺手清掉旧的 */
+      Object.keys(localStorage)
+        .filter(k => k.startsWith(AFFIRM_CACHE_KEY) && k !== key)
+        .forEach(k => localStorage.removeItem(k));
+      localStorage.setItem(key, JSON.stringify(arr));
+      setDaily();
+    }
+  } catch (e) { /* 失败就继续用内置池 */ }
+}
+
 function setDaily() {
-  const seed = new Date().toISOString().slice(0, 10);
-  const q = DAILY[hashCode(seed) % DAILY.length];
-  document.getElementById("daily-quote").textContent = q.t;
-  document.getElementById("daily-sign").textContent = "—「" + q.s + "」";
+  const pool = (affirmPool && affirmPool.length) ? affirmPool : AFFIRMATIONS;
+  let i;
+  do { i = Math.floor(Math.random() * pool.length); }
+  while (i === lastAffirmIdx && pool.length > 1);
+  lastAffirmIdx = i;
+  const el = document.getElementById("daily-quote");
+  el.style.opacity = 0;
+  setTimeout(() => { el.textContent = pool[i]; el.style.opacity = 1; }, 200);
 }
 
 /* ===== 板块面板 ===== */
@@ -1438,9 +1598,190 @@ function loadInvest() {
     document.querySelectorAll(".quick-chip").forEach(chip => {
       chip.addEventListener("click", () => addWatch(chip.dataset.sym, chip.dataset.name));
     });
+    document.getElementById("cooler-go-btn").addEventListener("click", startCooler);
+    document.getElementById("cooler-symbol").addEventListener("keydown", e => {
+      if (e.key === "Enter") startCooler();
+    });
     investInited = true;
   }
 }
+
+/* ===== 投前冷静器 ===== */
+const COOLER_QUESTIONS = [
+  { id: "biz", type: "text", title: "1. 它靠什么赚钱?", hint: "用一句话说清这家公司/资产的商业模式。说不清 = 在能力圈外(芒格:不懂不投)。" },
+  { id: "motive", type: "choice", title: "2. 你为什么现在想买它?", hint: "段永平:动机不纯直接否决。", choices: ["研究后判断被低估", "最近涨得猛/怕错过", "别人都在买/看到推荐", "有具体催化剂(财报/事件)"] },
+  { id: "tenyear", type: "choice", title: "3. 如果买入后十年不能卖,你还买吗?", hint: "巴菲特:不想持有十年就不要持有十分钟。", choices: ["会,我看好它十年", "犹豫", "不会,我只想赚个短差"] },
+  { id: "drop", type: "choice", title: "4. 买入后如果跌 50%,你会?", hint: "考验你是否真懂、拿得住。", choices: ["加仓,逻辑没变", "拿住不动", "会恐慌卖出", "不知道"] },
+  { id: "size", type: "choice", title: "5. 这笔投入占你总资产多少?亏光影响生活吗?", hint: "仓位纪律。", choices: ["小仓位,亏光也没事", "中等,会肉疼但扛得住", "重仓,亏了影响很大"] },
+  { id: "bear", type: "text", title: "6. 说出三个「不该买它」的理由。", hint: "芒格:不能反驳自己就没资格持有观点。说不出=没研究够。" },
+  { id: "days", type: "choice", title: "7. 你想买它这个念头,持续多久了?", hint: "冷静期检验。", choices: ["今天刚冒出来", "想了几天", "研究/跟踪了几周以上"] }
+];
+
+const COOLER_LOCK_KEY = "arinrin_cooler_locks";
+function getLocks() { try { return JSON.parse(localStorage.getItem(COOLER_LOCK_KEY)) || {}; } catch(e){ return {}; } }
+function saveLocks(l) { localStorage.setItem(COOLER_LOCK_KEY, JSON.stringify(l)); }
+function isLocked(sym) {
+  const l = getLocks(); const until = l[sym.toUpperCase()];
+  return until && Date.now() < until ? until : null;
+}
+function lockSymbol(sym) {
+  const l = getLocks(); l[sym.toUpperCase()] = Date.now() + 6 * 3600 * 1000; saveLocks(l);
+}
+
+let coolerSym = "";
+function startCooler() {
+  const raw = document.getElementById("cooler-symbol").value.trim();
+  const note = document.getElementById("cooler-lock-note");
+  const verdictEl = document.getElementById("cooler-verdict");
+  const commEl = document.getElementById("committee-area");
+  verdictEl.innerHTML = ""; commEl.innerHTML = "";
+  if (!raw) { note.textContent = "请先输入标的。"; return; }
+  const until = isLocked(raw);
+  if (until) {
+    const hrs = Math.ceil((until - Date.now()) / 3600000);
+    note.innerHTML = `🧊 <strong style="color:#f6a">${raw.toUpperCase()}</strong> 正在冷静期,还剩约 ${hrs} 小时。这段时间先别碰它——冲动过去后再回来。`;
+    document.getElementById("cooler-quiz").style.display = "none";
+    return;
+  }
+  note.textContent = "";
+  coolerSym = raw;
+  renderCoolerQuiz();
+}
+
+function renderCoolerQuiz() {
+  const box = document.getElementById("cooler-quiz");
+  box.style.display = "block";
+  box.innerHTML = COOLER_QUESTIONS.map(q => {
+    let input = "";
+    if (q.type === "text") {
+      input = `<textarea data-q="${q.id}" placeholder="诚实作答…"></textarea>`;
+    } else {
+      input = `<div class="cq-choices" data-q="${q.id}">` +
+        q.choices.map(c => `<span class="cq-choice" data-val="${c}">${c}</span>`).join("") + `</div>`;
+    }
+    return `<div class="cooler-q"><div class="cq-title">${q.title}</div><div class="cq-hint">${q.hint}</div>${input}</div>`;
+  }).join("") +
+  `<button class="zen-mode-btn" id="cooler-submit-btn" style="width:100%;">提交核查</button>`;
+
+  box.querySelectorAll(".cq-choices").forEach(group => {
+    group.querySelectorAll(".cq-choice").forEach(ch => {
+      ch.addEventListener("click", () => {
+        group.querySelectorAll(".cq-choice").forEach(x => x.classList.remove("sel"));
+        ch.classList.add("sel");
+      });
+    });
+  });
+  document.getElementById("cooler-submit-btn").addEventListener("click", submitCooler);
+}
+
+function collectCoolerAnswers() {
+  const box = document.getElementById("cooler-quiz");
+  const ans = {};
+  COOLER_QUESTIONS.forEach(q => {
+    if (q.type === "text") {
+      ans[q.id] = box.querySelector(`textarea[data-q="${q.id}"]`).value.trim();
+    } else {
+      const sel = box.querySelector(`.cq-choices[data-q="${q.id}"] .cq-choice.sel`);
+      ans[q.id] = sel ? sel.dataset.val : "";
+    }
+  });
+  return ans;
+}
+
+async function submitCooler() {
+  const ans = collectCoolerAnswers();
+  const verdictEl = document.getElementById("cooler-verdict");
+  // 基本完整性检查
+  const missing = COOLER_QUESTIONS.filter(q => !ans[q.id]);
+  if (missing.length) { verdictEl.innerHTML = `<div class="verdict-box verdict-fail">请把所有问题都答完再提交(还有 ${missing.length} 题没答)。</div>`; return; }
+
+  if (!hasAIKey()) {
+    // 没配 AI:用本地规则判断
+    localVerdict(ans);
+    return;
+  }
+  // 有 AI:让 AI 审查诚实度
+  const btn = document.getElementById("cooler-submit-btn");
+  btn.textContent = "AI 审查中…"; btn.disabled = true;
+  const prompt =
+`我想买 ${coolerSym}。这是我对"投前冷静"7个问题的回答,请审查我是不是在冲动、有没有自欺:
+${COOLER_QUESTIONS.map(q => q.title + " 答:" + ans[q.id]).join("\n")}
+
+判断标准(任一硬伤即不通过):动机是跟风/怕错过、说不清商业模式、说不出反方理由、跌50%会恐慌卖、念头是今天才冒出来的重仓。
+严格只返回 JSON:{"pass":true或false,"comment":"一句中肯点评,指出问题或肯定"}`;
+  try {
+    const raw = await callAI(prompt, "你是一位冷静、诚实、爱之深责之切的投资纪律教练,只返回规定 JSON。");
+    const parsed = JSON.parse(raw.trim().replace(/```json|```/g, "").trim());
+    showVerdict(parsed.pass, parsed.comment);
+  } catch (e) {
+    verdictEl.innerHTML = `<div class="verdict-box verdict-fail">AI 审查失败(${e.message||e})。已改用本地规则判断。</div>`;
+    localVerdict(ans);
+  }
+  btn.textContent = "提交核查"; btn.disabled = false;
+}
+
+function localVerdict(ans) {
+  const fails = [];
+  if (ans.motive === "最近涨得猛/怕错过" || ans.motive === "别人都在买/看到推荐") fails.push("买入动机是跟风或怕错过");
+  if (ans.drop === "会恐慌卖出" || ans.drop === "不知道") fails.push("扛不住 50% 回撤");
+  if (ans.days === "今天刚冒出来" && ans.size === "重仓,亏了影响很大") fails.push("当天冲动 + 重仓");
+  if ((ans.bear || "").length < 8) fails.push("说不出足够的反方理由");
+  if ((ans.biz || "").length < 6) fails.push("说不清它怎么赚钱");
+  const pass = fails.length === 0;
+  showVerdict(pass, pass ? "你对这几个关键问题都想清楚了。" : "存在这些硬伤:" + fails.join(";"));
+}
+
+function showVerdict(pass, comment) {
+  const verdictEl = document.getElementById("cooler-verdict");
+  if (pass) {
+    verdictEl.innerHTML = `<div class="verdict-box verdict-pass">
+      <div class="v-head">✅ 通过 · 你想清楚了</div>
+      ${comment}<br><br>下一步可以让投资委员会做深度研究,再决定仓位。</div>
+      <button class="zen-mode-btn" id="to-committee-btn" style="width:100%;margin-top:12px;">进入投委会深度研究 →</button>`;
+    document.getElementById("to-committee-btn").addEventListener("click", runCommittee);
+  } else {
+    lockSymbol(coolerSym);
+    verdictEl.innerHTML = `<div class="verdict-box verdict-fail">
+      <div class="v-head">🧊 没通过 · 你可能在冲动</div>
+      ${comment}<br><br><strong>${coolerSym.toUpperCase()} 已锁定 6 小时。</strong>这段时间先别买它,让冲动冷却。6 小时后如果你还想买,再回来。</div>`;
+    document.getElementById("cooler-quiz").style.display = "none";
+  }
+}
+
+async function runCommittee() {
+  const commEl = document.getElementById("committee-area");
+  if (!hasAIKey()) { commEl.innerHTML = `<div class="verdict-box verdict-fail">投委会需要 AI。请点右下角 ⚙️AI 配置你的 key。</div>`; return; }
+  commEl.innerHTML = `<div class="price-note" style="margin-top:14px;">正在拉取实时行情并召集投委会…</div>`;
+
+  // 拉实时行情喂给 AI
+  let priceInfo = "";
+  try {
+    const res = await fetch("/api/quotes?symbols=" + encodeURIComponent(coolerSym.toUpperCase()));
+    const data = await res.json();
+    const q = (data.quotes || [])[0];
+    if (q) priceInfo = `当前价 ${q.price} ${q.currency||""},涨跌 ${q.changePercent!=null?q.changePercent.toFixed(2)+"%":"—"}`;
+  } catch (e) {}
+
+  const prompt =
+`请以"投资委员会"模式分析标的:${coolerSym.toUpperCase()}。${priceInfo ? "实时行情:" + priceInfo + "。" : ""}
+
+八位委员及擅长:芒格(护城河/能力圈)、霍华德·马克斯(周期/风险不对称)、段永平(商业模式/管理层动机/十年持有)、德鲁肯米勒(宏观流动性/催化剂/止损)、西蒙斯(量化信号/动量)、李录(中国价值/港股语境)、达里奥(债务周期/货币对冲)、凯西·伍德(颠覆叙事/五年TAM)。按标的类型动态调整各委员权重(不在其能力圈的委员权重减半并注明)。
+
+输出:
+【数据快照】(基于我给的行情;缺的注明未知)
+【各委员意见】每位:核心判断+2-3要点+评分(1-10)
+【委员会裁决】加权综合分X.X/10;主要分歧;操作建议;止损参考;仓位建议(区间,如"试仓3-5%")
+【风险提示】1-2条最关键下行风险
+标准:综合分≥7可考虑买入,5-7观望,≤5回避;芒格或段永平≤3触发价值否决。
+结尾注明"模拟分析,不构成投资建议"。`;
+  try {
+    const raw = await callAI(prompt, "你是严谨的投资委员会主持人,综合八位大师视角给出加权裁决。诚实、指出风险、不迎合。");
+    commEl.innerHTML = `<div class="section-sub">🏛️ 投委会裁决</div><div class="committee-report">${raw.replace(/</g,"&lt;")}</div>`;
+  } catch (e) {
+    commEl.innerHTML = `<div class="verdict-box verdict-fail">投委会分析失败:${e.message||e}</div>`;
+  }
+}
+
 
 /* ===== 健身:今日健康清单(基于科学协议) ===== */
 const HEALTH_PLAN = [
@@ -1514,7 +1855,45 @@ function renderHealth() {
     });
   });
 }
-function loadHealth() { renderHealth(); initHealthAI(); }
+function loadHealth() { renderHealth(); initHealthAI(); renderTennis(); }
+
+/* ---- 网球赛事日历(2026) ---- */
+const TENNIS = [
+  { name: "澳大利亚网球公开赛", level: "大满贯", start: "2026-01-18", place: "墨尔本" },
+  { name: "印第安维尔斯大师赛", level: "1000", start: "2026-03-04", place: "美国" },
+  { name: "法国网球公开赛", level: "大满贯", start: "2026-05-24", place: "巴黎" },
+  { name: "温布尔登网球锦标赛", level: "大满贯", start: "2026-06-29", place: "伦敦" },
+  { name: "美国网球公开赛", level: "大满贯", start: "2026-08-31", place: "纽约" },
+  { name: "成都公开赛 / 杭州公开赛", level: "250", start: "2026-09-23", place: "成都 · 杭州" },
+  { name: "中国网球公开赛", level: "500 / WTA1000", start: "2026-09-30", place: "北京" },
+  { name: "上海网球大师赛", level: "1000", start: "2026-10-07", place: "上海" },
+  { name: "ATP 年终总决赛", level: "年终", start: "2026-11-15", place: "意大利" }
+];
+function renderTennis() {
+  const el = document.getElementById("tennis-list");
+  const today = new Date(); today.setHours(0,0,0,0);
+  const rows = TENNIS.map(t => {
+    const d = new Date(t.start + "T00:00:00");
+    const days = Math.round((d - today) / 86400000);
+    return { ...t, d, days };
+  });
+  const upcoming = rows.filter(r => r.days >= 0).sort((a,b) => a.days - b.days);
+  const past = rows.filter(r => r.days < 0).sort((a,b) => b.days - a.days);
+  const fmt = (r) => {
+    const md = (r.d.getMonth()+1) + "月" + r.d.getDate() + "日";
+    let badge;
+    if (r.days < 0) badge = `<span class="tn-days done">已结束</span>`;
+    else if (r.days === 0) badge = `<span class="tn-days soon">今天开赛</span>`;
+    else badge = `<span class="tn-days">${r.days} 天后</span>`;
+    return `<div class="tennis-row ${r.days<0?'past':''}">
+      <div class="tn-main"><span class="tn-name">${r.name}</span><small>${md} · ${r.place} · ${r.level}</small></div>
+      ${badge}
+    </div>`;
+  };
+  el.innerHTML =
+    (upcoming.length ? `<div class="health-group-label">📅 即将到来</div>` + upcoming.map(fmt).join("") : "") +
+    (past.length ? `<div class="health-group-label">✔️ 本赛季已结束</div>` + past.slice(0,4).map(fmt).join("") : "");
+}
 
 /* ---- 健身 AI 个性化 ---- */
 let healthAIInited = false;
@@ -1585,26 +1964,36 @@ function resetHealthBtn() {
 }
 
 /* ===== AI:AI HOT 每日动态 ===== */
-let aiLoaded = false;
 function escapeHtml(s) {
   return String(s || "").replace(/[&<>"']/g, m =>
     ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[m]));
 }
-async function loadAIDaily() {
-  if (aiLoaded) return; /* 一次会话只拉一次,避免重复请求 */
+async function loadAIDaily(force) {
   const dateEl = document.getElementById("ai-daily-date");
   const feedEl = document.getElementById("ai-daily-feed");
   feedEl.innerHTML = `<div class="ai-loading">正在拉取今天的 AI 动态…</div>`;
   try {
-    const res = await fetch("/api/aihot");
+    /* force=true 时加时间戳绕过缓存,强制拿最新 */
+    const url = "/api/aihot" + (force ? "?t=" + Date.now() : "");
+    const res = await fetch(url, force ? { cache: "no-store" } : {});
     const data = await res.json();
-    dateEl.textContent = "📅 " + (data.date || "今日") + " · AI 日报";
+    const now = new Date();
+    const p = n => String(n).padStart(2, "0");
+    dateEl.innerHTML = `<span>📅 ${escapeHtml(data.date || "今日")} · AI 日报</span>
+      <span style="font-size:12px;color:var(--text-sub);font-weight:400;">
+        更新于 ${p(now.getHours())}:${p(now.getMinutes())}
+        <span class="refresh-btn" id="ai-refresh-btn">↻ 刷新</span>
+      </span>`;
+    const bindRefresh = () => {
+      const btn = document.getElementById("ai-refresh-btn");
+      if (btn) btn.addEventListener("click", (e) => { spinBtn(e.target); loadAIDaily(true); });
+    };
     const sections = data.sections || [];
     if (!sections.length) {
       feedEl.innerHTML = `<div class="ai-loading">今天还没有更新,去 AI HOT 看看往期吧。</div>`;
+      bindRefresh();
       return;
     }
-    /* 每个分类最多展示 3 条,避免面板过长 */
     feedEl.innerHTML = sections.map(sec => {
       const items = (sec.items || []).slice(0, 3).map(it => `
         <a class="ai-news" href="${escapeHtml(it.sourceUrl || it.permalink || '#')}" target="_blank" rel="noopener">
@@ -1614,7 +2003,7 @@ async function loadAIDaily() {
         </a>`).join("");
       return `<div class="ai-group-label">${escapeHtml(sec.label)}</div>${items}`;
     }).join("");
-    aiLoaded = true;
+    bindRefresh();
   } catch (e) {
     dateEl.textContent = "📅 AI 日报";
     feedEl.innerHTML = `<div class="ai-loading">动态加载失败(网络原因或接口限流)。你仍可点下方按钮直接前往 AI HOT。</div>`;
@@ -1745,6 +2134,8 @@ function hasAIKey() { return !!localStorage.getItem("arinrin_ai_key"); }
 applyBackground(true);
 tick();
 setDaily();
+refreshAffirmPool();
+document.getElementById("affirm-card").addEventListener("click", setDaily);
 setInterval(tick, 1000);
 setInterval(() => applyBackground(false), 60 * 1000);
 </script>
