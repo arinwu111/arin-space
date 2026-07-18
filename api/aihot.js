@@ -17,7 +17,7 @@ export default async function handler(req, res) {
       },
     });
     const data = await r.json();
-    res.setHeader("Cache-Control", "s-maxage=1800"); // 缓存30分钟
+    res.setHeader("Cache-Control", "s-maxage=600"); // 缓存10分钟
     return res.status(200).json(data);
   } catch (e) {
     return res.status(502).json({ error: "AIHOT 暂时不可用", detail: String(e) });
