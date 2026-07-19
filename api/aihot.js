@@ -18,7 +18,16 @@ module.exports = async function handler(req, res) {
   } else if (type === "dailies") {
     url = `${BASE}/dailies?take=${take}`;
   } else if (type === "daily") {
-    url = `${BASE}/daily`;
+    const date = (req.query.date || "").toString();
+    if (date) {
+      if (!/^\d{4}-\d{2}-\d{2}$/.test(date)) {
+        res.status(400).json({ error: "date must be YYYY-MM-DD" });
+        return;
+      }
+      url = `${BASE}/daily/${date}`; // 往期指定日期那期
+    } else {
+      url = `${BASE}/daily`;
+    }
   } else {
     res.status(400).json({ error: "type must be daily | selected | dailies" });
     return;

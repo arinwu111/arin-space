@@ -3223,7 +3223,7 @@ function initRead() {
 }
 
 /* ===== AI:AIHOT(日报 / 精选 / 往期) ===== */
-const AIHOT_CACHE_KEY = "arinrin_aihot_cache";
+const AIHOT_CACHE_KEY = "arinrin_aihot_cache_v2";
 let aiTab = "daily";
 
 function expectedDailyDate() {
@@ -3295,18 +3295,25 @@ async function loadAIDaily(force) {
   }
 }
 
-function renderAIDaily(data, fetchedAt, fromCache) {
+function renderAIDaily(data, fetchedAt, fromCache, isArchive) {
   const feedEl = document.getElementById("ai-daily-feed");
   const p = n => String(n).padStart(2, "0");
   const t = new Date(fetchedAt || Date.now());
-  aiHeader("📅 " + escapeHtml(data.date || "今日") + " · AI 日报",
-    (fromCache ? "已缓存 " : "已更新 ") + p(t.getHours()) + ":" + p(t.getMinutes()));
+  if (isArchive) {
+    aiHeader("🗂 " + escapeHtml(data.date || "") + " · 往期日报", "");
+  } else {
+    aiHeader("📅 " + escapeHtml(data.date || "今日") + " · AI 日报",
+      (fromCache ? "已缓存 " : "已更新 ") + p(t.getHours()) + ":" + p(t.getMinutes()));
+  }
 
   const sections = data.sections || [];
   const flashes = data.flashes || [];
   if (!sections.length) { feedEl.innerHTML = '<div class="ai-loading">这期还没有内容。</div>'; return; }
 
   let html = "";
+  if (isArchive) {
+    html += '<div class="flash-row" id="ai-back-dailies" style="cursor:pointer;">← 返回往期列表</div>';
+  }
   if (data.lead && (data.lead.title || data.lead.leadParagraph)) {
     html += '<div class="ai-lead">' +
       (data.lead.title ? '<div class="lead-title">' + escapeHtml(data.lead.title) + "</div>" : "") +
@@ -3341,6 +3348,8 @@ function renderAIDaily(data, fetchedAt, fromCache) {
   }
 
   feedEl.innerHTML = html;
+  const backBtn = document.getElementById("ai-back-dailies");
+  if (backBtn) backBtn.addEventListener("click", () => loadAIDailies(false));
   feedEl.querySelectorAll("[data-jump]").forEach(function (row) {
     row.addEventListener("click", function () {
       const el = document.getElementById(row.dataset.jump);
@@ -3378,12 +3387,34 @@ async function loadAIDailies(force) {
     feedEl.innerHTML = list.length ? list.map(function (d) {
       const date = d.date || d.day || "";
       const title = d.leadTitle || (d.lead && d.lead.title) || d.title || d.headline || "";
-      return '<a class="flash-row" href="https://aihot.virxact.com/daily" target="_blank" rel="noopener">' +
+      return '<div class="flash-row" data-issue="' + escapeHtml(date) + '" style="cursor:pointer;">' +
         '<span class="flash-src" style="min-width:80px;">' + escapeHtml(date) + "</span>" +
-        '<span class="flash-title">' + escapeHtml(title || "查看这期日报") + "</span></a>";
+        '<span class="flash-title">' + escapeHtml(title || "查看这期日报") + "</span>" +
+        '<span class="flash-src">›</span></div>';
     }).join("") : '<div class="ai-loading">没有往期数据。</div>';
+    feedEl.querySelectorAll("[data-issue]").forEach(function (row) {
+      row.addEventListener("click", function () { loadAIDailyByDate(row.dataset.issue); });
+    });
   } catch (e) {
     feedEl.innerHTML = '<div class="ai-loading">往期加载失败。</div>';
+  }
+}
+
+/* 打开指定日期那期日报,在页面里直接渲染(条目全部跳原文) */
+async function loadAIDailyByDate(date) {
+  const feedEl = document.getElementById("ai-daily-feed");
+  aiHeader("🗂 " + escapeHtml(date) + " · 往期日报", "");
+  feedEl.innerHTML = '<div class="ai-loading">正在拉取 ' + escapeHtml(date) + ' 这期…</div>';
+  try {
+    const res = await fetch("/api/aihot?type=daily&date=" + encodeURIComponent(date));
+    const data = await res.json();
+    if (!data || !data.sections) throw new Error("empty");
+    renderAIDaily(data, Date.now(), false, true);
+  } catch (e) {
+    feedEl.innerHTML = '<div class="flash-row" id="ai-back-dailies" style="cursor:pointer;">← 返回往期列表</div>' +
+      '<div class="ai-loading">这期加载失败。</div>';
+    const b = document.getElementById("ai-back-dailies");
+    if (b) b.addEventListener("click", () => loadAIDailies(false));
   }
 }
 
