@@ -129,7 +129,14 @@
   .daily-line .sign { text-align: right; font-size: 14px; color: var(--text-sub); margin-top: 8px; }
 
   /* 肯定语卡片 */
-  .affirm-card { cursor: pointer; transition: background 0.25s, transform 0.25s; }
+  .affirm-card { cursor: pointer; transition: background 0.25s, transform 0.25s; position: relative; }
+  .affirm-card .affirm-text { margin: auto 0; }  /* 句子在卡片里垂直居中 */
+  .affirm-hint {
+    display: block; align-self: flex-end;
+    margin-top: 12px;
+    font-size: 12px; color: var(--text-sub); opacity: 0.65;
+    letter-spacing: 0.5px; pointer-events: none; user-select: none;
+  }
   .affirm-card:hover { background: var(--glass-bg-hover); transform: translateY(-2px); }
   .affirm-text {
     font-size: 18px; font-weight: 500; line-height: 1.75;
@@ -597,6 +604,8 @@
     padding: 12px 4px; border-bottom: 1px solid rgba(255,255,255,0.08); font-size: 15px;
   }
   .watch-row:last-child { border-bottom: none; }
+  .watch-row-link { cursor: pointer; border-radius: 8px; transition: background 0.2s; }
+  .watch-row-link:hover { background: rgba(255,255,255,0.07); }
   .watch-row .w-name { font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
   .watch-row .w-name small { display: block; font-size: 11px; color: var(--text-sub); font-weight: 400; }
   .watch-row .w-price { font-variant-numeric: tabular-nums; }
@@ -929,7 +938,7 @@
       <div class="top-row">
         <div class="card daily-line affirm-card" id="affirm-card" title="点一下换一句">
           <div id="daily-quote" class="affirm-text">I am becoming the person I want to be.</div>
-          <div class="sign" id="daily-sign">✨</div>
+          <div class="affirm-hint">✨ tap</div>
         </div>
         <div class="card clock-card">
           <div class="date" id="date-line">—</div>
@@ -938,7 +947,7 @@
         </div>
       </div>
 
-      <div class="grid-label">🔗 板块导航</div>
+      <div class="grid-label" aria-hidden="true">&nbsp;</div>
 
       <div class="nav-grid">
         <button class="nav-item" data-panel="fitness">
@@ -976,7 +985,7 @@
   </main>
 
   <footer>
-    © 2026 arinrin · 存活于互联网边缘的小站
+    © 2026 arinrin · 小世界改造中
   </footer>
 </div>
 
@@ -1167,13 +1176,11 @@
 
     <!-- 投资原则墙 -->
     <div class="card" style="margin-top:20px;">
-      <div class="section-sub" style="margin-top:0;">🧭 出手前,先想想他们说的</div>
-      <div class="principle-wall">
-        <div class="principle"><span class="pr-who">段永平</span>「本分。不懂不做,做对的事,把事做对。买股票就是买公司。」</div>
-        <div class="principle"><span class="pr-who">芒格</span>「反过来想,总是反过来想。如果我不能比最聪明的反方更好地反驳自己,我就没资格拥有这个观点。」</div>
-        <div class="principle"><span class="pr-who">巴菲特</span>「别人贪婪我恐惧,别人恐惧我贪婪。如果你不打算持有十年,就不要持有十分钟。」</div>
-        <div class="principle"><span class="pr-who">霍华德·马克斯</span>「你不能预测,但你可以准备。重要的不是会不会发生,而是万一发生你亏得起吗。」</div>
+      <div class="section-sub" style="margin-top:0;display:flex;justify-content:space-between;align-items:baseline;">
+        <span>🧭 出手前,先想想他们说的</span>
+        <span id="principle-hint" style="font-size:11px;color:var(--text-sub);opacity:.6;font-weight:400;cursor:pointer;" title="换一组">tap</span>
       </div>
+      <div class="principle-wall" id="principle-wall" style="cursor:pointer;" title="点一下换一组"></div>
     </div>
 
     <!-- 投前冷静器 -->
@@ -2003,7 +2010,7 @@ async function renderWatch() {
     (data.quotes || []).forEach(q => { byS[q.symbol] = q; });
     el.innerHTML = list.map(w => {
       const q = byS[w.symbol] || {};
-      return `<div class="watch-row">
+      return `<div class="watch-row watch-row-link" data-goto="${w.symbol}" title="查看详细行情 ↗">
         <div class="w-name">${w.name}<small>${w.symbol}</small></div>
         <div class="w-price">${fmtNum(q.price)}</div>
         <div class="w-chg ${chgClass(q.changePercent)}">${chgText(q.changePercent)}</div>
@@ -2011,14 +2018,87 @@ async function renderWatch() {
       </div>`;
     }).join("");
     el.querySelectorAll("[data-del]").forEach(btn => {
-      btn.addEventListener("click", () => {
+      btn.addEventListener("click", (e) => {
+        e.stopPropagation(); /* 别触发整行的跳转 */
         saveWatch(getWatch().filter(w => w.symbol !== btn.dataset.del));
         renderWatch();
+      });
+    });
+    el.querySelectorAll("[data-goto]").forEach(row => {
+      row.addEventListener("click", () => {
+        window.open(quoteUrl(row.dataset.goto), "_blank", "noopener");
       });
     });
   } catch (e) {
     el.innerHTML = `<div class="watch-empty">行情加载失败。本地打开无法调用,部署后正常。</div>`;
   }
+}
+
+/* ---- 投资原则墙:多组语料,点一下换一组 ---- */
+const PRINCIPLE_SETS = [
+  [
+    { who: "段永平", text: "本分。不懂不做,做对的事,把事做对。买股票就是买公司。" },
+    { who: "芒格", text: "反过来想,总是反过来想。如果我不能比最聪明的反方更好地反驳自己,我就没资格拥有这个观点。" },
+    { who: "巴菲特", text: "别人贪婪我恐惧,别人恐惧我贪婪。如果你不打算持有十年,就不要持有十分钟。" },
+    { who: "霍华德·马克斯", text: "你不能预测,但你可以准备。重要的不是会不会发生,而是万一发生你亏得起吗。" }
+  ],
+  [
+    { who: "格雷厄姆", text: "市场短期是投票机,长期是称重机。安全边际,是投资的中心思想。" },
+    { who: "彼得·林奇", text: "投资你了解的东西。人们花在挑微波炉上的时间,比研究一只股票还多。" },
+    { who: "费雪", text: "买那种你根本不想卖的公司。频繁交易的成本,远比你以为的高。" },
+    { who: "邓普顿", text: "行情在绝望中诞生,在犹豫中成长,在乐观中成熟,在狂热中死亡。" }
+  ],
+  [
+    { who: "达里奥", text: "痛苦 + 反思 = 进步。最重要的不是预知未来,而是知道每个时点该如何应对。" },
+    { who: "索罗斯", text: "重要的不是你对还是错,而是你对的时候赚了多少,错的时候亏了多少。" },
+    { who: "德鲁肯米勒", text: "看准了就下重注,没看准就别下场。仓位管理比观点更重要。" },
+    { who: "利弗莫尔", text: "赚大钱靠的不是频繁操作,而是耐心持有。市场永远不会错,错的是人的观点。" }
+  ],
+  [
+    { who: "芒格", text: "如果知道我会死在哪里,我就永远不去那个地方。避免愚蠢,比追求聪明更容易。" },
+    { who: "巴菲特", text: "规则一:不要亏钱。规则二:记住规则一。风险来自你不知道自己在做什么。" },
+    { who: "凯恩斯", text: "市场保持非理性的时间,可能比你保持不破产的时间更长。" },
+    { who: "霍华德·马克斯", text: "最危险的话是「这次不一样」。周期永远存在,只是每次穿着不同的衣服。" }
+  ],
+  [
+    { who: "段永平", text: "快就是慢,慢就是快。着急的钱,大概率是要还回去的。" },
+    { who: "李录", text: "知识的诚实:知道自己知道什么,更要知道自己不知道什么。" },
+    { who: "巴菲特", text: "股市是把钱从没耐心的人手里,转移到有耐心的人手里的工具。" },
+    { who: "彼得·林奇", text: "投资者因为「预防调整」而损失的钱,比调整本身造成的损失多得多。" }
+  ]
+];
+let principleIdx = 0;
+function renderPrinciples() {
+  const el = document.getElementById("principle-wall");
+  if (!el) return;
+  el.innerHTML = PRINCIPLE_SETS[principleIdx].map(p =>
+    '<div class="principle"><span class="pr-who">' + p.who + '</span>「' + p.text + '」</div>'
+  ).join("");
+}
+(function initPrinciples() {
+  const el = document.getElementById("principle-wall");
+  if (!el) return;
+  principleIdx = Math.floor(Math.random() * PRINCIPLE_SETS.length);
+  renderPrinciples();
+  const next = () => {
+    principleIdx = (principleIdx + 1) % PRINCIPLE_SETS.length;
+    renderPrinciples();
+  };
+  el.addEventListener("click", next);
+  const hint = document.getElementById("principle-hint");
+  if (hint) hint.addEventListener("click", next);
+})();
+
+/* ---- 自选:跳转到详细行情页(A股/港股/美股走雪球,加密货币和指数走 Yahoo) ---- */
+function quoteUrl(symbol) {
+  const s = String(symbol || "").toUpperCase();
+  if (s.endsWith(".SS")) return "https://xueqiu.com/S/SH" + s.slice(0, -3);
+  if (s.endsWith(".SZ")) return "https://xueqiu.com/S/SZ" + s.slice(0, -3);
+  if (s.endsWith(".HK")) return "https://xueqiu.com/S/" + s.slice(0, -3).padStart(5, "0");
+  if (s.startsWith("^") || s.includes("-") || s.includes("=")) {
+    return "https://finance.yahoo.com/quote/" + encodeURIComponent(s);
+  }
+  return "https://xueqiu.com/S/" + s; /* 美股代码 */
 }
 
 function addWatch(symbol, name) {
@@ -3183,7 +3263,7 @@ function aiItemHtml(it) {
     '<div class="an-title">' + escapeHtml(it.title) + "</div>" +
     (it.summary ? '<div class="an-summary">' + escapeHtml(it.summary) + "</div>" : "") +
     (reason ? '<div class="an-reason">推荐理由:' + escapeHtml(reason) + "</div>" : "") +
-    '<div class="an-source"><span>' + escapeHtml(it.sourceName || "AI HOT") + "</span>" +
+    '<div class="an-source"><span>' + escapeHtml(it.sourceName || it.source || "AI HOT") + "</span>" +
     (tags || []).slice(0, 3).map(t =>
       '<span class="an-tag">#' + escapeHtml(typeof t === "string" ? t : (t.name || "")) + "</span>").join("") +
     "</div></a>";
@@ -3297,7 +3377,7 @@ async function loadAIDailies(force) {
     aiHeader("🗂 往期日报", list.length + " 期");
     feedEl.innerHTML = list.length ? list.map(function (d) {
       const date = d.date || d.day || "";
-      const title = (d.lead && d.lead.title) || d.title || d.headline || "";
+      const title = d.leadTitle || (d.lead && d.lead.title) || d.title || d.headline || "";
       return '<a class="flash-row" href="https://aihot.virxact.com/daily" target="_blank" rel="noopener">' +
         '<span class="flash-src" style="min-width:80px;">' + escapeHtml(date) + "</span>" +
         '<span class="flash-title">' + escapeHtml(title || "查看这期日报") + "</span></a>";
