@@ -13,7 +13,11 @@ module.exports = async function handler(req, res) {
   const take = Math.min(parseInt(req.query.take, 10) || 25, 100);
 
   let url;
-  if (type === "selected") {
+  if (type === "flash") {
+    // 滚动信息流:全量条目,按时间倒序,可带 since 时间窗
+    const since = (req.query.since || "").toString();
+    url = `${BASE}/items?take=${take}` + (since ? `&since=${encodeURIComponent(since)}` : "");
+  } else if (type === "selected") {
     url = `${BASE}/items?mode=selected&take=${take}`;
   } else if (type === "dailies") {
     url = `${BASE}/dailies?take=${take}`;
@@ -29,7 +33,7 @@ module.exports = async function handler(req, res) {
       url = `${BASE}/daily`;
     }
   } else {
-    res.status(400).json({ error: "type must be daily | selected | dailies" });
+    res.status(400).json({ error: "type must be daily | flash | selected | dailies" });
     return;
   }
 
@@ -46,7 +50,9 @@ module.exports = async function handler(req, res) {
 
     const data = await upstream.json();
     // items 端点 5 分钟服务端缓存,这里也缓 5 分钟,别高频打上游
-    res.setHeader("Cache-Control", "s-maxage=300, stale-while-revalidate=600");
+    // 快讯讲时效,缓存 60 秒;其余 5 分钟(上游 items 本身也有 5 分钟服务端缓存)
+    const maxAge = type === "flash" ? 60 : 300;
+    res.setHeader("Cache-Control", `s-maxage=${maxAge}, stale-while-revalidate=${maxAge * 2}`);
     res.status(200).json(data);
   } catch (e) {
     res.status(502).json({ error: "fetch failed: " + (e && e.message) });
