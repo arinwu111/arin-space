@@ -636,6 +636,164 @@
   .principle { font-size: 14px; line-height: 1.8; color: var(--text-sub); padding-left: 12px; border-left: 2px solid rgba(255,255,255,0.15); }
   .principle .pr-who { display: inline-block; font-weight: 700; color: var(--text-main); margin-right: 8px; }
 
+  /* 北极星 · 校准 */
+  .align-credit {
+    font-size: 12px; line-height: 1.9; color: var(--text-sub);
+    margin: 20px 0; padding: 12px 14px; border-radius: 10px;
+    background: rgba(255,255,255,0.045);
+    border-left: 2px solid rgba(255,255,255,0.18);
+  }
+  .polaris-field { margin-bottom: 14px; }
+  .polaris-field .pf-label {
+    font-size: 11px; letter-spacing: 2px; color: var(--text-sub);
+    opacity: .8; margin-bottom: 5px;
+  }
+  .polaris-field .pf-value {
+    font-size: 14px; line-height: 1.9; color: var(--text-main);
+    white-space: pre-wrap;
+  }
+  .polaris-field .pf-value:empty::before { content: "—"; color: var(--text-sub); }
+  .polaris-field textarea {
+    width: 100%; min-height: 62px; resize: vertical;
+    background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.14);
+    border-radius: 10px; padding: 10px 12px; color: var(--text-main);
+    font-size: 14px; line-height: 1.8; font-family: inherit; outline: none;
+  }
+  .polaris-set {
+    font-size: 12px; color: var(--text-sub); margin-top: 10px;
+  }
+  .align-check {
+    display: flex; gap: 9px; align-items: flex-start; cursor: pointer;
+    font-size: 13px; line-height: 1.7; color: var(--text-main);
+    padding: 10px 12px; border-radius: 10px; background: rgba(255,255,255,0.05);
+    margin-bottom: 14px;
+  }
+  .align-check input { margin-top: 4px; flex-shrink: 0; }
+  .align-feed {
+    font-size: 12.5px; line-height: 1.9; color: var(--text-sub);
+    background: rgba(255,255,255,0.05); border-radius: 10px;
+    padding: 12px 14px; margin-bottom: 14px; max-height: 220px; overflow-y: auto;
+  }
+  .align-feed b { color: var(--text-main); font-weight: 500; }
+  .align-verdict {
+    font-size: 14px; line-height: 2.05; color: var(--text-main);
+    background: rgba(255,255,255,0.06); border-radius: 12px;
+    padding: 16px 18px; margin-top: 14px; white-space: pre-wrap;
+  }
+  .align-proto {
+    border-top: 1px solid rgba(255,255,255,0.1);
+    margin-top: 18px; padding-top: 16px;
+  }
+  .polaris-plan-note {
+    font-size: 12.5px; line-height: 1.9; color: var(--text-sub);
+    padding: 11px 13px; margin: 4px 0 14px; border-radius: 10px;
+    background: rgba(255,255,255,0.05);
+  }
+  .polaris-plans {
+    display: grid; grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 10px; margin-bottom: 16px;
+  }
+  .polaris-plan {
+    padding: 13px; border-radius: 11px;
+    background: rgba(255,255,255,0.055);
+    border: 1px solid rgba(255,255,255,0.1);
+  }
+  .polaris-plan .plan-tag {
+    font-size: 10px; letter-spacing: 1.6px; color: var(--text-sub);
+    opacity: .82; margin-bottom: 5px;
+  }
+  .polaris-plan .plan-title { font-size: 14px; font-weight: 650; margin-bottom: 7px; }
+  .polaris-plan .plan-summary { font-size: 12.5px; line-height: 1.75; color: var(--text-sub); white-space: pre-wrap; }
+  .polaris-plan .plan-question {
+    font-size: 11.5px; line-height: 1.65; color: var(--text-sub);
+    margin-top: 9px; padding-top: 8px; border-top: 1px solid rgba(255,255,255,0.08);
+  }
+  .polaris-plan-edit { margin-bottom: 14px; }
+  .polaris-plan-edit input,
+  .polaris-plan-edit textarea,
+  .theme-field input,
+  .theme-field select,
+  .theme-field textarea {
+    width: 100%; background: rgba(255,255,255,0.07);
+    border: 1px solid rgba(255,255,255,0.14); border-radius: 10px;
+    padding: 10px 12px; color: var(--text-main); font-size: 13px;
+    line-height: 1.7; font-family: inherit; outline: none;
+  }
+  .polaris-plan-edit input { margin-bottom: 7px; }
+  .polaris-plan-edit textarea { min-height: 76px; resize: vertical; margin-bottom: 7px; }
+  .theme-periods { display: flex; gap: 8px; margin: 8px 0 16px; }
+  .theme-period {
+    flex: 1; cursor: pointer; padding: 10px 12px; border-radius: 10px;
+    border: 1px solid rgba(255,255,255,0.12);
+    background: rgba(255,255,255,0.05); color: var(--text-sub);
+    font: inherit; font-size: 13px; transition: background .2s, border-color .2s;
+  }
+  .theme-period.active {
+    color: var(--text-main); background: rgba(255,255,255,0.15);
+    border-color: rgba(255,255,255,0.28);
+  }
+  .theme-field { margin-bottom: 13px; }
+  .theme-field .tf-label { font-size: 12px; color: var(--text-sub); margin-bottom: 6px; }
+  .theme-field textarea { resize: vertical; min-height: 62px; }
+  .theme-meta { font-size: 11.5px; color: var(--text-sub); margin: 6px 0 14px; }
+  .theme-current {
+    border-left: 2px solid rgba(255,255,255,0.42);
+    padding-left: 14px;
+  }
+  .theme-record {
+    padding: 13px 0; border-bottom: 1px solid rgba(255,255,255,0.09);
+  }
+  .theme-record:last-child { border-bottom: none; }
+  .theme-record-head { display: flex; gap: 10px; align-items: baseline; }
+  .theme-record-title { font-size: 14px; font-weight: 600; }
+  .theme-record-cycle { font-size: 11px; color: var(--text-sub); margin-left: auto; white-space: nowrap; }
+  .theme-record-body { font-size: 12.5px; line-height: 1.8; color: var(--text-sub); margin-top: 6px; white-space: pre-wrap; }
+  .theme-signal {
+    display: inline-block; font-size: 11px; padding: 3px 8px; border-radius: 12px;
+    margin-top: 8px; background: rgba(255,255,255,0.09); color: var(--text-sub);
+  }
+
+  /* 探索分组标签 */
+  .grp-label {
+    font-size: 12px; letter-spacing: 3px; color: var(--text-sub);
+    opacity: .75; margin: 26px 0 12px; padding-bottom: 6px;
+    border-bottom: 1px solid rgba(255,255,255,0.12);
+  }
+  .grp-label:first-of-type { margin-top: 8px; }
+  /* 慢想 */
+  .slow-influence { display: flex; flex-direction: column; gap: 10px; margin: 10px 0 4px; }
+  .slow-influence label {
+    display: flex; gap: 10px; align-items: flex-start; cursor: pointer;
+    font-size: 13.5px; line-height: 1.75; color: var(--text-main);
+    padding: 10px 12px; border-radius: 10px; background: rgba(255,255,255,0.05);
+    transition: background .2s;
+  }
+  .slow-influence label:hover { background: rgba(255,255,255,0.09); }
+  .slow-influence input { margin-top: 5px; flex-shrink: 0; }
+  .slow-stage-note {
+    font-size: 12.5px; line-height: 1.9; color: var(--text-sub);
+    margin: 4px 0 14px;
+  }
+  .slow-progress {
+    font-size: 11px; letter-spacing: 2px; color: var(--text-sub);
+    opacity: .7; margin-bottom: 6px;
+  }
+  .slow-out {
+    font-size: 14px; line-height: 2.1; color: var(--text-main);
+    background: rgba(255,255,255,0.06); border-radius: 12px; padding: 16px 18px;
+    margin-top: 14px; white-space: pre-wrap;
+  }
+  .slow-hist-row {
+    display: flex; gap: 10px; align-items: center; font-size: 13px;
+    padding: 9px 2px; border-bottom: 1px solid rgba(255,255,255,0.08);
+    color: var(--text-main);
+  }
+  .slow-hist-row:last-child { border-bottom: none; }
+  .slow-hist-row .sh-tag { font-size: 11px; padding: 2px 8px; border-radius: 20px; flex-shrink: 0; }
+  .sh-pass { background: rgba(80,200,120,0.18); color: #7fe0a0; }
+  .sh-fail { background: rgba(255,255,255,0.12); color: var(--text-sub); }
+  .slow-hist-row .sh-date { margin-left: auto; font-size: 11px; color: var(--text-sub); flex-shrink: 0; }
+
   /* 投前冷静器 */
   .cooler-q { margin-bottom: 16px; }
   .cooler-q .cq-title { font-size: 14px; font-weight: 600; color: var(--text-main); margin-bottom: 4px; }
@@ -661,6 +819,10 @@
     background: rgba(0,0,0,0.2); border: 1px solid var(--glass-border); border-radius: 12px;
     padding: 18px; margin-top: 14px; font-size: 13px; line-height: 1.85; color: var(--text-main);
     white-space: pre-wrap;
+  }
+
+  @media (max-width: 700px) {
+    .polaris-plans { grid-template-columns: 1fr; }
   }
 
 
@@ -1035,6 +1197,7 @@
       <a href="https://aihot.virxact.com/" target="_blank" rel="noopener" style="color:var(--text-main);text-decoration:underline;">AI HOT</a>,日报每早八时更新。</p>
     <div class="ai-tabs" id="ai-tabs">
       <button class="ai-tab active" data-tab="daily">日报</button>
+      <button class="ai-tab" data-tab="flash">⚡ 快讯</button>
       <button class="ai-tab" data-tab="selected">精选</button>
       <button class="ai-tab" data-tab="dailies">往期</button>
     </div>
@@ -1250,9 +1413,11 @@
     <div class="panel-head"><div class="p-icon">🧭</div><h2>探索</h2></div>
     <p class="panel-intro">一些还没归类的东西:今天要做的事、值得反复咀嚼的方法论,以及各种杂七杂八的好玩意儿。</p>
 
+    <div class="grp-label">每日</div>
+
     <!-- 本周 -->
     <div class="jn-toolbar">
-      <span class="jn-title">本周</span>
+      <span class="jn-title"></span>
       <span>
         <span class="refresh-btn" id="jn-history-btn">📖 记录</span>
         <span class="refresh-btn" id="jn-export-btn">⬇ 导出</span>
@@ -1293,6 +1458,18 @@
       </div>
     </div>
 
+    <div class="grp-label">遇事时</div>
+
+    <!-- 慢想:决策冷静器 -->
+    <div class="card" style="margin-bottom:20px;">
+      <div class="section-sub" style="margin-top:0;display:flex;align-items:center;justify-content:space-between;">
+        <span>🦉 慢想</span>
+        <span class="refresh-btn" id="slow-history-btn">历史记录</span>
+      </div>
+      <p class="price-note" style="margin:0 0 14px;">当一个决定让你反复纠结时,先分清：这是我真正想要的,还是外部压力在推着我走。</p>
+      <div id="slow-body"></div>
+    </div>
+
     <!-- The Five Whys -->
     <div class="card" style="margin-bottom:20px;">
       <div class="section-sub" style="margin-top:0;display:flex;align-items:center;justify-content:space-between;">
@@ -1303,25 +1480,34 @@
       <div id="whys-body"></div>
     </div>
 
-    <!-- 人生设计课 -->
-    <div class="card">
+    <div class="grp-label">人生设计</div>
+
+    <!-- 北极星 · 校准 -->
+    <div class="card" style="margin-bottom:20px;">
       <div class="section-sub" style="margin-top:0;display:flex;align-items:center;justify-content:space-between;">
-        <span>🧭 人生设计课</span>
-        <span class="tag">即将上线</span>
+        <span>🧭 北极星 · 校准</span>
+        <span class="refresh-btn" id="align-history-btn">历史记录</span>
       </div>
-      <p style="font-size:14px;line-height:1.9;color:var(--text-main);margin:6px 0 14px;">
-        一套来自斯坦福最受欢迎的课程《斯坦福大学人生设计课》的方法论。它的前提是:<strong>人生更像一件可以反复设计、低成本试错的作品,而不是一道要算出标准答案的工程题。</strong>你不需要先想清楚自己热爱什么才能开始——我们会一边走一边把它找出来。
-      </p>
-      <div class="method-list">
-        <div class="method-item"><span class="m-idx">1</span><div><b>你在这里</b>——先看清健康、工作、娱乐、爱四个仪表盘的真实现状,承认自己当下所在的位置。</div></div>
-        <div class="method-item"><span class="m-idx">2</span><div><b>分清重力问题</b>——把无法改变的现实(重力问题)和可以动手设计的真问题分开,不在错的问题上死磕。</div></div>
-        <div class="method-item"><span class="m-idx">3</span><div><b>你的指南针</b>——梳理工作观与人生观,找到自己的"正北方向"。</div></div>
-        <div class="method-item"><span class="m-idx">4</span><div><b>能量地图</b>——用心流找出哪些事让你活过来、哪些在悄悄消耗你,区分擅长与热爱。</div></div>
-        <div class="method-item"><span class="m-idx">5</span><div><b>三个奥德赛计划</b>——生成三个完全不同却都愿意去过的五年人生版本,每个都是 A 计划,没有备胎。</div></div>
-        <div class="method-item"><span class="m-idx">6</span><div><b>原型行动</b>——用低成本尝试去试错,因为原型即使失败也会留下有用的信息,所以可以对失败免疫。</div></div>
+      <div id="polaris-body"></div>
+      <div class="align-credit">
+        AI 会同时保留三个生活版本和共同判断基准,不会要求你先选出唯一版本。<br>
+        每月校准只观察现实更靠近哪一版、出现了什么新证据;版本仍然可以继续修改。
       </div>
-      <div class="price-note" style="margin-top:14px;">即将做成可对话体验的版本——像一位设计师一样,陪你一步步把前进的路造出来,最后生成一份属于你的《个人人生设计蓝图》。</div>
+      <div id="align-body"></div>
     </div>
+
+    <div class="grp-label">阶段实验</div>
+
+    <!-- 主题周 / 主题月 -->
+    <div class="card" style="margin-bottom:20px;">
+      <div class="section-sub" style="margin-top:0;display:flex;align-items:center;justify-content:space-between;">
+        <span>🧪 主题实验</span>
+        <span class="refresh-btn" id="theme-history-btn">历史记录</span>
+      </div>
+      <p class="price-note" style="margin:0 0 14px;">这是人生设计之外的一条开放探索分支。成功了,它可能长成新的方向;失败了,也只是确认了一条边界,不会让你偏离原本的人生设计。</p>
+      <div id="theme-body"></div>
+    </div>
+
   </div>
 </div>
 
@@ -1624,37 +1810,72 @@ const AFFIRMATIONS = [
   "I am exactly where I need to be in my own timeline.",
   "I am free to choose, and I own my choices.",
   "Rest is part of the work, not a break from it.",
-  "I am allowed to want more, and to be grateful now."
+  "I am allowed to want more, and to be grateful now.",
+  "I make room for relationships that feel mutual.",
+  "I can be honest without abandoning kindness.",
+  "I am loved without having to perform for it.",
+  "I release the need to be understood by everyone.",
+  "My boundaries protect what matters to me.",
+  "I bring steady attention to the work in front of me.",
+  "My ideas deserve time before they need proof.",
+  "I can learn what I do not know yet.",
+  "I create before I criticize.",
+  "My work can be meaningful without consuming me.",
+  "I listen when my body asks for something different.",
+  "I nourish myself with care, not punishment.",
+  "I am allowed to feel strong and soft at once.",
+  "My body deserves patience through every season.",
+  "I can pause before my body forces me to.",
+  "I am building safety one thoughtful choice at a time.",
+  "I can look at money clearly and without shame.",
+  "Enough is a feeling I can practice now.",
+  "I choose progress over urgency.",
+  "I can prepare for tomorrow and still live today.",
+  "Uncertainty does not mean I am on the wrong path.",
+  "I can change my mind when new evidence arrives.",
+  "I let curiosity be louder than fear.",
+  "I am allowed to outgrow an old version of myself.",
+  "Joy does not need to be earned first.",
+  "I notice what is already good here.",
+  "I make space for play without needing a reason.",
+  "Today can be ordinary and still be meaningful."
 ];
-let lastAffirmIdx = -1;
 let affirmPool = AFFIRMATIONS;      /* 当前使用的池子:AI 生成的或内置的 */
 const AFFIRM_CACHE_KEY = "arinrin_affirm_";
+const AFFIRM_SEEN_KEY = "arinrin_affirm_seen_";
+
+function affirmDayKey() {
+  const d = new Date();
+  return d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0") + "-" + String(d.getDate()).padStart(2, "0");
+}
 
 /* 每天首次打开时,用 AI 生成一批新的(一天一次调用,成本极低)。
    没配 key / 调用失败 → 自动回退到内置池,功能不受影响。 */
 async function refreshAffirmPool() {
-  const key = AFFIRM_CACHE_KEY + new Date().toISOString().slice(0, 10);
+  const key = AFFIRM_CACHE_KEY + affirmDayKey();
   try {
     const cached = JSON.parse(localStorage.getItem(key));
-    if (cached && cached.length >= 10) { affirmPool = cached; return; }
+    if (cached && cached.length >= 24) { affirmPool = cached; setDaily(); return; }
   } catch (e) {}
   if (!hasAIKey()) return;          /* 没 key 就安静地用内置池 */
   try {
     const raw = await callAI(
-      `Write 20 short first-person affirmations in the style of the "I am" app.
-Rules: present tense, start with "I" where natural, one sentence each, under 12 words,
-warm but not cheesy, no numbering, no quotes.
-Return ONLY a JSON array of 20 strings, nothing else.`,
+      `Write 36 short first-person affirmations in the style of the "I am" app.
+Cover these themes evenly: self-worth, confidence, relationships, boundaries, work, creativity,
+body, rest, money, uncertainty, growth, and joy. Write three distinct lines per theme.
+Rules: present tense, start with "I" where natural, one sentence each, under 14 words,
+grounded and specific, warm but not cheesy, no numbering, no quotes, no near-duplicates.
+Return ONLY a JSON array of 36 strings, nothing else.`,
       "You write concise, grounded affirmations. Return only a JSON array."
     );
     const arr = JSON.parse(raw.trim().replace(/```json|```/g, "").trim());
-    if (Array.isArray(arr) && arr.length >= 10) {
-      affirmPool = arr;
+    if (Array.isArray(arr) && arr.length >= 24) {
+      affirmPool = Array.from(new Set(arr.map(function (x) { return String(x).trim(); }).filter(Boolean)));
       /* 只保留当天这一份,顺手清掉旧的 */
       Object.keys(localStorage)
         .filter(k => k.startsWith(AFFIRM_CACHE_KEY) && k !== key)
         .forEach(k => localStorage.removeItem(k));
-      localStorage.setItem(key, JSON.stringify(arr));
+      localStorage.setItem(key, JSON.stringify(affirmPool));
       setDaily();
     }
   } catch (e) { /* 失败就继续用内置池 */ }
@@ -1662,13 +1883,22 @@ Return ONLY a JSON array of 20 strings, nothing else.`,
 
 function setDaily() {
   const pool = (affirmPool && affirmPool.length) ? affirmPool : AFFIRMATIONS;
-  let i;
-  do { i = Math.floor(Math.random() * pool.length); }
-  while (i === lastAffirmIdx && pool.length > 1);
-  lastAffirmIdx = i;
+  const seenKey = AFFIRM_SEEN_KEY + affirmDayKey();
+  let seen = [];
+  try { seen = JSON.parse(localStorage.getItem(seenKey)) || []; } catch (e) { seen = []; }
+  let available = pool.filter(function (line) { return seen.indexOf(line) < 0; });
+  if (!available.length) { seen = []; available = pool.slice(); }
+  const line = available[Math.floor(Math.random() * available.length)];
+  seen.push(line);
+  try {
+    Object.keys(localStorage)
+      .filter(k => k.startsWith(AFFIRM_SEEN_KEY) && k !== seenKey)
+      .forEach(k => localStorage.removeItem(k));
+    localStorage.setItem(seenKey, JSON.stringify(seen));
+  } catch (e) {}
   const el = document.getElementById("daily-quote");
   el.style.opacity = 0;
-  setTimeout(() => { el.textContent = pool[i]; el.style.opacity = 1; }, 200);
+  setTimeout(() => { el.textContent = line; el.style.opacity = 1; }, 200);
 }
 
 /* ===== 板块面板 ===== */
@@ -1684,7 +1914,7 @@ function openPanel(key) {
   if (key === "ai") loadAIDaily();
   if (key === "fitness") loadHealth();
   if (key === "aesthetic") initRead();
-  if (key === "explore") { loadDaily(); loadCalendar(); initWhys(); renderWhys(); }
+  if (key === "explore") { loadDaily(); loadCalendar(); initWhys(); renderWhys(); initSlow(); initAlign(); initThemeExperiment(); }
 }
 function closePanels() {
   panels.forEach(x => x.classList.remove("on"));
@@ -2189,6 +2419,910 @@ function loadInvest() {
     });
     investInited = true;
   }
+}
+
+/* =========================================================
+   北极星 · 校准 · 探索 · 遇事时
+   上层:三个并行方向 + 人生设计蓝图摘要(常驻,只有你能改,改动会归档旧版)
+   下层:每月一次对照(手动作答,可选自动读取本月晚间复盘)
+   ========================================================= */
+const POLARIS_KEY = "arinrin_polaris";
+const POLARIS_ARCHIVE_KEY = "arinrin_polaris_archive";
+const ALIGN_KEY = "arinrin_align";
+
+const POLARIS_PLAN_DEFAULTS = [
+  { id: "a", title: "版本 A", summary: "", question: "" },
+  { id: "b", title: "版本 B", summary: "", question: "" },
+  { id: "c", title: "版本 C", summary: "", question: "" }
+];
+
+const POLARIS_FIELDS = [
+  { k: "workview",  label: "工作观", ph: "工作对我意味着什么?什么样的工作算好工作?" },
+  { k: "lifeview",  label: "人生观", ph: "我为什么在这儿?什么让人生有意义?" },
+  { k: "energy",    label: "让我活过来的事", ph: "做哪些事的时候我有心流、事后不累反而充电" },
+  { k: "drain",     label: "在消耗我的事", ph: "哪些事做完像被抽干,却常常还是在做" },
+  { k: "gravity",   label: "重力问题(改不了的,不死磕)", ph: "已经确定改变不了的现实,写下来是为了放过自己" }
+];
+
+const ALIGN_Q = [
+  { k: "q1", label: "这个月我时间最多的三件事是什么?", ph: "按占用时间排,不用美化" },
+  { k: "q2", label: "哪一件让我有能量,哪一件在消耗我?", ph: "对照上面的能量地图看" },
+  { k: "q3", label: "有哪件事,我明知道和北极星无关,但还是做了——为什么?", ph: "这题最值得写慢一点" }
+];
+
+function normalizePolaris(p) {
+  if (!p) return null;
+  const out = Object.assign({}, p);
+  const oldDirection = out.direction || "";
+  const source = Array.isArray(out.plans) ? out.plans : [];
+  out.plans = POLARIS_PLAN_DEFAULTS.map(function (base, i) {
+    const plan = source[i] || {};
+    return {
+      id: base.id,
+      title: plan.title || base.title,
+      summary: plan.summary || (i === 0 ? oldDirection : ""),
+      question: plan.question || ""
+    };
+  });
+  return out;
+}
+function getPolaris() { try { return normalizePolaris(JSON.parse(localStorage.getItem(POLARIS_KEY)) || null); } catch(e){ return null; } }
+function savePolaris(p) {
+  const old = getPolaris();
+  if (old) {
+    try {
+      const arch = JSON.parse(localStorage.getItem(POLARIS_ARCHIVE_KEY)) || [];
+      arch.unshift(Object.assign({}, old, { archivedAt: Date.now() }));
+      localStorage.setItem(POLARIS_ARCHIVE_KEY, JSON.stringify(arch.slice(0, 12)));
+    } catch(e){}
+  }
+  p.updatedAt = Date.now();
+  try { localStorage.setItem(POLARIS_KEY, JSON.stringify(p)); } catch(e){}
+}
+function getAligns() { try { return JSON.parse(localStorage.getItem(ALIGN_KEY)) || {}; } catch(e){ return {}; } }
+function saveAligns(a) { try { localStorage.setItem(ALIGN_KEY, JSON.stringify(a)); } catch(e){} }
+function monthKey(d) { d = d || new Date(); return d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0"); }
+function prevMonthKey() { const d = new Date(); d.setMonth(d.getMonth() - 1); return monthKey(d); }
+function monthLabel(mk) { const a = mk.split("-"); return a[0] + " 年 " + Number(a[1]) + " 月"; }
+
+let polarisEditing = false;
+
+function initAlign() {
+  const btn = document.getElementById("align-history-btn");
+  if (btn && !btn.dataset.bound) { btn.dataset.bound = "1"; btn.addEventListener("click", renderAlignHistory); }
+  polarisEditing = false;
+  renderPolaris();
+  renderAlign();
+}
+
+/* ---------- 上层:北极星 ---------- */
+function renderPolaris() {
+  const el = document.getElementById("polaris-body");
+  if (!el) return;
+  const p = getPolaris();
+
+  if (!p && !polarisEditing) {
+    el.innerHTML =
+      '<div class="slow-stage-note">把完整的人生设计蓝图贴进来，这是一份依据《斯坦福人生设计课》方法生成的报告。AI 会同时整理并展示三个生活版本和共同判断基准,不会要求你先选一个;分析结果可以逐项修改。<b>原文和结果只存在你自己的浏览器里。</b></div>' +
+      '<textarea id="polaris-raw" rows="7" style="width:100%;resize:vertical;background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.14);border-radius:10px;padding:12px;color:var(--text-main);font-size:14px;line-height:1.8;font-family:inherit;outline:none;" placeholder="粘贴你的《个人人生设计蓝图》全文…"></textarea>' +
+      '<button class="zen-mode-btn" id="polaris-extract" style="width:100%;margin-top:12px;">让 AI 分析并整理</button>' +
+      '<div id="polaris-note" class="price-note" style="margin-top:8px;"></div>';
+    document.getElementById("polaris-extract").addEventListener("click", polarisExtract);
+    return;
+  }
+
+  if (polarisEditing) {
+    const cur = normalizePolaris(p || {});
+    el.innerHTML =
+      '<div class="polaris-plan-note">三个版本会同时保留,不是三选一。你可以先修正 AI 的提炼,再通过每月校准观察现实正在靠近哪一版。</div>' +
+      '<div class="polaris-plans">' + cur.plans.map(function (plan, i) {
+        return '<div class="polaris-plan polaris-plan-edit" data-plan-id="' + plan.id + '">' +
+          '<div class="plan-tag">方向 ' + String.fromCharCode(65 + i) + '</div>' +
+          '<input data-plan-title placeholder="给这个版本起个名字" value="' + escapeHtml(plan.title || "") + '">' +
+          '<textarea data-plan-summary placeholder="这个版本里的生活大致是什么样?">' + escapeHtml(plan.summary || "") + '</textarea>' +
+          '<textarea data-plan-question placeholder="最需要通过真实行动验证的关键问题">' + escapeHtml(plan.question || "") + '</textarea></div>';
+      }).join("") + '</div>' +
+      POLARIS_FIELDS.map(function (f) {
+      return '<div class="polaris-field"><div class="pf-label">' + f.label + "</div>" +
+        '<textarea data-pf="' + f.k + '" placeholder="' + f.ph + '">' + escapeHtml(cur[f.k] || "") + "</textarea></div>";
+    }).join("") +
+      '<div style="display:flex;gap:8px;flex-wrap:wrap;">' +
+      '<button class="zen-mode-btn" id="polaris-save" style="flex:1;min-width:120px;">保存</button>' +
+      '<button class="zen-mode-btn" id="polaris-cancel" style="flex:1;min-width:120px;background:rgba(255,255,255,0.14);">取消</button>' +
+      "</div>" +
+      '<div class="price-note" style="margin-top:8px;">保存时会把上一版归档,方便以后回头看自己变了什么。</div>';
+    document.getElementById("polaris-save").addEventListener("click", function () {
+      const obj = { plans: [] };
+      el.querySelectorAll(".polaris-plan-edit").forEach(function (box) {
+        obj.plans.push({
+          id: box.dataset.planId,
+          title: box.querySelector("[data-plan-title]").value.trim(),
+          summary: box.querySelector("[data-plan-summary]").value.trim(),
+          question: box.querySelector("[data-plan-question]").value.trim()
+        });
+      });
+      el.querySelectorAll("[data-pf]").forEach(function (t) { obj[t.dataset.pf] = t.value.trim(); });
+      if (!obj.plans.some(function (plan) { return plan.summary; }) && !POLARIS_FIELDS.some(function (f) { return obj[f.k]; })) return;
+      savePolaris(obj); polarisEditing = false; renderPolaris(); renderAlign();
+    });
+    const c = document.getElementById("polaris-cancel");
+    if (c) c.addEventListener("click", function () { polarisEditing = false; renderPolaris(); });
+    return;
+  }
+
+  const plans = p.plans || [];
+  el.innerHTML =
+    '<div class="polaris-plan-note">不需要现在选出唯一版本。三版会并行保留;每月校准只增加现实证据,不会替你做选择。</div>' +
+    '<div class="polaris-plans">' + plans.map(function (plan, i) {
+      if (!plan.summary && !plan.title) return "";
+      return '<div class="polaris-plan"><div class="plan-tag">方向 ' + String.fromCharCode(65 + i) + '</div>' +
+        '<div class="plan-title">' + escapeHtml(plan.title || ("版本 " + String.fromCharCode(65 + i))) + '</div>' +
+        '<div class="plan-summary">' + escapeHtml(plan.summary || "—") + '</div>' +
+        (plan.question ? '<div class="plan-question">待验证：' + escapeHtml(plan.question) + '</div>' : '') + '</div>';
+    }).join("") + '</div>' +
+    POLARIS_FIELDS.map(function (f) {
+    if (!p[f.k]) return "";
+    return '<div class="polaris-field"><div class="pf-label">' + f.label + "</div>" +
+      '<div class="pf-value">' + escapeHtml(p[f.k]) + "</div></div>";
+  }).join("") +
+    '<div class="polaris-set">写于 ' + new Date(p.updatedAt || Date.now()).toLocaleDateString("zh-CN") +
+    ' · <span class="refresh-btn" id="polaris-edit">编辑</span></div>';
+  document.getElementById("polaris-edit").addEventListener("click", function () {
+    polarisEditing = true; renderPolaris();
+  });
+}
+
+async function polarisExtract() {
+  const raw = document.getElementById("polaris-raw").value.trim();
+  const note = document.getElementById("polaris-note");
+  if (!raw) { note.textContent = "先把蓝图贴进来。"; return; }
+  if (!hasAIKey()) {
+    note.textContent = "请先在右下角 ⚙️AI 配置 key,再回来让 AI 分析。你已经贴入的原文不会离开当前页面。";
+    return;
+  }
+  const btn = document.getElementById("polaris-extract");
+  btn.textContent = "正在分析…"; btn.disabled = true;
+  const prompt =
+`下面是一份依据斯坦福人生设计课方法论生成的个人蓝图。请先识别其中三个奥德赛计划 / 人生版本,再摘出共同的判断基准。每项用第一人称、尽量用原文里的表述,不要替她选版本,不要发挥、不要加建议。找不到的留空字符串,不要杜撰。
+
+严格只返回 JSON:
+{"plans":[{"title":"版本A的短标题","summary":"这个版本的生活方向,两三句","question":"最值得通过行动验证的一个关键问题"},{"title":"版本B的短标题","summary":"...","question":"..."},{"title":"版本C的短标题","summary":"...","question":"..."}],"workview":"工作观,一到两句","lifeview":"人生观,一到两句","energy":"让我有能量的事,列举","drain":"在消耗我的事,列举","gravity":"重力问题(改不了的现实),列举"}
+
+蓝图原文:
+${raw.slice(0, 12000)}`;
+  try {
+    const out = await callAI(prompt, "你是一个忠实的摘录者,只从原文提炼,不添加任何自己的判断。只返回规定 JSON。");
+    const p = JSON.parse(out.trim().replace(/```json|```/g, "").trim());
+    const plans = POLARIS_PLAN_DEFAULTS.map(function (base, i) {
+      const src = Array.isArray(p.plans) ? (p.plans[i] || {}) : {};
+      return { id: base.id, title: src.title || base.title, summary: src.summary || "", question: src.question || "" };
+    });
+    savePolaris({ plans: plans, workview: p.workview || "", lifeview: p.lifeview || "",
+      energy: p.energy || "", drain: p.drain || "", gravity: p.gravity || "" });
+    polarisEditing = true;   // 摘完直接进编辑态,方便她当场改
+    renderPolaris(); renderAlign();
+  } catch (e) {
+    note.textContent = "分析失败(" + (e.message || e) + ")。原文还在,可以检查 AI 设置后重试。";
+    btn.textContent = "让 AI 分析并整理"; btn.disabled = false;
+  }
+}
+
+/* ---------- 下层:校准 ---------- */
+function journalMonth(mk) {
+  const j = getJournal();
+  const out = [];
+  Object.keys(j).sort().forEach(function (d) {
+    if (d.slice(0, 7) !== mk) return;
+    const e = j[d];
+    if (e && e.evening) out.push({ date: d, ev: e.evening });
+  });
+  return out;
+}
+
+function renderAlign() {
+  const el = document.getElementById("align-body");
+  if (!el) return;
+  const p = getPolaris();
+  if (!p) {
+    el.innerHTML = '<div class="price-note">先在上面写下你的北极星,校准才有可对照的东西。</div>';
+    return;
+  }
+
+  const mk = monthKey();
+  const aligns = getAligns();
+  const cur = aligns[mk];
+
+  if (cur && cur.verdict) { renderAlignDone(mk, cur); return; }
+
+  const prev = aligns[prevMonthKey()];
+  const evs = journalMonth(mk);
+
+  el.innerHTML =
+    '<div class="cq-title" style="margin-bottom:6px;">' + monthLabel(mk) + " · 校准</div>" +
+    '<div class="slow-stage-note">对着上面的北极星,回答这三个问题。写完交给它照一照,它只会说出偏差在哪,不会替你做决定。</div>' +
+    (evs.length
+      ? '<label class="align-check"><input type="checkbox" id="align-usefeed"><span>想不出来的时候,自动读取本月已填的晚间复盘(' + evs.length + ' 天)作为参考</span></label><div id="align-feed"></div>'
+      : '<div class="price-note" style="margin-bottom:14px;">本月还没有晚间复盘记录,这次先手动回答。</div>') +
+    ALIGN_Q.map(function (q) {
+      return '<div class="cooler-q"><div class="cq-title">' + escapeHtml(q.label) + "</div>" +
+        '<textarea data-align="' + q.k + '" rows="3" placeholder="' + q.ph + '">' + escapeHtml((cur && cur[q.k]) || "") + "</textarea></div>";
+    }).join("") +
+    '<div class="align-proto">' +
+    (prev && prev.proto
+      ? '<div class="cooler-q"><div class="cq-title">上个月你给自己派的原型行动</div>' +
+        '<div class="cq-hint">' + escapeHtml(prev.proto) + "</div>" +
+        '<textarea data-align="protoReview" rows="2" placeholder="做了没有?学到了什么?没做也写下来,为什么没做">' +
+        escapeHtml((cur && cur.protoReview) || "") + "</textarea></div>"
+      : '<div class="price-note" style="margin-bottom:12px;">原型行动:每月给自己派一个低成本的小实验(约一个人聊天、试一种工作方式、去一个地方待半天)。这是这套方法里唯一真正会改变现实的部分。</div>') +
+    '<div class="cooler-q"><div class="cq-title">下个月的原型行动</div>' +
+    '<div class="cq-hint">一件小事、一周内能做完、失败了也没损失</div>' +
+    '<textarea data-align="proto" rows="2" placeholder="我打算试试…">' + escapeHtml((cur && cur.proto) || "") + "</textarea></div></div>" +
+    '<button class="zen-mode-btn" id="align-submit" style="width:100%;margin-top:6px;">交给它照一照</button>' +
+    '<div id="align-note" class="price-note" style="margin-top:8px;"></div>';
+
+  const chk = document.getElementById("align-usefeed");
+  if (chk) {
+    chk.addEventListener("change", function () {
+      const box = document.getElementById("align-feed");
+      if (!chk.checked) { box.innerHTML = ""; return; }
+      box.className = "align-feed";
+      box.innerHTML = evs.map(function (e) {
+        return "<div>" + e.date.slice(5) + " " +
+          (e.ev.done ? "<b>做成:</b>" + escapeHtml(e.ev.done) + " " : "") +
+          (e.ev.drain ? "<b>消耗:</b>" + escapeHtml(e.ev.drain) : "") + "</div>";
+      }).join("");
+    });
+  }
+
+  document.getElementById("align-submit").addEventListener("click", function () {
+    const obj = {};
+    el.querySelectorAll("[data-align]").forEach(function (t) { obj[t.dataset.align] = t.value.trim(); });
+    if (ALIGN_Q.some(function (q) { return !obj[q.k]; })) {
+      document.getElementById("align-note").textContent = "三个问题都写完再提交。";
+      return;
+    }
+    obj.useFeed = !!(chk && chk.checked);
+    alignReview(mk, obj, evs);
+  });
+}
+
+async function alignReview(mk, obj, evs) {
+  const el = document.getElementById("align-body");
+  const p = getPolaris();
+  el.innerHTML = '<div class="price-note">正在把这个月和你的北极星放在一起看……</div>';
+
+  const planText = (p.plans || []).map(function (plan, i) {
+    return "方向 " + String.fromCharCode(65 + i) + "（" + (plan.title || "未命名") + "）:" + (plan.summary || "—") +
+      (plan.question ? "\n待验证问题:" + plan.question : "");
+  }).join("\n");
+
+  const feedText = obj.useFeed && evs.length
+    ? "\n\n【本月晚间复盘原话】\n" + evs.map(function (e) {
+        return e.date + " 做成:" + (e.ev.done || "—") + " 消耗:" + (e.ev.drain || "—");
+      }).join("\n")
+    : "";
+
+  let verdict = "";
+  if (hasAIKey()) {
+    const prompt =
+`这是一个人的人生设计蓝图关键项(她的「北极星」),以及她这个月的自述。请把两者放在一起对照,诚实说出偏差在哪。
+
+【三个并行方向（目前不要求三选一）】
+${planText || "—"}
+
+【共同判断基准】
+工作观:${p.workview || "—"}
+人生观:${p.lifeview || "—"}
+让她有能量的事:${p.energy || "—"}
+在消耗她的事:${p.drain || "—"}
+重力问题(改不了的):${p.gravity || "—"}
+
+【${monthLabel(mk)} 自述】
+时间最多的三件事:${obj.q1}
+有能量/被消耗:${obj.q2}
+明知无关却还是做了的事:${obj.q3}
+${obj.protoReview ? "上月原型行动回顾:" + obj.protoReview : ""}
+下月原型行动:${obj.proto || "—"}${feedText}
+
+要求:
+1. 不打分、不列连续天数、不给励志话。
+2. 直接说出这个月的时间分配与三个方向、共同判断基准之间的具体关系,能引用她自己的原话就引用。
+3. 不要求她选出唯一版本;如果本月行为给某个版本增加或减少了证据,明确说出是哪一个以及为什么。
+4. 如果她把精力花在自己亲手写下的「消耗项」上,明确点出来。
+5. 如果偏差其实很小,就直说没什么好纠正的,不要硬找问题。
+6. 如果她纠结的其实是重力问题,提醒她那是改不了的,不必内耗。
+7. 结尾一句话点出下个月最值得注意的一个点。
+8. 三到五段,每段短。用第二人称「你」。不要用 markdown 标题或列表符号。`;
+    try {
+      verdict = await callAI(prompt, "你是一个诚实、不迎合、也不刻薄的对照者。你的任务不是评判她的人生,是把她自己说过的话和她实际过的日子并排放好给她看。");
+    } catch (e) { verdict = ""; }
+  }
+
+  if (!verdict) {
+    // 没有 AI 或调用失败:本地做一个朴素的对照
+    const drains = (p.drain || "").split(/[,、;;\n]/).map(function (s) { return s.trim(); }).filter(Boolean);
+    const hit = drains.filter(function (d) { return d && (obj.q1 + obj.q2 + obj.q3).indexOf(d) >= 0; });
+    verdict = "这个月你时间最多的是:" + obj.q1 + "\n\n" +
+      (hit.length
+        ? "其中「" + hit.join("」「") + "」是你自己在北极星里写下的消耗项——它又出现在这个月的前排了。\n\n"
+        : "从你写的来看,前排的事里没有直接撞上你自己列的消耗项。\n\n") +
+      "你说明知无关却还是做了的是:" + obj.q3 + "\n\n" +
+      (obj.proto ? "下个月的原型行动:" + obj.proto : "下个月还没派原型行动——这是唯一会真正改变现实的一步,别空着。") +
+      "\n\n(配置 AI key 后,这一段会变成更具体的对照。)";
+  }
+
+  const aligns = getAligns();
+  aligns[mk] = Object.assign({}, obj, { verdict: verdict, ts: Date.now() });
+  saveAligns(aligns);
+  renderAlignDone(mk, aligns[mk]);
+}
+
+function renderAlignDone(mk, rec) {
+  const el = document.getElementById("align-body");
+  el.innerHTML =
+    '<div class="cq-title" style="margin-bottom:4px;">' + monthLabel(mk) + " · 校准结果</div>" +
+    '<div class="align-verdict">' + escapeHtml(rec.verdict) + "</div>" +
+    (rec.proto ? '<div class="price-note" style="margin-top:10px;">📌 这个月的原型行动:' + escapeHtml(rec.proto) + "</div>" : "") +
+    '<div class="polaris-set" style="margin-top:12px;"><span class="refresh-btn" id="align-redo">重做这个月的校准</span></div>';
+  document.getElementById("align-redo").addEventListener("click", function () {
+    const a = getAligns();
+    if (a[mk]) { delete a[mk].verdict; saveAligns(a); }
+    renderAlign();
+  });
+}
+
+function renderAlignHistory() {
+  const el = document.getElementById("align-body");
+  const aligns = getAligns();
+  const keys = Object.keys(aligns).sort().reverse();
+  let html = '<div class="cq-title" style="margin-bottom:10px;">往期校准</div>';
+  if (!keys.length) {
+    html += '<div class="price-note">还没有校准记录。每个月来一次就够。</div>';
+  } else {
+    html += keys.map(function (k) {
+      const r = aligns[k];
+      return '<div class="polaris-field"><div class="pf-label">' + monthLabel(k) + "</div>" +
+        '<div class="pf-value" style="font-size:13px;color:var(--text-sub);">' +
+        escapeHtml((r.verdict || "").slice(0, 220)) + ((r.verdict || "").length > 220 ? "…" : "") + "</div></div>";
+    }).join("");
+  }
+  html += '<button class="zen-mode-btn" id="align-back" style="width:100%;margin-top:10px;">返回</button>';
+  el.innerHTML = html;
+  document.getElementById("align-back").addEventListener("click", renderAlign);
+}
+
+/* =========================================================
+   主题实验 · 主题周 / 主题月
+   独立于人生设计的开放探索:成功拓展方向,失败确认边界
+   ========================================================= */
+const THEME_EXPERIMENT_KEY = "arinrin_theme_experiments_v1";
+let themeView = "main";
+let themeCycle = "week";
+
+function getThemeExperiments() {
+  try {
+    const rows = JSON.parse(localStorage.getItem(THEME_EXPERIMENT_KEY)) || [];
+    return Array.isArray(rows) ? rows : [];
+  } catch (e) { return []; }
+}
+function saveThemeExperiments(rows) {
+  try { localStorage.setItem(THEME_EXPERIMENT_KEY, JSON.stringify(rows)); } catch (e) {}
+}
+function localYmd(d) {
+  return d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0") + "-" + String(d.getDate()).padStart(2, "0");
+}
+function themeCycleEnd(startYmd, cycle) {
+  const d = new Date(startYmd + "T12:00:00");
+  d.setDate(d.getDate() + (cycle === "month" ? 29 : 6));
+  return localYmd(d);
+}
+function shortDate(ymd) {
+  if (!ymd) return "—";
+  const p = ymd.split("-");
+  return Number(p[1]) + " 月 " + Number(p[2]) + " 日";
+}
+function themeSignalLabel(signal) {
+  if (signal === "expand") return "长出了新方向";
+  if (signal === "close" || signal === "less") return "确认边界,安心结束";
+  return "值得继续探索";
+}
+
+function initThemeExperiment() {
+  const btn = document.getElementById("theme-history-btn");
+  if (btn && !btn.dataset.bound) {
+    btn.dataset.bound = "1";
+    btn.addEventListener("click", function () { themeView = "history"; renderThemeExperiment(); });
+  }
+  themeView = "main";
+  renderThemeExperiment();
+}
+
+function renderThemeExperiment() {
+  const el = document.getElementById("theme-body");
+  if (!el) return;
+  if (themeView === "history") { renderThemeHistory(); return; }
+  const rows = getThemeExperiments();
+  const active = rows.find(function (r) { return r.status === "active"; });
+  if (!active || themeView === "edit") {
+    renderThemeForm(active || null);
+    return;
+  }
+  renderThemeActive(active, themeView === "complete");
+}
+
+function updateThemeCycleCopy(el, cycle) {
+  const copy = cycle === "month" ? {
+    guide: "主题月适合探索需要持续投入才能看见变化的新可能。把它拆成四周行动,月底再判断要不要继续。",
+    title: "例如：用一个月学习陶艺并完成一件作品",
+    possibility: "一个月结束时,它可能为我的生活增加什么新的方向或可能?",
+    action: "把 30 天拆成每周能完成的小行动,不影响原有生活安排",
+    evidence: "30 天后,哪些变化或作品说明它值得进入下一轮?"
+  } : {
+    guide: "主题周适合快速试水一个具体念头。行动要足够小,7 天后就能判断是否还想继续。",
+    title: "例如：连续 7 天做清晨摄影",
+    possibility: "这一周结束时,它可能为我的生活打开什么新的可能?",
+    action: "一个每天都能完成的小动作,失败也不会影响原有生活",
+    evidence: "7 天内,什么反应或感受说明我愿意再试一轮?"
+  };
+  const guide = el.querySelector("#theme-cycle-guide");
+  const title = el.querySelector("#theme-title");
+  const possibility = el.querySelector("#theme-hypothesis");
+  const action = el.querySelector("#theme-action");
+  const evidence = el.querySelector("#theme-evidence");
+  if (guide) guide.textContent = copy.guide;
+  if (title) title.placeholder = copy.title;
+  if (possibility) possibility.placeholder = copy.possibility;
+  if (action) action.placeholder = copy.action;
+  if (evidence) evidence.placeholder = copy.evidence;
+}
+
+function renderThemeForm(existing) {
+  const el = document.getElementById("theme-body");
+  const rec = existing || {};
+  themeCycle = rec.cycle || themeCycle || "week";
+  el.innerHTML =
+    '<div class="theme-periods">' +
+      '<button class="theme-period' + (themeCycle === "week" ? " active" : "") + '" data-theme-cycle="week">主题周 · 7 天</button>' +
+      '<button class="theme-period' + (themeCycle === "month" ? " active" : "") + '" data-theme-cycle="month">主题月 · 30 天</button>' +
+    '</div>' +
+    '<div class="slow-stage-note" id="theme-cycle-guide"></div>' +
+    '<div class="theme-field"><div class="tf-label">这期想跳出去探索什么?</div>' +
+      '<input id="theme-title" value="' + escapeHtml(rec.title || "") + '"></div>' +
+    '<div class="theme-field"><div class="tf-label">它打开了什么新的可能?</div>' +
+      '<textarea id="theme-hypothesis">' + escapeHtml(rec.hypothesis || "") + '</textarea></div>' +
+    '<div class="theme-field"><div class="tf-label">最小实验</div>' +
+      '<textarea id="theme-action">' + escapeHtml(rec.action || "") + '</textarea></div>' +
+    '<div class="theme-field"><div class="tf-label">什么现象说明值得继续?（可选）</div>' +
+      '<textarea id="theme-evidence">' + escapeHtml(rec.evidence || "") + '</textarea></div>' +
+    '<div style="display:flex;gap:8px;flex-wrap:wrap;">' +
+      '<button class="zen-mode-btn" id="theme-save" style="flex:1;min-width:140px;">' + (existing ? "保存调整" : "开始这次实验") + '</button>' +
+      (existing ? '<button class="zen-mode-btn" id="theme-cancel" style="flex:1;min-width:100px;background:rgba(255,255,255,0.14);">取消</button>' : '') +
+    '</div><div id="theme-note" class="price-note" style="margin-top:8px;"></div>';
+
+  updateThemeCycleCopy(el, themeCycle);
+  el.querySelectorAll("[data-theme-cycle]").forEach(function (btn) {
+    btn.addEventListener("click", function () {
+      themeCycle = btn.dataset.themeCycle;
+      el.querySelectorAll("[data-theme-cycle]").forEach(function (b) { b.classList.toggle("active", b === btn); });
+      updateThemeCycleCopy(el, themeCycle);
+    });
+  });
+  document.getElementById("theme-save").addEventListener("click", function () {
+    const title = document.getElementById("theme-title").value.trim();
+    const hypothesis = document.getElementById("theme-hypothesis").value.trim();
+    const action = document.getElementById("theme-action").value.trim();
+    if (!title || !hypothesis || !action) {
+      document.getElementById("theme-note").textContent = "把探索主题、新可能和最小实验写完再开始。";
+      return;
+    }
+    const rows = getThemeExperiments();
+    const start = existing ? existing.start : localYmd(new Date());
+    const next = Object.assign({}, existing || {}, {
+      id: existing ? existing.id : (Date.now().toString(36) + Math.random().toString(36).slice(2, 6)),
+      cycle: themeCycle, title: title,
+      hypothesis: hypothesis, action: action,
+      evidence: document.getElementById("theme-evidence").value.trim(),
+      start: start, end: themeCycleEnd(start, themeCycle), status: "active",
+      createdAt: existing ? existing.createdAt : Date.now(), updatedAt: Date.now()
+    });
+    delete next.planRefs; // 旧版曾关联人生方向;新版主题实验保持完全独立
+    if (existing) {
+      const idx = rows.findIndex(function (r) { return r.id === existing.id; });
+      if (idx >= 0) rows[idx] = next;
+    } else rows.unshift(next);
+    saveThemeExperiments(rows);
+    themeView = "main";
+    renderThemeExperiment();
+  });
+  const cancel = document.getElementById("theme-cancel");
+  if (cancel) cancel.addEventListener("click", function () { themeView = "main"; renderThemeExperiment(); });
+}
+
+function renderThemeActive(rec, completing) {
+  const el = document.getElementById("theme-body");
+  const now = new Date();
+  const daysLeft = Math.ceil((new Date(rec.end + "T23:59:59") - now) / 86400000);
+  const timing = daysLeft > 0 ? "还剩 " + daysLeft + " 天" : "已到复盘时间";
+  el.innerHTML =
+    '<div class="theme-current">' +
+      '<div class="theme-record-head"><div class="theme-record-title">' + escapeHtml(rec.title) + '</div>' +
+      '<div class="theme-record-cycle">' + (rec.cycle === "month" ? "主题月" : "主题周") + '</div></div>' +
+      '<div class="theme-meta">' + shortDate(rec.start) + ' — ' + shortDate(rec.end) + ' · ' + timing + '</div>' +
+      '<div class="theme-record-body"><b>新的可能：</b>' + escapeHtml(rec.hypothesis) + '\n<b>最小实验：</b>' + escapeHtml(rec.action) +
+        (rec.evidence ? '\n<b>继续信号：</b>' + escapeHtml(rec.evidence) : '') + '</div>' +
+    '</div>' +
+    (completing
+      ? '<div class="align-proto"><div class="theme-field"><div class="tf-label">实际发生了什么?</div><textarea id="theme-review" placeholder="做了什么、没做什么,真实写下来"></textarea></div>' +
+        '<div class="theme-field"><div class="tf-label">这次最重要的发现</div><textarea id="theme-learning" placeholder="关于自己或这个方向,我现在多知道了什么?"></textarea></div>' +
+        '<div class="theme-field"><div class="tf-label">这次探索最后去了哪里?</div><select id="theme-signal"><option value="expand">长出了一个新方向</option><option value="continue" selected>值得继续探索</option><option value="close">确认边界,安心结束</option></select></div>' +
+        '<div class="theme-field"><div class="tf-label">下一步（可选）</div><textarea id="theme-next" placeholder="继续扩大实验、换个方式再试,或到这里结束"></textarea></div>' +
+        '<div style="display:flex;gap:8px;"><button class="zen-mode-btn" id="theme-finish" style="flex:1;">完成并归档</button><button class="zen-mode-btn" id="theme-finish-cancel" style="flex:1;background:rgba(255,255,255,0.14);">取消</button></div><div id="theme-note" class="price-note" style="margin-top:8px;"></div></div>'
+      : '<div style="display:flex;gap:8px;margin-top:16px;flex-wrap:wrap;"><button class="zen-mode-btn" id="theme-complete" style="flex:1;min-width:140px;">记录结果</button><button class="zen-mode-btn" id="theme-edit" style="flex:1;min-width:100px;background:rgba(255,255,255,0.14);">调整实验</button></div>');
+
+  if (!completing) {
+    document.getElementById("theme-complete").addEventListener("click", function () { themeView = "complete"; renderThemeExperiment(); });
+    document.getElementById("theme-edit").addEventListener("click", function () { themeView = "edit"; renderThemeExperiment(); });
+    return;
+  }
+  document.getElementById("theme-finish-cancel").addEventListener("click", function () { themeView = "main"; renderThemeExperiment(); });
+  document.getElementById("theme-finish").addEventListener("click", function () {
+    const review = document.getElementById("theme-review").value.trim();
+    const learning = document.getElementById("theme-learning").value.trim();
+    if (!review || !learning) {
+      document.getElementById("theme-note").textContent = "先写下实际发生了什么和最重要的发现。";
+      return;
+    }
+    const rows = getThemeExperiments();
+    const idx = rows.findIndex(function (r) { return r.id === rec.id; });
+    if (idx >= 0) rows[idx] = Object.assign({}, rows[idx], {
+      status: "done", review: review, learning: learning,
+      signal: document.getElementById("theme-signal").value,
+      next: document.getElementById("theme-next").value.trim(), completedAt: Date.now()
+    });
+    saveThemeExperiments(rows);
+    themeView = "main";
+    renderThemeExperiment();
+  });
+}
+
+function renderThemeHistory() {
+  const el = document.getElementById("theme-body");
+  const rows = getThemeExperiments().filter(function (r) { return r.status === "done"; });
+  let html = '<div class="cq-title" style="margin-bottom:8px;">往期主题实验</div>';
+  if (!rows.length) html += '<div class="price-note">还没有完成的主题实验。一次只验证一件事就够。</div>';
+  else html += rows.map(function (r) {
+    return '<div class="theme-record"><div class="theme-record-head"><div class="theme-record-title">' + escapeHtml(r.title) + '</div>' +
+      '<div class="theme-record-cycle">' + shortDate(r.start) + ' — ' + shortDate(r.end) + '</div></div>' +
+      '<div class="theme-record-body">' + escapeHtml(r.learning || r.review || "") + '</div>' +
+      '<span class="theme-signal">' + themeSignalLabel(r.signal) + '</span></div>';
+  }).join("");
+  html += '<button class="zen-mode-btn" id="theme-back" style="width:100%;margin-top:12px;">返回当前实验</button>';
+  el.innerHTML = html;
+  document.getElementById("theme-back").addEventListener("click", function () { themeView = "main"; renderThemeExperiment(); });
+}
+
+/* =========================================================
+   慢想(决策冷静器)· 探索 · 遇事时
+   6 步:识别外部诱因 → 强制理性 → 剥离结果偏差 → 双向预演 → 审核锁定 → 输出
+   ========================================================= */
+const SLOW_KEY = "arinrin_slowthink";
+const SLOW_LOCK_KEY = "arinrin_slowthink_locks";
+
+const SLOW_INFLUENCES = [
+  { id: "commit", text: "承诺一致——我之前说过、暗示过,或者已经默认要参与" },
+  { id: "social", text: "社会认同——看起来大家都这么做,我不想是例外" },
+  { id: "recip",  text: "互惠——对方先对我好/先邀请了我,我不好意思拒绝" },
+  { id: "auth",   text: "权威——对方的身份、职位让我没敢质疑" },
+  { id: "scarce", text: "稀缺——现在不决定,机会/关系可能就没了" },
+  { id: "liking", text: "喜好——我不想让某个具体的人失望" }
+];
+
+const SLOW_S2 = [
+  "如果没人会知道你的选择,你还会做同样的决定吗?",
+  "换成一个陌生人提出同样的请求,你会做出一样的回应吗?",
+  "这个决定会不会明显影响你现在的基本生活或精力?",
+  "你是在为这件事本身的价值买单,还是在为「别人会怎么看你」买单?",
+  "三个月后回头看,这个决定会不会让你后悔?",
+  "对方给的是不是一个模糊说法(比如「随意」「你看着来」「无所谓」),而你把它当成了必须完成的义务?",
+  "你有没有给自己一个独立思考的空档,还是被迫当场表态?"
+];
+
+const SLOW_S3 = [
+  "抛开「别人会怎么看我」这个结果,单看这个决定本身的逻辑,你会给一个陌生人同样的建议吗?",
+  "如果最后你后悔了,后悔的会是「结果不好」,还是「我当时根本没认真想」?"
+];
+
+const SLOW_S4 = [
+  "想象三个月后,你后悔了这个决定——最可能的原因是什么?",
+  "想象三个月后,你庆幸自己做了/没做这个决定——最可能的原因是什么?"
+];
+
+let slowState = null;      // { topic, influences:[], s2:[], s3:[], s4:[], startedAt }
+let slowStage = 0;         // 0 入口 / 1..4 各阶段 / 5 结果
+let slowStageEnter = 0;    // 该阶段进入时间戳,用于「答得太快」提示
+
+function slowLocks() { try { return JSON.parse(localStorage.getItem(SLOW_LOCK_KEY)) || {}; } catch(e){ return {}; } }
+function slowSaveLocks(l) { try { localStorage.setItem(SLOW_LOCK_KEY, JSON.stringify(l)); } catch(e){} }
+function slowLockKey(topic) { return (topic || "").trim().slice(0, 40); }
+function slowIsLocked(topic) {
+  const l = slowLocks()[slowLockKey(topic)];
+  return (l && l > Date.now()) ? l : 0;
+}
+function slowLock(topic) {
+  const l = slowLocks();
+  l[slowLockKey(topic)] = Date.now() + 24 * 3600 * 1000;
+  slowSaveLocks(l);
+}
+function slowLeftText(until) {
+  const ms = until - Date.now();
+  const h = Math.floor(ms / 3600000), m = Math.floor((ms % 3600000) / 60000);
+  return h + " 小时 " + m + " 分";
+}
+function slowRecords() { try { return JSON.parse(localStorage.getItem(SLOW_KEY)) || []; } catch(e){ return []; } }
+function slowSaveRecord(rec) {
+  const all = slowRecords();
+  all.unshift(rec);
+  try { localStorage.setItem(SLOW_KEY, JSON.stringify(all.slice(0, 60))); } catch(e){}
+}
+
+function initSlow() {
+  const btn = document.getElementById("slow-history-btn");
+  if (btn && !btn.dataset.bound) {
+    btn.dataset.bound = "1";
+    btn.addEventListener("click", renderSlowHistory);
+  }
+  slowState = null; slowStage = 0;
+  renderSlow();
+}
+
+function slowTextareas(list, saved) {
+  return list.map(function (q, i) {
+    const v = (saved && saved[i]) ? escapeHtml(saved[i]) : "";
+    return '<div class="cooler-q"><div class="cq-title">' + (i + 1) + ". " + escapeHtml(q) + "</div>" +
+      '<textarea data-slow-a="' + i + '" rows="2" placeholder="写下你的理由,不要只答是或否…">' + v + "</textarea></div>";
+  }).join("");
+}
+
+function renderSlow() {
+  const el = document.getElementById("slow-body");
+  if (!el) return;
+
+  /* ---- 入口 ---- */
+  if (slowStage === 0) {
+    const recs = slowRecords();
+    el.innerHTML =
+      '<div class="cq-title" style="margin-bottom:6px;">这件事,你还没想清楚</div>' +
+      '<div class="slow-stage-note">可以是时间、承诺、一次帮忙,或者一句你不太想说出口的「好」。写下让你犹豫的这件事。</div>' +
+      '<div class="watch-search"><input id="slow-topic" type="text" autocomplete="off" ' +
+      'placeholder="比如:要不要参加这次聚会 / 要不要答应帮忙带一件事 / 要不要接下这个安排……">' +
+      '<button id="slow-start-btn">开始理清</button></div>' +
+      '<div id="slow-note" class="price-note" style="margin-top:8px;">' +
+      (recs.length ? "" : "还没有记录过任何决定。遇到下一个让你纠结的事,写下来试试。") + "</div>";
+    const input = document.getElementById("slow-topic");
+    const go = function () {
+      const t = input.value.trim();
+      const note = document.getElementById("slow-note");
+      if (!t) { note.textContent = "先写下这件事,再开始。"; return; }
+      const until = slowIsLocked(t);
+      if (until) { note.textContent = "还在冷静期," + slowLeftText(until) + "后可以重新面对这件事。"; return; }
+      slowState = { topic: t, influences: [], s2: [], s3: [], s4: [], startedAt: Date.now() };
+      slowStage = 1; slowStageEnter = Date.now();
+      renderSlow();
+    };
+    document.getElementById("slow-start-btn").addEventListener("click", go);
+    input.addEventListener("keydown", function (e) { if (e.key === "Enter") go(); });
+    return;
+  }
+
+  /* ---- Stage 1:识别外部诱因 ---- */
+  if (slowStage === 1) {
+    el.innerHTML =
+      '<div class="slow-progress">STAGE 1 / 4</div>' +
+      '<div class="cq-title" style="margin-bottom:6px;">先别问要不要做,问问是什么在推你做</div>' +
+      '<div class="slow-stage-note">很多让人纠结的决定,纠结的其实不是「值不值」,而是有几股看不见的力在同时起作用。勾出这次出现的(可多选):</div>' +
+      '<div class="slow-influence">' +
+      SLOW_INFLUENCES.map(function (f) {
+        const on = slowState.influences.indexOf(f.id) >= 0 ? " checked" : "";
+        return '<label><input type="checkbox" data-slow-inf="' + f.id + '"' + on + "><span>" + escapeHtml(f.text) + "</span></label>";
+      }).join("") + "</div>" +
+      '<div id="slow-inf-note" class="price-note" style="margin-top:10px;"></div>' +
+      '<button class="zen-mode-btn" id="slow-next-1" style="width:100%;margin-top:12px;">下一步</button>';
+
+    const note = document.getElementById("slow-inf-note");
+    const sync = function () {
+      slowState.influences = Array.prototype.slice.call(el.querySelectorAll("[data-slow-inf]"))
+        .filter(function (c) { return c.checked; }).map(function (c) { return c.dataset.slowInf; });
+      const n = slowState.influences.length;
+      note.textContent = n === 0
+        ? "一个都没有?那说明这更接近你自己真实的判断,可以更快往下走。"
+        : (n >= 4 ? "勾得越多,说明这个冲动里「你自己的判断」占比可能越小,后面几步值得认真答。" : "");
+    };
+    el.querySelectorAll("[data-slow-inf]").forEach(function (c) { c.addEventListener("change", sync); });
+    sync();
+    document.getElementById("slow-next-1").addEventListener("click", function () {
+      sync(); slowStage = 2; slowStageEnter = Date.now(); renderSlow();
+    });
+    return;
+  }
+
+  /* ---- Stage 2:强制理性介入 ---- */
+  if (slowStage === 2) {
+    el.innerHTML =
+      '<div class="slow-progress">STAGE 2 / 4</div>' +
+      '<div class="cq-title" style="margin-bottom:6px;">写出理由,不许只答是或否</div>' +
+      '<div class="slow-stage-note">大脑做决定时,有一套系统又快又省力,容易被上面那些外部的力牵着走;还有一套系统慢、费劲,但更可靠。这一步,是把慢的那套系统叫出来。</div>' +
+      slowTextareas(SLOW_S2, slowState.s2) +
+      '<div id="slow-s2-note" class="price-note"></div>' +
+      '<button class="zen-mode-btn" id="slow-next-2" style="width:100%;margin-top:10px;">下一步</button>';
+    document.getElementById("slow-next-2").addEventListener("click", function () {
+      slowState.s2 = Array.prototype.slice.call(el.querySelectorAll("[data-slow-a]")).map(function (t) { return t.value.trim(); });
+      const note = document.getElementById("slow-s2-note");
+      const blank = slowState.s2.filter(function (a) { return !a; }).length;
+      if (blank) { note.textContent = "还有 " + blank + " 题没写理由,把它们补上再往下。"; return; }
+      if (Date.now() - slowStageEnter < 45000) {
+        note.textContent = "这个速度更像是第一反应,而不是想过之后的答案。要不要再给自己 30 秒?";
+        slowStageEnter = Date.now() - 45000; // 再点一次就放行
+        return;
+      }
+      slowStage = 3; slowStageEnter = Date.now(); renderSlow();
+    });
+    return;
+  }
+
+  /* ---- Stage 3:剥离结果偏差 ---- */
+  if (slowStage === 3) {
+    el.innerHTML =
+      '<div class="slow-progress">STAGE 3 / 4</div>' +
+      '<div class="cq-title" style="margin-bottom:6px;">好的决定,不等于好的结果</div>' +
+      '<div class="slow-stage-note">人很容易用「结果好不好」倒推「当初做得对不对」,但一个想清楚的决定也可能撞上不如意的结果——那不该算在决策质量的账上。</div>' +
+      slowTextareas(SLOW_S3, slowState.s3) +
+      '<div id="slow-s3-note" class="price-note"></div>' +
+      '<button class="zen-mode-btn" id="slow-next-3" style="width:100%;margin-top:10px;">下一步</button>';
+    document.getElementById("slow-next-3").addEventListener("click", function () {
+      slowState.s3 = Array.prototype.slice.call(el.querySelectorAll("[data-slow-a]")).map(function (t) { return t.value.trim(); });
+      if (slowState.s3.some(function (a) { return !a; })) {
+        document.getElementById("slow-s3-note").textContent = "两题都写完再往下。"; return;
+      }
+      slowStage = 4; slowStageEnter = Date.now(); renderSlow();
+    });
+    return;
+  }
+
+  /* ---- Stage 4:双向预演 ---- */
+  if (slowStage === 4) {
+    el.innerHTML =
+      '<div class="slow-progress">STAGE 4 / 4</div>' +
+      '<div class="cq-title" style="margin-bottom:6px;">提前想两种三个月后的自己</div>' +
+      '<div class="slow-stage-note">只想失败会让人过度悲观,只想成功会让人盲目乐观。两个方向都想一遍,会更接近真实。</div>' +
+      slowTextareas(SLOW_S4, slowState.s4) +
+      '<div id="slow-s4-note" class="price-note"></div>' +
+      '<button class="zen-mode-btn" id="slow-submit" style="width:100%;margin-top:10px;">交给冷静器看看</button>';
+    document.getElementById("slow-submit").addEventListener("click", function () {
+      slowState.s4 = Array.prototype.slice.call(el.querySelectorAll("[data-slow-a]")).map(function (t) { return t.value.trim(); });
+      if (slowState.s4.some(function (a) { return !a; })) {
+        document.getElementById("slow-s4-note").textContent = "两题都写完再提交。"; return;
+      }
+      slowReview();
+    });
+    return;
+  }
+}
+
+/* ---- Stage 5:审核 ---- */
+async function slowReview() {
+  const el = document.getElementById("slow-body");
+  el.innerHTML = '<div class="price-note">正在检查这几步答案前后有没有对不上的地方……</div>';
+
+  if (!hasAIKey()) { slowLocalVerdict(); return; }
+
+  const infTexts = slowState.influences.map(function (id) {
+    const f = SLOW_INFLUENCES.filter(function (x) { return x.id === id; })[0];
+    return f ? f.text : id;
+  });
+  const prompt =
+`有人在为一件事纠结:「${slowState.topic}」。以下是 ta 分四步的作答,请审查前后是否自相矛盾、有没有自我说服。
+
+【外部影响力自查】勾选了 ${slowState.influences.length} 项:${infTexts.join(";") || "一项都没勾"}
+【强制理性 7 问】
+${SLOW_S2.map(function (q, i) { return (i + 1) + ". " + q + " 答:" + slowState.s2[i]; }).join("\n")}
+【剥离结果偏差】
+${SLOW_S3.map(function (q, i) { return (i + 1) + ". " + q + " 答:" + slowState.s3[i]; }).join("\n")}
+【双向预演】
+${SLOW_S4.map(function (q, i) { return (i + 1) + ". " + q + " 答:" + slowState.s4[i]; }).join("\n")}
+
+不通过的判据(任一即可):勾了多项外部影响力却在后面坚称完全是自己的判断;答案空泛敷衍看不出真的想过;理由前后矛盾;明显在为已经做好的决定找借口。
+严格只返回 JSON:
+{"pass":true或false,"comment":"一句中肯点评,指出具体对不上的地方或肯定","influence":"被外部影响力驱动的部分,一句话","own":"剥离之后 ta 自己的判断倾向,一句话","regret":"最可能的后悔原因,一句话","relief":"最可能的庆幸原因,一句话"}`;
+
+  try {
+    const raw = await callAI(prompt, "你是一位冷静、诚实的决策教练,不替人做决定,只把 ta 的决策过程摊开给 ta 看。只返回规定 JSON。");
+    const p = JSON.parse(raw.trim().replace(/```json|```/g, "").trim());
+    slowShowVerdict(!!p.pass, p.comment || "", {
+      influence: p.influence, own: p.own, regret: p.regret, relief: p.relief
+    });
+  } catch (e) {
+    slowLocalVerdict();
+  }
+}
+
+function slowLocalVerdict() {
+  const all = slowState.s2.concat(slowState.s3, slowState.s4);
+  const fails = [];
+  const shallow = all.filter(function (a) { return a.length < 8; }).length;
+  if (shallow >= 3) fails.push("有好几题答得很短,看不出真的想过");
+  if (slowState.influences.length >= 3 && all.join("").length < 120) {
+    fails.push("勾选了 " + slowState.influences.length + " 项外部影响力,但作答很轻,这两者对不上");
+  }
+  if (Date.now() - slowState.startedAt < 120000) fails.push("从开始到提交不到两分钟,更像第一反应");
+  const pass = fails.length === 0;
+  slowShowVerdict(pass, pass ? "你的判断和你的答案是一致的。" : fails.join(";") + "。", {
+    influence: slowState.influences.length
+      ? "你自己勾出的 " + slowState.influences.length + " 项外部影响力"
+      : "你没有勾出任何外部影响力",
+    own: slowState.s3[0] || "",
+    regret: slowState.s4[0] || "",
+    relief: slowState.s4[1] || ""
+  });
+}
+
+function slowShowVerdict(pass, comment, out) {
+  const el = document.getElementById("slow-body");
+  const topic = slowState.topic;
+
+  slowSaveRecord({
+    topic: topic, ts: Date.now(), pass: pass,
+    influences: slowState.influences.length
+  });
+
+  let html = "";
+  if (pass) {
+    html += '<div class="verdict-box verdict-pass"><div class="v-head">✅ 这件事,你已经想清楚了</div>' +
+      escapeHtml(comment) + "<br><br>接下来怎么做,交给你自己。</div>";
+  } else {
+    slowLock(topic);
+    html += '<div class="verdict-box verdict-fail"><div class="v-head">🦉 这件事,你可能还没想清楚</div>' +
+      escapeHtml(comment) + "<br><br><strong>这件事先锁定 24 小时,期间不能重新提交。</strong>不是不让你做决定,是不让你在还没想清楚的时候做。</div>";
+  }
+
+  html += '<div class="slow-out">' +
+    "这个决定里,被外部影响力驱动的部分是 " + escapeHtml(out.influence || "—") + ";\n" +
+    "如果剥离这部分,你自己的判断倾向是 " + escapeHtml(out.own || "—") + ";\n" +
+    "两个最可能的后悔/庆幸原因分别是 " + escapeHtml(out.regret || "—") + " 和 " + escapeHtml(out.relief || "—") + "。" +
+    "</div>" +
+    '<div class="price-note" style="margin-top:8px;">这不是一个「该不该做」的答案,只是把你自己的决策过程摊开给你看。</div>' +
+    '<button class="zen-mode-btn" id="slow-again" style="width:100%;margin-top:14px;">理清另一件事</button>';
+
+  el.innerHTML = html;
+  document.getElementById("slow-again").addEventListener("click", function () {
+    slowState = null; slowStage = 0; renderSlow();
+  });
+}
+
+function renderSlowHistory() {
+  const el = document.getElementById("slow-body");
+  const recs = slowRecords();
+  const p = function (n) { return String(n).padStart(2, "0"); };
+  let html = '<div class="cq-title" style="margin-bottom:10px;">历史记录</div>';
+  if (!recs.length) {
+    html += '<div class="price-note">还没有记录过任何决定。遇到下一个让你纠结的事,写下来试试。</div>';
+  } else {
+    html += recs.map(function (r) {
+      const d = new Date(r.ts);
+      const until = r.pass ? 0 : slowIsLocked(r.topic);
+      return '<div class="slow-hist-row">' +
+        '<span class="sh-tag ' + (r.pass ? "sh-pass" : "sh-fail") + '">' + (r.pass ? "PASS" : "FAIL") + "</span>" +
+        "<span>" + escapeHtml(r.topic) +
+        (until ? '<br><span style="font-size:11px;color:var(--text-sub);">还在冷静期,' + slowLeftText(until) + "后可以重新面对这件事。</span>" : "") +
+        "</span>" +
+        '<span class="sh-date">' + (d.getMonth() + 1) + "/" + p(d.getDate()) + "</span></div>";
+    }).join("");
+  }
+  html += '<button class="zen-mode-btn" id="slow-back" style="width:100%;margin-top:14px;">返回</button>' +
+    '<div class="price-note" style="margin-top:14px;line-height:1.9;">冷静期的做法参考了行为心理学中的「24 小时法则」和消费者保护中常见的强制冷静期机制;题目设计融合了卡尼曼的双系统理论、西奥迪尼的影响力原理、Annie Duke 的决策质量理论,以及 Gary Klein 的事前验尸法。</div>';
+  el.innerHTML = html;
+  document.getElementById("slow-back").addEventListener("click", function () {
+    slowState = null; slowStage = 0; renderSlow();
+  });
 }
 
 /* ===== 投前冷静器 ===== */
@@ -3259,7 +4393,10 @@ function aiHeader(label, extra) {
 function aiItemHtml(it) {
   const reason = it.reason || it.recommendReason || it.recommendation || it.why || "";
   const tags = it.tags || it.topics || [];
-  return '<a class="ai-news" href="' + escapeHtml(it.sourceUrl || it.permalink || it.url || "#") + '" target="_blank" rel="noopener">' +
+  // 链接一律优先跳原文:日报条目原文字段是 sourceUrl,精选条目是 url;
+  // permalink 是 AI HOT 站内中文阅读页,只在没有原文链接时兜底
+  const link = it.sourceUrl || it.url || it.originalUrl || it.link || it.permalink || "#";
+  return '<a class="ai-news" href="' + escapeHtml(link) + '" target="_blank" rel="noopener">' +
     '<div class="an-title">' + escapeHtml(it.title) + "</div>" +
     (it.summary ? '<div class="an-summary">' + escapeHtml(it.summary) + "</div>" : "") +
     (reason ? '<div class="an-reason">推荐理由:' + escapeHtml(reason) + "</div>" : "") +
@@ -3273,6 +4410,7 @@ async function loadAIDaily(force) {
   initAITabs();
   const feedEl = document.getElementById("ai-daily-feed");
   if (aiTab === "selected") return loadAISelected(force);
+  if (aiTab === "flash") return loadAIFlash(force);
   if (aiTab === "dailies") return loadAIDailies(force);
 
   // 日报:拿到当天那期后用缓存,当天不再重复请求
@@ -3341,7 +4479,7 @@ function renderAIDaily(data, fetchedAt, fromCache, isArchive) {
   if (flashes.length) {
     html += '<div class="ai-group-label">⚡ 快讯</div>' +
       flashes.map(function (f) {
-        return '<a class="flash-row" href="' + escapeHtml(f.sourceUrl || "#") + '" target="_blank" rel="noopener">' +
+        return '<a class="flash-row" href="' + escapeHtml(f.sourceUrl || f.url || f.permalink || "#") + '" target="_blank" rel="noopener">' +
           '<span class="flash-dot">•</span><span class="flash-title">' + escapeHtml(f.title) + "</span>" +
           '<span class="flash-src">' + escapeHtml(f.sourceName || "") + "</span></a>";
       }).join("");
@@ -3356,6 +4494,61 @@ function renderAIDaily(data, fetchedAt, fromCache, isArchive) {
       if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
     });
   });
+}
+
+/* 相对时间:刚刚 / N 分钟前 / N 小时前 / M-D HH:MM */
+function relTime(iso) {
+  if (!iso) return "";
+  const t = new Date(iso).getTime();
+  if (!t) return "";
+  const diff = Date.now() - t;
+  if (diff < 60000) return "刚刚";
+  if (diff < 3600000) return Math.floor(diff / 60000) + " 分钟前";
+  if (diff < 86400000) return Math.floor(diff / 3600000) + " 小时前";
+  const d = new Date(t), p = n => String(n).padStart(2, "0");
+  return (d.getMonth() + 1) + "月" + d.getDate() + "日 " + p(d.getHours()) + ":" + p(d.getMinutes());
+}
+
+/* 快讯:滚动信息流(不是日报),按时间倒序,默认最近 48 小时 */
+async function loadAIFlash(force) {
+  const feedEl = document.getElementById("ai-daily-feed");
+  aiHeader("⚡ 快讯 · 实时滚动", "");
+  feedEl.innerHTML = '<div class="ai-loading">正在拉取最新动态…</div>';
+  try {
+    const since = new Date(Date.now() - 48 * 3600 * 1000).toISOString();
+    const res = await fetch("/api/aihot?type=flash&take=40&since=" + encodeURIComponent(since) +
+      (force ? "&t=" + Date.now() : ""), force ? { cache: "no-store" } : {});
+    const data = await res.json();
+    let items = data.items || data.data || (Array.isArray(data) ? data : []);
+    items = items.slice().sort((a, b) =>
+      new Date(b.publishedAt || 0) - new Date(a.publishedAt || 0));
+    const p = n => String(n).padStart(2, "0");
+    const now = new Date();
+    aiHeader("⚡ 快讯 · 实时滚动",
+      items.length + " 条 · 更新于 " + p(now.getHours()) + ":" + p(now.getMinutes()));
+    if (!items.length) { feedEl.innerHTML = '<div class="ai-loading">最近 48 小时还没有新动态。</div>'; return; }
+
+    let lastDay = "";
+    feedEl.innerHTML = items.map(function (it) {
+      const d = it.publishedAt ? new Date(it.publishedAt) : null;
+      const dayKey = d ? (d.getMonth() + 1) + "月" + d.getDate() + "日" : "";
+      let head = "";
+      if (dayKey && dayKey !== lastDay) { lastDay = dayKey; head = '<div class="ai-group-label">' + dayKey + "</div>"; }
+      const link = it.sourceUrl || it.url || it.permalink || "#";
+      const tags = it.tags || it.topics || [];
+      return head +
+        '<a class="ai-news" href="' + escapeHtml(link) + '" target="_blank" rel="noopener">' +
+        '<div class="an-title">' + escapeHtml(it.title || "") + "</div>" +
+        (it.summary ? '<div class="an-summary">' + escapeHtml(it.summary) + "</div>" : "") +
+        '<div class="an-source"><span>' + escapeHtml(it.source || it.sourceName || "AI HOT") + "</span>" +
+        '<span class="an-tag" style="background:none;padding-left:0;">' + escapeHtml(relTime(it.publishedAt)) + "</span>" +
+        (tags || []).slice(0, 2).map(t =>
+          '<span class="an-tag">#' + escapeHtml(typeof t === "string" ? t : (t.name || "")) + "</span>").join("") +
+        "</div></a>";
+    }).join("");
+  } catch (e) {
+    feedEl.innerHTML = '<div class="ai-loading">快讯加载失败,稍后再试。</div>';
+  }
 }
 
 async function loadAISelected(force) {
