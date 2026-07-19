@@ -175,6 +175,9 @@
   .nav-item .sub { font-size: 12px; color: var(--text-sub); }
 
   footer { text-align: center; padding: 20px 0 24px; font-size: 13px; color: var(--text-sub); }
+  .foot-data { display: block; margin-top: 6px; font-size: 12px; opacity: .75; }
+  .foot-link { cursor: pointer; text-decoration: underline; text-underline-offset: 3px; }
+  .foot-link:hover { color: var(--text-main); }
 
   /* ===== 板块面板(全屏覆盖层) ===== */
   .panel {
@@ -320,6 +323,25 @@
   .tarot-face .t-pos { font-size: 13px; padding: 2px 10px; border-radius: 10px; background: rgba(0,0,0,0.08); }
   .tarot-meaning { margin-top: 14px; font-size: 14px; line-height: 1.8; color: var(--text-sub); text-align: left; }
   .tarot-meaning strong { color: var(--text-main); }
+  .tarot-row {
+    display: flex; gap: 12px; align-items: flex-start; text-align: left;
+    padding: 12px 4px; border-bottom: 1px solid rgba(255,255,255,0.08);
+  }
+  .tarot-row:last-of-type { border-bottom: none; }
+  .tr-pos {
+    flex-shrink: 0; width: 40px; font-size: 12px; letter-spacing: 1px;
+    color: var(--text-sub); padding-top: 6px; text-align: center;
+  }
+  .tr-emoji { flex-shrink: 0; font-size: 30px; line-height: 1.3; }
+  .tr-emoji.reversed { transform: rotate(180deg); }
+  .tr-body { min-width: 0; }
+  .tr-name { font-size: 14.5px; font-weight: 600; color: var(--text-main); }
+  .tr-tag {
+    font-size: 11px; font-weight: 400; padding: 1px 8px; border-radius: 10px;
+    background: rgba(255,255,255,0.1); color: var(--text-sub); margin-left: 4px;
+  }
+  .tr-arc { font-size: 11px; font-weight: 400; color: var(--text-sub); opacity: .7; margin-left: 4px; }
+  .tr-meaning { font-size: 13px; line-height: 1.8; color: var(--text-sub); margin-top: 3px; }
 
   /* 八字表单 */
   .bazi-form { display: flex; flex-direction: column; gap: 12px; margin-bottom: 8px; }
@@ -338,6 +360,9 @@
   .pillar .p-gz small { display: block; font-size: 11px; color: var(--text-sub); font-weight: 400; margin-top: 4px; }
   .bazi-meta { font-size: 13px; color: var(--text-sub); line-height: 1.9; margin-bottom: 14px; }
   .bazi-prompt-box { position: relative; }
+  .bz-opt-label { font-size: 12px; letter-spacing: 2px; color: var(--text-sub); opacity: .8; margin: 12px 0 8px; }
+  .bz-opts { display: flex; flex-wrap: wrap; gap: 8px; }
+  .bz-chip { flex: 0 0 auto; padding: 7px 14px; font-size: 13px; }
   .bazi-prompt-box textarea {
     width: 100%; height: 120px; background: rgba(0,0,0,0.25); border: 1px solid var(--glass-border);
     border-radius: 10px; padding: 12px; color: var(--text-sub); font-size: 12px; line-height: 1.6;
@@ -1148,6 +1173,11 @@
 
   <footer>
     © 2026 arinrin · 小世界改造中
+    <span class="foot-data">
+      <span class="foot-link" id="data-export-btn">备份数据</span> ·
+      <span class="foot-link" id="data-import-btn">恢复数据</span>
+      <input type="file" id="data-import-file" accept=".json,application/json" style="display:none;">
+    </span>
   </footer>
 </div>
 
@@ -1242,20 +1272,28 @@
 
     <!-- 塔罗抽牌 -->
     <div class="card" style="margin:20px 0;">
-      <div class="section-sub" style="margin-top:0;">🃏 塔罗抽一张</div>
-      <p class="price-note" style="margin:0 0 12px;">静心想着你的问题,点下方抽一张牌,当作一面自我觉察的镜子。</p>
-      <div id="tarot-area" style="text-align:center;">
+      <div class="section-sub" style="margin-top:0;">🃏 塔罗牌阵</div>
+      <p class="price-note" style="margin:0 0 12px;">静心想着你的问题,选一个牌阵。78 张完整牌组(大小阿卡纳),当作一面自我觉察的镜子。</p>
+      <div class="bz-opts" id="tarot-spreads">
+        <button class="theme-period bz-chip active" data-spread="one">单张指引</button>
+        <button class="theme-period bz-chip" data-spread="three">三张 · 过去现在未来</button>
+        <button class="theme-period bz-chip" data-spread="five">五张 · 全景</button>
+      </div>
+      <input id="tarot-q" type="text" autocomplete="off" placeholder="你的问题(可不填,只在本地与 AI 解读时使用)"
+        style="width:100%;margin-top:10px;background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.14);border-radius:10px;padding:10px 12px;color:var(--text-main);font-size:14px;font-family:inherit;outline:none;">
+      <div id="tarot-area" style="text-align:center;margin-top:12px;">
         <div class="tarot-card tarot-back" id="tarot-card">
           <div class="tarot-back-pattern">✦</div>
         </div>
-        <button class="zen-mode-btn" id="tarot-draw-btn" style="margin-top:14px;">抽一张牌</button>
+        <button class="zen-mode-btn" id="tarot-draw-btn" style="margin-top:14px;">抽牌</button>
       </div>
+      <div id="tarot-result"></div>
     </div>
 
     <!-- 八字命盘(免API) -->
     <div class="card">
       <div class="section-sub" style="margin-top:0;">📜 八字命盘</div>
-      <p class="price-note" style="margin:0 0 12px;">输入生辰,本地排出四柱八字与大运(信息不离开你的浏览器),再一键生成可交给任意 AI 的解读提示词。</p>
+      <p class="price-note" style="margin:0 0 12px;">输入生辰,本地排出四柱八字与大运(信息不离开你的浏览器)。选好想看的板块和期限,一键生成 AI 解读;也可以复制提示词发给任意 AI。</p>
       <div class="bazi-form">
         <div class="bazi-row">
           <label>性别</label>
@@ -2004,28 +2042,160 @@ const TAROT = [
   ["审判","📯","觉醒、召唤、重新评估、复苏","自我批判、犹豫、拒绝改变"],
   ["世界","🌍","圆满、完成、整合、新的循环","未竟之事、拖延、差临门一脚"]
 ];
+/* 小阿卡纳:四组各 14 张(一~十 + 侍从/骑士/王后/国王),[正位, 逆位] */
+const MINOR_RANKS = ["一","二","三","四","五","六","七","八","九","十","侍从","骑士","王后","国王"];
+const MINOR_SUITS = [
+  { name: "权杖", emoji: "🔥", m: [
+    ["新灵感、行动的火花、创造的冲动","延迟启动、缺乏动力"],
+    ["规划未来、展望、决定方向","犹豫不决、怕走出舒适圈"],
+    ["初见进展、远见、等待成果","计划受阻、目光短浅"],
+    ["庆祝、稳定、阶段性圆满","过渡期、根基还不稳"],
+    ["竞争、摩擦、意见不合","冲突化解、学会退一步"],
+    ["胜利、认可、凯旋","自负、认可迟迟不来"],
+    ["坚守立场、迎接挑战","疲于应付、防御过度"],
+    ["快速进展、消息到来、势头正劲","拖延、时机未到"],
+    ["坚持到底、最后一搏、保持警惕","耗竭、防备心过重"],
+    ["重担压身、责任过多","学会放手、卸下不属于自己的担子"],
+    ["热情的开始、好消息、跃跃欲试","三分钟热度、雷声大雨点小"],
+    ["冲劲、冒险、说走就走","冲动行事、有勇无谋"],
+    ["自信、魅力、独立而温暖","苛刻、用强势掩饰不安"],
+    ["领导力、远见、敢拍板","独断、对人期望过高"]
+  ]},
+  { name: "圣杯", emoji: "🍷", m: [
+    ["新的感情、情感涌现、心被打开","情感压抑、内心空虚"],
+    ["相互吸引、伙伴关系、心意相通","关系失衡、误解"],
+    ["友谊、庆祝、久别重逢","过度放纵、小圈子是非"],
+    ["倦怠、对眼前无感","重新振作、接住新的可能"],
+    ["失落、只盯着失去的部分","走出阴霾、看见还留着的"],
+    ["怀旧、童真、故人来访","沉溺过去、该向前看了"],
+    ["选择太多、幻想缤纷","看清现实、做出取舍"],
+    ["转身离开、去寻找更深的意义","逃避、不敢放手"],
+    ["愿望达成、满足、犒赏自己","贪心、快乐只停在表面"],
+    ["圆满、家庭和睦、情感归属","关系失和、理想与现实的落差"],
+    ["直觉的讯息、创意萌芽","情绪化、不够成熟"],
+    ["浪漫、追求、一份邀请","不切实际、被情绪牵着走"],
+    ["温柔、共情、疗愈他人","情绪泛滥、界限模糊"],
+    ["情绪成熟、包容、稳住场面","压抑感受、外冷内涌"]
+  ]},
+  { name: "宝剑", emoji: "⚔️", m: [
+    ["头脑清明、看见真相、突破","思绪混乱、误判"],
+    ["僵局、蒙眼回避决定","打破僵局、直面选择"],
+    ["心碎、真相刺痛","疗愈开始、慢慢释怀"],
+    ["休息、暂停、恢复精力","休整结束、该重新出发"],
+    ["冲突、惨胜、口舌之争","放下争执、走向和解"],
+    ["过渡、离开困境、驶向平静","迟迟走不出来"],
+    ["策略、独自行动、留一手","秘密败露、自欺欺人"],
+    ["自我设限、感到受困","挣脱束缚、观念松动"],
+    ["焦虑、失眠、夜里的担忧","担忧缓解、从噩梦里醒来"],
+    ["谷底、一段彻底的结束","触底反弹、开始复原"],
+    ["好奇、观察、新想法","流言、说话欠考虑"],
+    ["果断、直奔目标","鲁莽、咄咄逼人"],
+    ["清醒、独立、有原则","尖刻、拒人千里"],
+    ["理性、权威、公正裁断","滥用聪明、冷酷"]
+  ]},
+  { name: "星币", emoji: "🪙", m: [
+    ["新的财务机会、一颗种子","机会溜走、贪小失大"],
+    ["多头兼顾、灵活应变","顾此失彼、失衡"],
+    ["团队协作、手艺被认可","各自为政、敷衍了事"],
+    ["守护所得、求稳","抓得太紧、舍不得"],
+    ["匮乏感、难关、被排除在外","困境缓解、援手出现"],
+    ["给予与接受、慷慨流动","附带条件的给予、施与受失衡"],
+    ["耐心等待、评估投入","急于求成、回报不如预期"],
+    ["精进技能、专注打磨","敷衍应付、失去热情"],
+    ["独立、丰盛、自给自足","过度工作、孤独的成功"],
+    ["财富积累、家族与根基稳固","财务纠纷、根基动摇"],
+    ["学习、务实的新开始","拖延、光想不做"],
+    ["踏实、按部就班、可靠","停滞、过分保守"],
+    ["务实的照顾、安全感","忙到忘了照顾自己"],
+    ["富足、事业有成、稳健","物质至上、固执"]
+  ]}
+];
+
+function tarotDeck() {
+  const deck = [];
+  TAROT.forEach(function (c, i) {
+    deck.push({ arc: "大阿卡纳 · " + i, name: c[0], emoji: c[1], up: c[2], down: c[3] });
+  });
+  MINOR_SUITS.forEach(function (s) {
+    s.m.forEach(function (mm, i) {
+      deck.push({ arc: "小阿卡纳 · " + s.name, name: s.name + MINOR_RANKS[i], emoji: s.emoji, up: mm[0], down: mm[1] });
+    });
+  });
+  return deck;
+}
+
+const TAROT_SPREADS = {
+  one:   { label: "单张指引", pos: ["指引"] },
+  three: { label: "三张牌阵", pos: ["过去", "现在", "未来"] },
+  five:  { label: "五张牌阵", pos: ["现状", "阻碍", "根源", "建议", "走向"] }
+};
+let tarotLast = null; // { spread, question, cards:[{pos,name,arc,posText,meaning}] }
+
 function drawTarot() {
-  const card = document.getElementById("tarot-card");
-  const idx = Math.floor(Math.random() * TAROT.length);
-  const reversed = Math.random() < 0.5;
-  const [name, emoji, up, down] = TAROT[idx];
-  const meaning = reversed ? down : up;
-  const posText = reversed ? "逆位" : "正位";
-  card.className = "tarot-card tarot-face";
-  card.innerHTML = `
-    <div class="t-num">大阿卡纳 · ${idx}</div>
-    <div class="t-emoji ${reversed ? 'reversed' : ''}">${emoji}</div>
-    <div class="t-name">${name}</div>
-    <div class="t-pos">${posText}</div>`;
-  let m = document.getElementById("tarot-meaning");
-  if (!m) {
-    m = document.createElement("div");
-    m.id = "tarot-meaning";
-    m.className = "tarot-meaning";
-    document.getElementById("tarot-area").appendChild(m);
+  const spreadKey = (document.querySelector("[data-spread].active") || {}).dataset
+    ? document.querySelector("[data-spread].active").dataset.spread : "one";
+  const spread = TAROT_SPREADS[spreadKey] || TAROT_SPREADS.one;
+  const question = (document.getElementById("tarot-q") || { value: "" }).value.trim();
+
+  // 洗牌,无放回抽 n 张
+  const deck = tarotDeck();
+  for (let i = deck.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    const t = deck[i]; deck[i] = deck[j]; deck[j] = t;
   }
-  m.innerHTML = `<strong>${name}（${posText}）</strong>:${meaning}。<br><span style="opacity:0.7;">塔罗是一面镜子,牌意用来触发你自己的思考,而非预言结果。</span>`;
-  document.getElementById("tarot-draw-btn").textContent = "再抽一张";
+  const cards = spread.pos.map(function (pos, i) {
+    const c = deck[i];
+    const reversed = Math.random() < 0.5;
+    return {
+      pos: pos, name: c.name, arc: c.arc, emoji: c.emoji,
+      posText: reversed ? "逆位" : "正位", reversed: reversed,
+      meaning: reversed ? c.down : c.up
+    };
+  });
+  tarotLast = { spread: spread, question: question, cards: cards };
+
+  // 收起背面大卡,渲染牌阵
+  const back = document.getElementById("tarot-card");
+  if (back) back.style.display = "none";
+
+  const out = document.getElementById("tarot-result");
+  out.innerHTML =
+    cards.map(function (c) {
+      return '<div class="tarot-row">' +
+        '<div class="tr-pos">' + c.pos + '</div>' +
+        '<div class="tr-emoji' + (c.reversed ? " reversed" : "") + '">' + c.emoji + '</div>' +
+        '<div class="tr-body"><div class="tr-name">' + c.name + ' <span class="tr-tag">' + c.posText + '</span>' +
+        ' <span class="tr-arc">' + c.arc + '</span></div>' +
+        '<div class="tr-meaning">' + c.meaning + '</div></div></div>';
+    }).join("") +
+    '<div class="tarot-meaning" style="text-align:left;"><span style="opacity:0.7;">塔罗是一面镜子,牌意用来触发你自己的思考,而非预言结果。</span></div>' +
+    (hasAIKey()
+      ? '<button class="zen-mode-btn" id="tarot-ai-btn" style="width:100%;margin-top:10px;">让 AI 综合解读这个牌阵</button><div id="tarot-ai-out"></div>'
+      : "");
+  document.getElementById("tarot-draw-btn").textContent = "重新抽牌";
+  const aiBtn = document.getElementById("tarot-ai-btn");
+  if (aiBtn) aiBtn.addEventListener("click", tarotAIReading);
+}
+
+async function tarotAIReading() {
+  if (!tarotLast) return;
+  const btn = document.getElementById("tarot-ai-btn");
+  const out = document.getElementById("tarot-ai-out");
+  btn.disabled = true; btn.textContent = "解读中…";
+  const t = tarotLast;
+  const prompt =
+`我用塔罗${t.spread.label}问了一件事${t.question ? ":「" + t.question + "」" : "(未写明具体问题)"}。抽到的牌如下:
+${t.cards.map(function (c) { return c.pos + ":" + c.name + "(" + c.posText + ")—" + c.meaning; }).join("\n")}
+
+请把${t.cards.length > 1 ? "这些牌位串成一个连贯的解读,注意牌与牌之间的呼应与转折" : "这张牌解读透"},落到我可以观察或行动的具体点上。塔罗当镜子用:触发思考,不做预言。${t.cards.length > 1 ? "三到五段" : "两到三段"},每段短,不用 markdown 符号,用第二人称。`;
+  try {
+    const reading = await callAI(prompt, "你是一位现代塔罗顾问:懂牌意与牌阵结构,但说人话,坦诚这是自我觉察工具而非预测。");
+    out.innerHTML = '<div class="align-verdict" style="margin-top:12px;text-align:left;">' + escapeHtml(reading) + "</div>";
+    btn.style.display = "none";
+  } catch (e) {
+    out.innerHTML = '<div class="price-note">解读失败(' + escapeHtml(e.message || String(e)) + "),稍后再试。</div>";
+    btn.disabled = false; btn.textContent = "让 AI 综合解读这个牌阵";
+  }
 }
 
 /* ===== 八字命盘(本地排盘 + 生成提示词) ===== */
@@ -2042,6 +2212,84 @@ function wxColor(ch) { return WUXING_COLOR[WUXING_OF[ch]] || "var(--text-main)";
 function colorGZ(gz) {
   return gz.split("").map(ch =>
     `<span style="color:${wxColor(ch)}">${ch}</span>`).join("");
+}
+
+/* 八字 AI 解读:板块与期限 */
+const BAZI_SECTIONS = [
+  { k: "character", label: "性格特质", on: false },
+  { k: "career",    label: "事业发展", on: true },
+  { k: "wealth",    label: "财富运势", on: true },
+  { k: "love",      label: "婚姻情感", on: true },
+  { k: "health",    label: "健康提示", on: true },
+  { k: "family",    label: "六亲关系", on: false },
+  { k: "fengshui",  label: "风水建议", on: false },
+  { k: "crypto",    label: "币圈投资", on: false }
+];
+const BAZI_HORIZONS = {
+  month: { label: "近一个月", scope: "未来一个月内(以流月为主、流日为辅)" },
+  half:  { label: "近半年",   scope: "未来半年内(逐个流月点到,标出更顺与更需谨慎的月份)" },
+  year:  { label: "近一年",   scope: "未来一年内(以流年为纲、流月为目,跨年时说明两个流年的差别)" }
+};
+let baziCtx = null;
+
+function baziPicked() {
+  const secs = Array.from(document.querySelectorAll("[data-bz-sec].active"))
+    .map(b => BAZI_SECTIONS.find(x => x.k === b.dataset.bzSec)).filter(Boolean);
+  const horBtn = document.querySelector("[data-bz-hor].active");
+  const hor = BAZI_HORIZONS[horBtn ? horBtn.dataset.bzHor : "half"];
+  return { secs, hor };
+}
+
+function buildBaziPrompt() {
+  if (!baziCtx) return "";
+  const { secs, hor } = baziPicked();
+  const secList = (secs.length ? secs : BAZI_SECTIONS.filter(x => x.on))
+    .map((x, i) => (i + 1) + ". " + x.label).join("  ");
+  return `你是一位精通八字命理的顾问,请基于以下命盘做一份解读。语言现代、亲和、不故弄玄虚,开头声明"仅供自我觉察参考,不构成人生/医疗/投资/法律决策依据"。
+
+【命盘】
+性别:${baziCtx.sexCn}
+${baziCtx.dateLine}
+${baziCtx.pillarLine}
+${baziCtx.dayMaster}
+${baziCtx.wuxing}
+${baziCtx.nayin}
+${baziCtx.shen}
+${baziCtx.dayun}
+【当下】${baziCtx.liu}
+
+【解读范围】只看${hor.label}:${hor.scope}。结合当前大运与流年流月来谈,不要泛泛而谈一生格局。
+
+【请分板块输出,每块4-6句,给出这段期限内的具体倾向和可执行的建议】
+${secList}
+
+最后用一句话收尾,落在行动上。`;
+}
+
+async function runBaziReading() {
+  const note = document.getElementById("bz-read-note");
+  const out = document.getElementById("bz-read-out");
+  const btn = document.getElementById("bz-read-btn");
+  const { secs } = baziPicked();
+  if (!secs.length) { note.textContent = "至少选一个板块。"; return; }
+  if (!hasAIKey()) {
+    note.innerHTML = "还没配置 AI key(右下角 ⚙️AI)。也可以用下面的「复制提示词」发给任意 AI。";
+    return;
+  }
+  note.textContent = "";
+  btn.disabled = true; btn.textContent = "正在推演…(约需十几秒)";
+  out.innerHTML = "";
+  try {
+    const reading = await callAI(buildBaziPrompt(),
+      "你是一位现代的八字命理顾问:懂传统排盘,但用今天的语言说话,坦诚说明这是概率性的参考。不用 markdown 标题符号,用「一、二、三」或板块名加冒号分段。");
+    out.innerHTML = '<div class="align-verdict" style="margin-top:14px;">' + escapeHtml(reading) + "</div>" +
+      '<div class="polaris-set" style="margin-top:8px;"><span class="refresh-btn" id="bz-read-again">换个板块/期限再看一次</span></div>';
+    const again = document.getElementById("bz-read-again");
+    if (again) again.addEventListener("click", () => { out.innerHTML = ""; });
+  } catch (e) {
+    note.textContent = "生成失败(" + (e.message || e) + "),稍后再试,或用复制提示词的方式。";
+  }
+  btn.disabled = false; btn.textContent = "一键生成解读";
 }
 
 function calcBazi() {
@@ -2102,26 +2350,46 @@ function calcBazi() {
     const wxHtml = Object.entries(wxCount).map(([w,n]) =>
       `<span class="wx-tag" style="border-color:${WUXING_COLOR[w]};color:${WUXING_COLOR[w]}">${w} ${n}</span>`).join("");
 
-    // 提示词
-    const sexCn = sex === "male" ? "男(乾造)" : "女(坤造)";
-    const prompt =
-`你是一位精通八字命理的顾问,请基于以下命盘为我做一份解读。语言现代、亲和、不故弄玄虚,开头声明"仅供自我觉察参考,不构成人生/医疗/投资/法律决策依据"。
+    // 大运:找到当前所处的一步
+    let dayunText = "";
+    try {
+      const yun = ec.getYun(sex === "male" ? 1 : 0);
+      const das = yun.getDaYun();
+      const nowY = new Date().getFullYear();
+      const list = [];
+      for (let i = 0; i < das.length && i < 9; i++) {
+        const da = das[i];
+        const gz = da.getGanZhi();
+        if (!gz) continue;
+        const seg = gz + "(" + da.getStartYear() + "-" + da.getEndYear() + ")";
+        list.push((da.getStartYear() <= nowY && nowY <= da.getEndYear()) ? "▶当前:" + seg : seg);
+      }
+      dayunText = list.join(" ");
+    } catch (e) { dayunText = ""; }
 
-【命盘】
-性别:${sexCn}
-公历:${y}年${mo}月${d}日${hasHour?"":"(时辰未知)"}
-四柱:${ec.getYear()} ${ec.getMonth()} ${ec.getDay()} ${hasHour?ec.getTime():"(时辰未知)"}
-日主:${dayMaster}(${WUXING_OF[dayMaster]||""})
-五行分布:${Object.entries(wxCount).map(([w,n])=>w+n).join(" ")}
-纳音:${cols.map(c=>c.ny).filter(v=>v!=="—").join(" ")}
-${shen.join(" · ")}
+    // 流年流月(当下与下一年,供限定期限的解读用)
+    let liuText = "";
+    try {
+      const nowLunar = Lunar.fromDate(new Date());
+      const nextLunar = Lunar.fromDate(new Date(new Date().getFullYear() + 1, 5, 15));
+      liuText = "今日:" + new Date().toLocaleDateString("zh-CN") +
+        " · 流年:" + nowLunar.getYearInGanZhi() +
+        " · 流月:" + nowLunar.getMonthInGanZhi() +
+        " · 明年流年:" + nextLunar.getYearInGanZhi();
+    } catch (e) { liuText = "今日:" + new Date().toLocaleDateString("zh-CN"); }
 
-【请分板块输出,每块3-5句】
-1. 性格特质  2. 事业与发展方向  3. 财富运势  4. 婚姻情感
-5. 健康提示  6. 六亲关系  7. 发展风水建议(方位/颜色/习惯)
-8. 币圈/风险投资运势(适合风格:现货/合约/长期;需注意流年)
-
-最后给一句鼓励行动的话。`;
+    // 存上下文,供 AI 解读按选项动态生成提示词
+    baziCtx = {
+      sexCn: sex === "male" ? "男(乾造)" : "女(坤造)",
+      dateLine: `公历:${y}年${mo}月${d}日${hasHour ? "" : "(时辰未知)"}`,
+      pillarLine: `四柱:${ec.getYear()} ${ec.getMonth()} ${ec.getDay()} ${hasHour ? ec.getTime() : "(时辰未知)"}`,
+      dayMaster: `日主:${dayMaster}(${WUXING_OF[dayMaster] || ""})`,
+      wuxing: "五行分布:" + Object.entries(wxCount).map(([w, n]) => w + n).join(" "),
+      nayin: "纳音:" + cols.map(c => c.ny).filter(v => v !== "—").join(" "),
+      shen: shen.join(" · "),
+      dayun: dayunText ? "大运:" + dayunText : "",
+      liu: liuText
+    };
 
     resultEl.innerHTML = `
       <div class="bazi-pillars bz-full">${pillarsHtml}</div>
@@ -2131,13 +2399,47 @@ ${shen.join(" · ")}
         <div class="wx-row">五行 ${wxHtml}</div>
       </div>
       <div class="shen-box">${shenHtml}</div>
-      <div class="section-sub" style="margin-top:16px;">🤖 解读提示词(复制后发给任意 AI)</div>
-      <div class="bazi-prompt-box">
-        <textarea id="bazi-prompt" readonly>${prompt.replace(/</g,"&lt;")}</textarea>
+
+      <div class="section-sub" style="margin-top:16px;">🤖 AI 解读</div>
+      <div class="bz-opt-label">想看哪些板块(可多选)</div>
+      <div class="bz-opts" id="bz-sections">
+        ${BAZI_SECTIONS.map(sc =>
+          `<button class="theme-period bz-chip${sc.on ? " active" : ""}" data-bz-sec="${sc.k}">${sc.label}</button>`).join("")}
+      </div>
+      <div class="bz-opt-label">看多久</div>
+      <div class="bz-opts" id="bz-horizon">
+        <button class="theme-period bz-chip" data-bz-hor="month">近一个月</button>
+        <button class="theme-period bz-chip active" data-bz-hor="half">近半年</button>
+        <button class="theme-period bz-chip" data-bz-hor="year">近一年</button>
+      </div>
+      <button class="zen-mode-btn" id="bz-read-btn" style="width:100%;margin-top:12px;">一键生成解读</button>
+      <div id="bz-read-note" class="price-note" style="margin-top:8px;"></div>
+      <div id="bz-read-out"></div>
+      <div class="polaris-set" style="margin-top:10px;">
+        <span class="refresh-btn" id="bz-prompt-toggle">或:复制提示词,发给任意 AI</span>
+      </div>
+      <div class="bazi-prompt-box" id="bz-prompt-box" style="display:none;">
+        <textarea id="bazi-prompt" readonly></textarea>
         <button class="zen-mode-btn bazi-copy-btn" id="bazi-copy-btn">复制提示词</button>
       </div>
-      <div class="price-note">排盘在本地完成,你的生辰不会上传到任何服务器。命盘仅供自我觉察,不作决策依据。</div>`;
+      <div class="price-note">排盘在本地完成,你的生辰不会上传到任何服务器;AI 解读只发送上方命盘信息。命盘仅供自我觉察,不作决策依据。</div>`;
 
+    // 板块多选
+    resultEl.querySelectorAll("[data-bz-sec]").forEach(b =>
+      b.addEventListener("click", () => b.classList.toggle("active")));
+    // 期限单选
+    resultEl.querySelectorAll("[data-bz-hor]").forEach(b =>
+      b.addEventListener("click", () => {
+        resultEl.querySelectorAll("[data-bz-hor]").forEach(x => x.classList.toggle("active", x === b));
+      }));
+
+    document.getElementById("bz-read-btn").addEventListener("click", runBaziReading);
+    document.getElementById("bz-prompt-toggle").addEventListener("click", () => {
+      const box = document.getElementById("bz-prompt-box");
+      const show = box.style.display === "none";
+      box.style.display = show ? "" : "none";
+      if (show) document.getElementById("bazi-prompt").value = buildBaziPrompt();
+    });
     document.getElementById("bazi-copy-btn").addEventListener("click", () => {
       const ta = document.getElementById("bazi-prompt");
       ta.select();
@@ -2159,6 +2461,11 @@ function loadMystic() {
   setHuangli();
   if (!mysticInited) {
     document.getElementById("tarot-draw-btn").addEventListener("click", drawTarot);
+    document.querySelectorAll("[data-spread]").forEach(function (b) {
+      b.addEventListener("click", function () {
+        document.querySelectorAll("[data-spread]").forEach(function (x) { x.classList.toggle("active", x === b); });
+      });
+    });
     document.getElementById("bz-calc-btn").addEventListener("click", calcBazi);
     mysticInited = true;
   }
@@ -2634,7 +2941,6 @@ function renderAlign() {
 
   if (cur && cur.verdict) { renderAlignDone(mk, cur); return; }
 
-  const prev = aligns[prevMonthKey()];
   const evs = journalMonth(mk);
 
   el.innerHTML =
@@ -2647,16 +2953,6 @@ function renderAlign() {
       return '<div class="cooler-q"><div class="cq-title">' + escapeHtml(q.label) + "</div>" +
         '<textarea data-align="' + q.k + '" rows="3" placeholder="' + q.ph + '">' + escapeHtml((cur && cur[q.k]) || "") + "</textarea></div>";
     }).join("") +
-    '<div class="align-proto">' +
-    (prev && prev.proto
-      ? '<div class="cooler-q"><div class="cq-title">上个月你给自己派的原型行动</div>' +
-        '<div class="cq-hint">' + escapeHtml(prev.proto) + "</div>" +
-        '<textarea data-align="protoReview" rows="2" placeholder="做了没有?学到了什么?没做也写下来,为什么没做">' +
-        escapeHtml((cur && cur.protoReview) || "") + "</textarea></div>"
-      : '<div class="price-note" style="margin-bottom:12px;">原型行动:每月给自己派一个低成本的小实验(约一个人聊天、试一种工作方式、去一个地方待半天)。这是这套方法里唯一真正会改变现实的部分。</div>') +
-    '<div class="cooler-q"><div class="cq-title">下个月的原型行动</div>' +
-    '<div class="cq-hint">一件小事、一周内能做完、失败了也没损失</div>' +
-    '<textarea data-align="proto" rows="2" placeholder="我打算试试…">' + escapeHtml((cur && cur.proto) || "") + "</textarea></div></div>" +
     '<button class="zen-mode-btn" id="align-submit" style="width:100%;margin-top:6px;">交给它照一照</button>' +
     '<div id="align-note" class="price-note" style="margin-top:8px;"></div>';
 
@@ -2702,6 +2998,17 @@ async function alignReview(mk, obj, evs) {
       }).join("\n")
     : "";
 
+  /* 本月的主题实验(进行中或已完成)作为对照材料 */
+  const themeRows = getThemeExperiments().filter(function (r) {
+    return (r.startDate || "").slice(0, 7) === mk || (r.endDate || "").slice(0, 7) === mk;
+  });
+  const themeText = themeRows.length
+    ? "\n本月的主题实验:" + themeRows.map(function (r) {
+        return (r.cycle === "month" ? "[主题月]" : "[主题周]") + (r.title || "") +
+          (r.status === "done" ? "(已完成,收获:" + (r.learning || "—") + ")" : "(进行中)");
+      }).join(";")
+    : "";
+
   let verdict = "";
   if (hasAIKey()) {
     const prompt =
@@ -2720,9 +3027,7 @@ ${planText || "—"}
 【${monthLabel(mk)} 自述】
 时间最多的三件事:${obj.q1}
 有能量/被消耗:${obj.q2}
-明知无关却还是做了的事:${obj.q3}
-${obj.protoReview ? "上月原型行动回顾:" + obj.protoReview : ""}
-下月原型行动:${obj.proto || "—"}${feedText}
+明知无关却还是做了的事:${obj.q3}${themeText}${feedText}
 
 要求:
 1. 不打分、不列连续天数、不给励志话。
@@ -2747,7 +3052,9 @@ ${obj.protoReview ? "上月原型行动回顾:" + obj.protoReview : ""}
         ? "其中「" + hit.join("」「") + "」是你自己在北极星里写下的消耗项——它又出现在这个月的前排了。\n\n"
         : "从你写的来看,前排的事里没有直接撞上你自己列的消耗项。\n\n") +
       "你说明知无关却还是做了的是:" + obj.q3 + "\n\n" +
-      (obj.proto ? "下个月的原型行动:" + obj.proto : "下个月还没派原型行动——这是唯一会真正改变现实的一步,别空着。") +
+      (themeRows.length
+        ? "这个月的主题实验:" + themeRows.map(function (r) { return r.title || ""; }).join("、")
+        : "这个月没有进行中的主题实验——想试点什么,去下面的阶段实验开一期。") +
       "\n\n(配置 AI key 后,这一段会变成更具体的对照。)";
   }
 
@@ -2762,7 +3069,6 @@ function renderAlignDone(mk, rec) {
   el.innerHTML =
     '<div class="cq-title" style="margin-bottom:4px;">' + monthLabel(mk) + " · 校准结果</div>" +
     '<div class="align-verdict">' + escapeHtml(rec.verdict) + "</div>" +
-    (rec.proto ? '<div class="price-note" style="margin-top:10px;">📌 这个月的原型行动:' + escapeHtml(rec.proto) + "</div>" : "") +
     '<div class="polaris-set" style="margin-top:12px;"><span class="refresh-btn" id="align-redo">重做这个月的校准</span></div>';
   document.getElementById("align-redo").addEventListener("click", function () {
     const a = getAligns();
@@ -2796,36 +3102,9 @@ function renderAlignHistory() {
    独立于人生设计的开放探索:成功拓展方向,失败确认边界
    ========================================================= */
 const THEME_EXPERIMENT_KEY = "arinrin_theme_experiments_v1";
-let themeView = "main";
-let themeCycle = "week";
-
-function getThemeExperiments() {
-  try {
-    const rows = JSON.parse(localStorage.getItem(THEME_EXPERIMENT_KEY)) || [];
-    return Array.isArray(rows) ? rows : [];
-  } catch (e) { return []; }
-}
-function saveThemeExperiments(rows) {
-  try { localStorage.setItem(THEME_EXPERIMENT_KEY, JSON.stringify(rows)); } catch (e) {}
-}
-function localYmd(d) {
-  return d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0") + "-" + String(d.getDate()).padStart(2, "0");
-}
-function themeCycleEnd(startYmd, cycle) {
-  const d = new Date(startYmd + "T12:00:00");
-  d.setDate(d.getDate() + (cycle === "month" ? 29 : 6));
-  return localYmd(d);
-}
-function shortDate(ymd) {
-  if (!ymd) return "—";
-  const p = ymd.split("-");
-  return Number(p[1]) + " 月 " + Number(p[2]) + " 日";
-}
-function themeSignalLabel(signal) {
-  if (signal === "expand") return "长出了新方向";
-  if (signal === "close" || signal === "less") return "确认边界,安心结束";
-  return "值得继续探索";
-}
+let themeView = "main";        /* main | history | form | complete */
+let themeTargetId = null;      /* form 编辑哪条 / complete 哪条 */
+let themeFormCycle = "week";   /* 新建时的周期 */
 
 function initThemeExperiment() {
   const btn = document.getElementById("theme-history-btn");
@@ -2833,8 +3112,16 @@ function initThemeExperiment() {
     btn.dataset.bound = "1";
     btn.addEventListener("click", function () { themeView = "history"; renderThemeExperiment(); });
   }
-  themeView = "main";
+  themeView = "main"; themeTargetId = null;
   renderThemeExperiment();
+}
+
+function themeActives() {
+  const rows = getThemeExperiments();
+  return {
+    week: rows.find(function (r) { return r.status === "active" && r.cycle !== "month"; }) || null,
+    month: rows.find(function (r) { return r.status === "active" && r.cycle === "month"; }) || null
+  };
 }
 
 function renderThemeExperiment() {
@@ -2842,12 +3129,85 @@ function renderThemeExperiment() {
   if (!el) return;
   if (themeView === "history") { renderThemeHistory(); return; }
   const rows = getThemeExperiments();
-  const active = rows.find(function (r) { return r.status === "active"; });
-  if (!active || themeView === "edit") {
-    renderThemeForm(active || null);
+  if (themeView === "form") {
+    renderThemeForm(rows.find(function (r) { return r.id === themeTargetId; }) || null);
     return;
   }
-  renderThemeActive(active, themeView === "complete");
+  const act = themeActives();
+  if (!act.week && !act.month) { themeFormCycle = "week"; renderThemeForm(null); return; }
+
+  /* 主视图:主题周 / 主题月 两张卡并排存在,各自独立 */
+  let html = "";
+  ["week", "month"].forEach(function (c) {
+    const rec = act[c];
+    if (rec) html += themeActiveCard(rec, themeView === "complete" && themeTargetId === rec.id);
+    else html += '<button class="zen-mode-btn" data-theme-new="' + c + '" style="width:100%;margin-bottom:16px;background:rgba(255,255,255,0.1);">' +
+      (c === "week" ? "＋ 开一期主题周 · 7 天" : "＋ 开一期主题月 · 30 天") + "</button>";
+  });
+  el.innerHTML = html;
+
+  el.querySelectorAll("[data-theme-new]").forEach(function (b) {
+    b.addEventListener("click", function () {
+      themeFormCycle = b.dataset.themeNew; themeTargetId = null;
+      themeView = "form"; renderThemeExperiment();
+    });
+  });
+  el.querySelectorAll("[data-theme-complete]").forEach(function (b) {
+    b.addEventListener("click", function () {
+      themeTargetId = b.dataset.themeComplete; themeView = "complete"; renderThemeExperiment();
+    });
+  });
+  el.querySelectorAll("[data-theme-edit]").forEach(function (b) {
+    b.addEventListener("click", function () {
+      themeTargetId = b.dataset.themeEdit; themeView = "form"; renderThemeExperiment();
+    });
+  });
+  el.querySelectorAll("[data-theme-fcancel]").forEach(function (b) {
+    b.addEventListener("click", function () { themeView = "main"; themeTargetId = null; renderThemeExperiment(); });
+  });
+  const fin = el.querySelector("#theme-finish");
+  if (fin) fin.addEventListener("click", themeFinish);
+}
+
+function themeActiveCard(rec, completing) {
+  const now = new Date();
+  const daysLeft = Math.ceil((new Date(rec.end + "T23:59:59") - now) / 86400000);
+  const timing = daysLeft > 0 ? "还剩 " + daysLeft + " 天" : "已到复盘时间";
+  return '<div class="theme-current">' +
+    '<div class="theme-record-head"><div class="theme-record-title">' + escapeHtml(rec.title) + '</div>' +
+    '<div class="theme-record-cycle">' + (rec.cycle === "month" ? "主题月" : "主题周") + '</div></div>' +
+    '<div class="theme-meta">' + shortDate(rec.start) + ' — ' + shortDate(rec.end) + ' · ' + timing + '</div>' +
+    '<div class="theme-record-body"><b>新的可能：</b>' + escapeHtml(rec.hypothesis) + '\n<b>最小实验：</b>' + escapeHtml(rec.action) +
+      (rec.evidence ? '\n<b>继续信号：</b>' + escapeHtml(rec.evidence) : '') + '</div>' +
+    (completing
+      ? '<div class="align-proto"><div class="theme-field"><div class="tf-label">实际发生了什么?</div><textarea id="theme-review" placeholder="做了什么、没做什么,真实写下来"></textarea></div>' +
+        '<div class="theme-field"><div class="tf-label">这次最重要的发现</div><textarea id="theme-learning" placeholder="关于自己或这个方向,我现在多知道了什么?"></textarea></div>' +
+        '<div class="theme-field"><div class="tf-label">这次探索最后去了哪里?</div><select id="theme-signal"><option value="expand">长出了一个新方向</option><option value="continue" selected>值得继续探索</option><option value="close">确认边界,安心结束</option></select></div>' +
+        '<div class="theme-field"><div class="tf-label">下一步（可选）</div><textarea id="theme-next" placeholder="继续扩大实验、换个方式再试,或到这里结束"></textarea></div>' +
+        '<div style="display:flex;gap:8px;"><button class="zen-mode-btn" id="theme-finish" style="flex:1;">完成并归档</button><button class="zen-mode-btn" data-theme-fcancel style="flex:1;background:rgba(255,255,255,0.14);">取消</button></div><div id="theme-note" class="price-note" style="margin-top:8px;"></div></div>'
+      : '<div style="display:flex;gap:8px;margin-top:14px;flex-wrap:wrap;"><button class="zen-mode-btn" data-theme-complete="' + rec.id + '" style="flex:1;min-width:120px;">记录结果</button><button class="zen-mode-btn" data-theme-edit="' + rec.id + '" style="flex:1;min-width:100px;background:rgba(255,255,255,0.14);">调整实验</button></div>') +
+    '</div>';
+}
+
+function themeFinish() {
+  const rows = getThemeExperiments();
+  const rec = rows.find(function (r) { return r.id === themeTargetId; });
+  if (!rec) { themeView = "main"; renderThemeExperiment(); return; }
+  const review = document.getElementById("theme-review").value.trim();
+  const learning = document.getElementById("theme-learning").value.trim();
+  if (!review || !learning) {
+    document.getElementById("theme-note").textContent = "先写下实际发生了什么和最重要的发现。";
+    return;
+  }
+  const idx = rows.findIndex(function (r) { return r.id === rec.id; });
+  rows[idx] = Object.assign({}, rows[idx], {
+    status: "done", review: review, learning: learning,
+    signal: document.getElementById("theme-signal").value,
+    next: document.getElementById("theme-next").value.trim(), completedAt: Date.now()
+  });
+  saveThemeExperiments(rows);
+  themeView = "main"; themeTargetId = null;
+  renderThemeExperiment();
 }
 
 function updateThemeCycleCopy(el, cycle) {
@@ -2879,11 +3239,13 @@ function updateThemeCycleCopy(el, cycle) {
 function renderThemeForm(existing) {
   const el = document.getElementById("theme-body");
   const rec = existing || {};
-  themeCycle = rec.cycle || themeCycle || "week";
+  let cycle = rec.cycle || themeFormCycle || "week";
+  const act = themeActives();
+
   el.innerHTML =
     '<div class="theme-periods">' +
-      '<button class="theme-period' + (themeCycle === "week" ? " active" : "") + '" data-theme-cycle="week">主题周 · 7 天</button>' +
-      '<button class="theme-period' + (themeCycle === "month" ? " active" : "") + '" data-theme-cycle="month">主题月 · 30 天</button>' +
+      '<button class="theme-period' + (cycle === "week" ? " active" : "") + '" data-theme-cycle="week">主题周 · 7 天</button>' +
+      '<button class="theme-period' + (cycle === "month" ? " active" : "") + '" data-theme-cycle="month">主题月 · 30 天</button>' +
     '</div>' +
     '<div class="slow-stage-note" id="theme-cycle-guide"></div>' +
     '<div class="theme-field"><div class="tf-label">这期想跳出去探索什么?</div>' +
@@ -2896,92 +3258,53 @@ function renderThemeForm(existing) {
       '<textarea id="theme-evidence">' + escapeHtml(rec.evidence || "") + '</textarea></div>' +
     '<div style="display:flex;gap:8px;flex-wrap:wrap;">' +
       '<button class="zen-mode-btn" id="theme-save" style="flex:1;min-width:140px;">' + (existing ? "保存调整" : "开始这次实验") + '</button>' +
-      (existing ? '<button class="zen-mode-btn" id="theme-cancel" style="flex:1;min-width:100px;background:rgba(255,255,255,0.14);">取消</button>' : '') +
+      '<button class="zen-mode-btn" id="theme-cancel" style="flex:1;min-width:100px;background:rgba(255,255,255,0.14);">取消</button>' +
     '</div><div id="theme-note" class="price-note" style="margin-top:8px;"></div>';
 
-  updateThemeCycleCopy(el, themeCycle);
+  updateThemeCycleCopy(el, cycle);
   el.querySelectorAll("[data-theme-cycle]").forEach(function (btn) {
     btn.addEventListener("click", function () {
-      themeCycle = btn.dataset.themeCycle;
+      cycle = btn.dataset.themeCycle;
       el.querySelectorAll("[data-theme-cycle]").forEach(function (b) { b.classList.toggle("active", b === btn); });
-      updateThemeCycleCopy(el, themeCycle);
+      updateThemeCycleCopy(el, cycle);
     });
   });
   document.getElementById("theme-save").addEventListener("click", function () {
     const title = document.getElementById("theme-title").value.trim();
     const hypothesis = document.getElementById("theme-hypothesis").value.trim();
     const action = document.getElementById("theme-action").value.trim();
+    const note = document.getElementById("theme-note");
     if (!title || !hypothesis || !action) {
-      document.getElementById("theme-note").textContent = "把探索主题、新可能和最小实验写完再开始。";
+      note.textContent = "把探索主题、新可能和最小实验写完再开始。";
+      return;
+    }
+    /* 每种周期同时只跑一期:周和月可以并行,但不能开两个主题周 */
+    const clash = cycle === "month" ? act.month : act.week;
+    if (clash && (!existing || clash.id !== existing.id)) {
+      note.textContent = (cycle === "month" ? "已经有一期主题月在进行中" : "已经有一期主题周在进行中") + ",先完成它,或调整它的内容。";
       return;
     }
     const rows = getThemeExperiments();
     const start = existing ? existing.start : localYmd(new Date());
     const next = Object.assign({}, existing || {}, {
       id: existing ? existing.id : (Date.now().toString(36) + Math.random().toString(36).slice(2, 6)),
-      cycle: themeCycle, title: title,
+      cycle: cycle, title: title,
       hypothesis: hypothesis, action: action,
       evidence: document.getElementById("theme-evidence").value.trim(),
-      start: start, end: themeCycleEnd(start, themeCycle), status: "active",
+      start: start, end: themeCycleEnd(start, cycle), status: "active",
       createdAt: existing ? existing.createdAt : Date.now(), updatedAt: Date.now()
     });
-    delete next.planRefs; // 旧版曾关联人生方向;新版主题实验保持完全独立
+    delete next.planRefs;
     if (existing) {
       const idx = rows.findIndex(function (r) { return r.id === existing.id; });
       if (idx >= 0) rows[idx] = next;
     } else rows.unshift(next);
     saveThemeExperiments(rows);
-    themeView = "main";
+    themeView = "main"; themeTargetId = null;
     renderThemeExperiment();
   });
-  const cancel = document.getElementById("theme-cancel");
-  if (cancel) cancel.addEventListener("click", function () { themeView = "main"; renderThemeExperiment(); });
-}
-
-function renderThemeActive(rec, completing) {
-  const el = document.getElementById("theme-body");
-  const now = new Date();
-  const daysLeft = Math.ceil((new Date(rec.end + "T23:59:59") - now) / 86400000);
-  const timing = daysLeft > 0 ? "还剩 " + daysLeft + " 天" : "已到复盘时间";
-  el.innerHTML =
-    '<div class="theme-current">' +
-      '<div class="theme-record-head"><div class="theme-record-title">' + escapeHtml(rec.title) + '</div>' +
-      '<div class="theme-record-cycle">' + (rec.cycle === "month" ? "主题月" : "主题周") + '</div></div>' +
-      '<div class="theme-meta">' + shortDate(rec.start) + ' — ' + shortDate(rec.end) + ' · ' + timing + '</div>' +
-      '<div class="theme-record-body"><b>新的可能：</b>' + escapeHtml(rec.hypothesis) + '\n<b>最小实验：</b>' + escapeHtml(rec.action) +
-        (rec.evidence ? '\n<b>继续信号：</b>' + escapeHtml(rec.evidence) : '') + '</div>' +
-    '</div>' +
-    (completing
-      ? '<div class="align-proto"><div class="theme-field"><div class="tf-label">实际发生了什么?</div><textarea id="theme-review" placeholder="做了什么、没做什么,真实写下来"></textarea></div>' +
-        '<div class="theme-field"><div class="tf-label">这次最重要的发现</div><textarea id="theme-learning" placeholder="关于自己或这个方向,我现在多知道了什么?"></textarea></div>' +
-        '<div class="theme-field"><div class="tf-label">这次探索最后去了哪里?</div><select id="theme-signal"><option value="expand">长出了一个新方向</option><option value="continue" selected>值得继续探索</option><option value="close">确认边界,安心结束</option></select></div>' +
-        '<div class="theme-field"><div class="tf-label">下一步（可选）</div><textarea id="theme-next" placeholder="继续扩大实验、换个方式再试,或到这里结束"></textarea></div>' +
-        '<div style="display:flex;gap:8px;"><button class="zen-mode-btn" id="theme-finish" style="flex:1;">完成并归档</button><button class="zen-mode-btn" id="theme-finish-cancel" style="flex:1;background:rgba(255,255,255,0.14);">取消</button></div><div id="theme-note" class="price-note" style="margin-top:8px;"></div></div>'
-      : '<div style="display:flex;gap:8px;margin-top:16px;flex-wrap:wrap;"><button class="zen-mode-btn" id="theme-complete" style="flex:1;min-width:140px;">记录结果</button><button class="zen-mode-btn" id="theme-edit" style="flex:1;min-width:100px;background:rgba(255,255,255,0.14);">调整实验</button></div>');
-
-  if (!completing) {
-    document.getElementById("theme-complete").addEventListener("click", function () { themeView = "complete"; renderThemeExperiment(); });
-    document.getElementById("theme-edit").addEventListener("click", function () { themeView = "edit"; renderThemeExperiment(); });
-    return;
-  }
-  document.getElementById("theme-finish-cancel").addEventListener("click", function () { themeView = "main"; renderThemeExperiment(); });
-  document.getElementById("theme-finish").addEventListener("click", function () {
-    const review = document.getElementById("theme-review").value.trim();
-    const learning = document.getElementById("theme-learning").value.trim();
-    if (!review || !learning) {
-      document.getElementById("theme-note").textContent = "先写下实际发生了什么和最重要的发现。";
-      return;
-    }
-    const rows = getThemeExperiments();
-    const idx = rows.findIndex(function (r) { return r.id === rec.id; });
-    if (idx >= 0) rows[idx] = Object.assign({}, rows[idx], {
-      status: "done", review: review, learning: learning,
-      signal: document.getElementById("theme-signal").value,
-      next: document.getElementById("theme-next").value.trim(), completedAt: Date.now()
-    });
-    saveThemeExperiments(rows);
-    themeView = "main";
-    renderThemeExperiment();
+  document.getElementById("theme-cancel").addEventListener("click", function () {
+    themeView = "main"; themeTargetId = null; renderThemeExperiment();
   });
 }
 
@@ -3159,11 +3482,6 @@ function renderSlow() {
       const note = document.getElementById("slow-s2-note");
       const blank = slowState.s2.filter(function (a) { return !a; }).length;
       if (blank) { note.textContent = "还有 " + blank + " 题没写理由,把它们补上再往下。"; return; }
-      if (Date.now() - slowStageEnter < 45000) {
-        note.textContent = "这个速度更像是第一反应,而不是想过之后的答案。要不要再给自己 30 秒?";
-        slowStageEnter = Date.now() - 45000; // 再点一次就放行
-        return;
-      }
       slowStage = 3; slowStageEnter = Date.now(); renderSlow();
     });
     return;
@@ -4856,6 +5174,66 @@ function hasAIKey() { return !!localStorage.getItem("arinrin_ai_key"); }
     localStorage.setItem("arinrin_ai_key", document.getElementById("ai-key").value.trim());
     document.getElementById("ai-save-note").textContent = "已保存 ✓ 现在可以使用 AI 功能了。";
   });
+})();
+
+/* =========================================================
+   全站数据备份 / 恢复
+   导出所有 arinrin_ 开头的 localStorage(跳过纯缓存),一个 JSON 搞定
+   ========================================================= */
+(function () {
+  const SKIP_PREFIX = ["arinrin_aihot_cache", "arinrin_affirm_"]; // 纯缓存,不值得备份
+
+  function exportAll() {
+    const data = {};
+    let n = 0;
+    for (let i = 0; i < localStorage.length; i++) {
+      const k = localStorage.key(i);
+      if (!k || k.indexOf("arinrin_") !== 0) continue;
+      if (SKIP_PREFIX.some(function (p) { return k.indexOf(p) === 0; })) continue;
+      data[k] = localStorage.getItem(k);
+      n++;
+    }
+    const payload = {
+      site: "arinrin.space", kind: "arinrin-backup", version: 1,
+      exportedAt: new Date().toISOString(), entries: n, data: data
+    };
+    const blob = new Blob([JSON.stringify(payload, null, 2)], { type: "application/json" });
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = "arinrin-backup-" + new Date().toISOString().slice(0, 10) + ".json";
+    document.body.appendChild(a); a.click();
+    setTimeout(function () { URL.revokeObjectURL(a.href); a.remove(); }, 500);
+  }
+
+  function importAll(file) {
+    const reader = new FileReader();
+    reader.onload = function () {
+      let payload;
+      try { payload = JSON.parse(reader.result); } catch (e) { alert("这个文件不是有效的备份(JSON 解析失败)。"); return; }
+      if (!payload || payload.kind !== "arinrin-backup" || !payload.data) {
+        alert("这个文件不是 arinrin.space 的备份文件。"); return;
+      }
+      const keys = Object.keys(payload.data);
+      if (!confirm("将恢复 " + keys.length + " 项数据(导出于 " + (payload.exportedAt || "?").slice(0, 10) + ")。\n同名数据会被备份里的版本覆盖,确定吗?")) return;
+      let ok = 0;
+      keys.forEach(function (k) {
+        if (k.indexOf("arinrin_") !== 0) return; // 只写回自己的命名空间
+        try { localStorage.setItem(k, payload.data[k]); ok++; } catch (e) {}
+      });
+      alert("已恢复 " + ok + " 项。页面将刷新。");
+      location.reload();
+    };
+    reader.readAsText(file);
+  }
+
+  const ex = document.getElementById("data-export-btn");
+  const im = document.getElementById("data-import-btn");
+  const fi = document.getElementById("data-import-file");
+  if (ex) ex.addEventListener("click", exportAll);
+  if (im && fi) {
+    im.addEventListener("click", function () { fi.value = ""; fi.click(); });
+    fi.addEventListener("change", function () { if (fi.files && fi.files[0]) importAll(fi.files[0]); });
+  }
 })();
 
 /* ===== 启动 ===== */
