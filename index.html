@@ -44,9 +44,78 @@
     position: fixed; right: 14px; bottom: 8px; z-index: 5;
     font-size: 11px; color: rgba(255,255,255,0.55);
     text-shadow: 0 1px 4px rgba(0,0,0,0.6);
+    display: flex; align-items: center; gap: 8px;
   }
   .photo-credit a { color: rgba(255,255,255,0.75); text-decoration: none; }
   .photo-credit a:hover { text-decoration: underline; }
+  .bg-fav-btn {
+    cursor: pointer; font-size: 13px; line-height: 1; background: none; border: none;
+    color: rgba(255,255,255,0.55); padding: 2px; filter: drop-shadow(0 1px 3px rgba(0,0,0,0.6));
+  }
+  .bg-fav-btn:hover { color: rgba(255,255,255,0.9); }
+  .bg-fav-btn.on { color: #ff6b8a; }
+
+  /* 看过的 · 清单 */
+  .log-stars { display: flex; align-items: center; gap: 4px; font-size: 20px; color: var(--text-sub); padding: 6px 12px;
+    background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.14); border-radius: 10px; }
+  .log-stars span { cursor: pointer; line-height: 1; }
+  .log-stars span.on { color: #ffd479; }
+  .log-year { font-size: 12px; letter-spacing: 3px; color: var(--text-sub); opacity: .7; margin: 18px 0 8px; }
+  .log-year:first-child { margin-top: 0; }
+  .log-row { display: flex; align-items: flex-start; gap: 11px; padding: 11px 4px;
+    border-bottom: 1px solid rgba(255,255,255,0.08); }
+  .log-row:last-child { border-bottom: none; }
+  .log-icon { font-size: 17px; line-height: 1.5; flex-shrink: 0; }
+  .log-body { min-width: 0; flex: 1; }
+  .log-title { font-size: 14.5px; color: var(--text-main); line-height: 1.6; }
+  .log-rate { font-size: 11px; color: #ffd479; margin-left: 7px; letter-spacing: 1px; }
+  .log-note { font-size: 12.5px; color: var(--text-sub); line-height: 1.75; margin-top: 3px; }
+  .log-date { font-size: 11px; color: var(--text-sub); opacity: .7; flex-shrink: 0; padding-top: 3px; }
+  .log-del { background: none; border: none; color: var(--text-sub); cursor: pointer; font-size: 11px;
+    padding: 3px 2px; opacity: .35; flex-shrink: 0; }
+  .log-del:hover { opacity: 1; }
+  /* 口语练习 */
+  .speak-card {
+    background: rgba(255,255,255,0.05); border: 1px solid var(--glass-border);
+    border-radius: 12px; padding: 14px 16px; margin-bottom: 12px; cursor: pointer;
+    transition: background .2s;
+  }
+  .speak-card:hover { background: rgba(255,255,255,0.08); }
+  .speak-card.open { background: rgba(255,255,255,0.09); cursor: default; }
+  .sp-head { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
+  .sp-scene { font-size: 11px; padding: 2px 9px; border-radius: 20px; background: rgba(255,255,255,0.12); color: var(--text-sub); }
+  .sp-interview { background: rgba(120,180,255,0.18); color: #9ec8ff; }
+  .sp-travel { background: rgba(255,200,120,0.18); color: #ffd08a; }
+  .sp-daily { background: rgba(150,230,180,0.16); color: #9fe0b8; }
+  .sp-func { font-size: 11px; padding: 2px 9px; border-radius: 20px; background: rgba(255,255,255,0.08); color: var(--text-sub); border: 1px solid rgba(255,255,255,0.12); }
+  .sp-count { font-size: 11px; color: var(--text-sub); opacity: .8; }
+  .sp-del { margin-left: auto; background: none; border: none; color: var(--text-sub); cursor: pointer; font-size: 12px; padding: 2px 4px; opacity: .5; }
+  .sp-del:hover { opacity: 1; }
+  .sp-en { font-size: 15.5px; line-height: 1.75; color: var(--text-main); }
+  .sp-zh { font-size: 13px; line-height: 1.7; color: var(--text-sub); margin-top: 5px; }
+  .sp-more { font-size: 11.5px; color: var(--text-sub); opacity: .55; margin-top: 8px; }
+  .sp-detail { margin-top: 14px; padding-top: 14px; border-top: 1px solid rgba(255,255,255,0.1); cursor: default; }
+  .sp-line { font-size: 13px; line-height: 1.85; color: var(--text-sub); margin-bottom: 8px; }
+  .sp-line b { color: var(--text-main); font-weight: 500; margin-right: 8px; }
+  .sp-actions { display: flex; gap: 8px; flex-wrap: wrap; margin: 12px 0 4px; }
+  .sp-btn { flex: 1; min-width: 96px; font-size: 13px; padding: 9px 10px; }
+  .sp-btn.recording { background: rgba(255,107,138,0.28); }
+  .bg-fav-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(110px, 1fr)); gap: 10px; }
+  .bg-fav-item { position: relative; border-radius: 10px; overflow: hidden; aspect-ratio: 4 / 3; background: rgba(255,255,255,0.05); }
+  .bg-fav-item img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform .3s; }
+  .bg-fav-item:hover img { transform: scale(1.06); }
+  .bg-fav-remove {
+    position: absolute; top: 5px; right: 5px; width: 20px; height: 20px; border-radius: 50%;
+    background: rgba(0,0,0,0.55); color: #fff; border: none; cursor: pointer; font-size: 11px;
+    line-height: 20px; text-align: center; padding: 0; opacity: 0; transition: opacity .2s;
+  }
+  .bg-fav-item:hover .bg-fav-remove { opacity: 1; }
+  .bg-fav-author {
+    position: absolute; left: 0; right: 0; bottom: 0; padding: 4px 7px;
+    font-size: 10.5px; color: rgba(255,255,255,0.85);
+    background: linear-gradient(transparent, rgba(0,0,0,0.55));
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis; pointer-events: none;
+  }
 
   .page {
     min-height: 100vh;
@@ -150,6 +219,12 @@
     font-variant-numeric: tabular-nums; letter-spacing: 2px; margin: 4px 0;
   }
   .clock-card .slot-name { font-size: 14px; color: var(--text-sub); }
+  .clock-card .geo-line {
+    font-size: 12.5px; color: var(--text-sub); opacity: .8;
+    margin-top: 6px; display: flex; align-items: center; justify-content: center; gap: 6px; flex-wrap: wrap;
+  }
+  .clock-card .geo-line .gl-dot { opacity: .5; }
+  .clock-card .geo-line .gl-aqi { padding: 1px 7px; border-radius: 9px; background: rgba(255,255,255,0.09); }
 
   .grid-label { font-size: 15px; color: var(--text-sub); display: flex; align-items: center; gap: 8px; margin-top: 4px; }
 
@@ -1222,6 +1297,7 @@
           <div class="date" id="date-line">—</div>
           <div class="time" id="time-line">--:--:--</div>
           <div class="slot-name" id="slot-line">—</div>
+          <div class="geo-line" id="geo-line"></div>
         </div>
       </div>
 
@@ -1249,9 +1325,9 @@
           <div class="sub">行情 · 认知框架</div>
         </button>
         <button class="nav-item" data-panel="aesthetic">
-          <div class="icon">🎨</div>
-          <div class="name">审美</div>
-          <div class="sub">素材 · 摄影 · 灵感</div>
+          <div class="icon">📚</div>
+          <div class="name">书房</div>
+          <div class="sub">收藏 · 素材 · 摄影 · 口语</div>
         </button>
         <button class="nav-item" data-panel="explore">
           <div class="icon">🧭</div>
@@ -1274,39 +1350,146 @@
 
 <!-- ===== 板块面板 ===== -->
 
-<div class="panel" id="panel-aesthetic" role="dialog" aria-label="审美">
+<div class="panel" id="panel-aesthetic" role="dialog" aria-label="书房">
   <button class="panel-close" data-close aria-label="关闭">✕</button>
   <div class="panel-inner">
-    <div class="panel-head"><div class="p-icon">🎨</div><h2>审美</h2></div>
-    <p class="panel-intro">收集打动我的画面、声音和设计。好的审美是长期喂养出来的,这里是我的素材粮仓。</p>
+    <div class="panel-head"><div class="p-icon">📚</div><h2>书房</h2></div>
+    <p class="panel-intro">看的、收的、练的都放这儿。喂养审美是长期的事,练一门技艺也是。</p>
 
-    <div class="card read-entry" id="read-entry" style="margin-bottom:20px;cursor:pointer;">
-      <div class="section-sub" style="margin-top:0;">📖 静读</div>
-      <p class="price-note" style="margin:0;">一张图,一句话。点开进入全屏,左右翻页,读一句古人的话就走。</p>
+    <div class="health-tabs" role="tablist" aria-label="书房分区">
+      <button class="health-tab active" type="button" role="tab" aria-selected="true" data-study-tab="collect">收藏</button>
+      <button class="health-tab" type="button" role="tab" aria-selected="false" data-study-tab="log">清单</button>
+      <button class="health-tab" type="button" role="tab" aria-selected="false" data-study-tab="material">素材</button>
+      <button class="health-tab" type="button" role="tab" aria-selected="false" data-study-tab="photo">摄影</button>
+      <button class="health-tab" type="button" role="tab" aria-selected="false" data-study-tab="speak">口语</button>
     </div>
 
-    <div class="item-grid">
-      <a class="link-card" href="https://www.ysjf.com/material" target="_blank" rel="noopener">
-        <div class="lc-title">🎬 影视飓风·素材站<span class="tag">外链</span></div>
-        <div class="lc-desc">免费高质量视频素材,空镜、转场、声音设计的灵感库。</div>
-      </a>
-      <a class="link-card" href="https://unsplash.com/" target="_blank" rel="noopener">
-        <div class="lc-title">📸 Unsplash<span class="tag">外链</span></div>
-        <div class="lc-desc">全球摄影师免费共享的高质量图库,本站的背景图就来自这里。</div>
-      </a>
-      <a class="link-card" href="#" title="TODO: 填入UI灵感站链接">
-        <div class="lc-title">🖥️ UI 灵感收藏<span class="tag">整理中</span></div>
-        <div class="lc-desc">我觉得好看的网站与界面设计,持续收录。</div>
-      </a>
-      <a class="link-card" href="#">
-        <div class="lc-title">📷 我的摄影<span class="tag">即将上线</span></div>
-        <div class="lc-desc">胶片与数码,记录城市和天空的光。</div>
-      </a>
-      <a class="link-card" href="#">
-        <div class="lc-title">✨ AI 作品集<span class="tag">即将上线</span></div>
-        <div class="lc-desc">用 AI 创作的图像与视觉实验。</div>
-      </a>
-    </div>
+    <!-- 收藏 -->
+    <section class="health-view active" id="study-view-collect" data-study-view="collect">
+      <div class="card read-entry" id="read-entry" style="margin-bottom:20px;cursor:pointer;">
+        <div class="section-sub" style="margin-top:0;">📖 静读</div>
+        <p class="price-note" style="margin:0;">一张图,一句话。点开进入全屏,左右翻页,读一句古人的话就走。</p>
+      </div>
+
+      <div class="card">
+        <div class="section-sub" style="margin-top:0;display:flex;align-items:center;justify-content:space-between;">
+          <span>🖼️ 背景图收藏</span>
+          <span class="refresh-btn" id="bg-fav-refresh" style="display:none;">清空</span>
+        </div>
+        <p class="price-note" style="margin:0 0 12px;">首页背景轮到喜欢的图,点右下角的 ♡ 就存进这里,点图能跳到 Unsplash 看原图、找摄影师。</p>
+        <div id="bg-fav-gallery"></div>
+      </div>
+    </section>
+
+    <!-- 清单 -->
+    <section class="health-view" id="study-view-log" data-study-view="log" hidden>
+      <div class="card" style="margin-bottom:18px;">
+        <div class="section-sub" style="margin-top:0;display:flex;align-items:center;justify-content:space-between;">
+          <span>📋 看过的</span>
+          <span class="refresh-btn" id="log-add-toggle">＋ 记一条</span>
+        </div>
+        <p class="price-note" style="margin:0;" id="log-stat">书籍、电影、剧集、演出,看完随手记一笔。只存在你自己的浏览器里。</p>
+        <div id="log-add-box" style="display:none;margin-top:14px;">
+          <div class="bz-opts" id="log-type-picker" style="margin-bottom:10px;">
+            <button class="theme-period bz-chip active" data-log-type="book">📖 书籍</button>
+            <button class="theme-period bz-chip" data-log-type="film">🎬 电影</button>
+            <button class="theme-period bz-chip" data-log-type="script">📺 剧集</button>
+            <button class="theme-period bz-chip" data-log-type="show">🎭 演出</button>
+            <button class="theme-period bz-chip" data-log-type="other">✦ 其他</button>
+          </div>
+          <input id="log-title" type="text" placeholder="名字" style="width:100%;background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.14);border-radius:10px;padding:10px 12px;color:var(--text-main);font-size:14px;font-family:inherit;outline:none;">
+          <div style="display:flex;gap:8px;margin-top:8px;flex-wrap:wrap;">
+            <input id="log-date" type="date" style="flex:1;min-width:150px;background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.14);border-radius:10px;padding:9px 12px;color:var(--text-main);font-size:13px;font-family:inherit;outline:none;">
+            <div class="log-stars" id="log-rating" style="flex:1;min-width:140px;">
+              <span data-log-star="1">☆</span><span data-log-star="2">☆</span><span data-log-star="3">☆</span><span data-log-star="4">☆</span><span data-log-star="5">☆</span>
+            </div>
+          </div>
+          <textarea id="log-note" rows="2" placeholder="一句话就够:哪里打动你,或者别的什么" style="width:100%;margin-top:8px;resize:vertical;background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.14);border-radius:10px;padding:10px 12px;color:var(--text-main);font-size:13.5px;line-height:1.7;font-family:inherit;outline:none;"></textarea>
+          <button class="zen-mode-btn" id="log-save" style="width:100%;margin-top:10px;">记下</button>
+          <div id="log-note-msg" class="price-note" style="margin-top:8px;"></div>
+        </div>
+      </div>
+
+      <div class="bz-opts" id="log-filters" style="margin-bottom:16px;">
+        <button class="theme-period bz-chip active" data-log-filter="all">全部</button>
+        <button class="theme-period bz-chip" data-log-filter="book">书籍</button>
+        <button class="theme-period bz-chip" data-log-filter="film">电影</button>
+        <button class="theme-period bz-chip" data-log-filter="script">剧集</button>
+        <button class="theme-period bz-chip" data-log-filter="show">演出</button>
+        <button class="theme-period bz-chip" data-log-filter="other">其他</button>
+      </div>
+
+      <div id="log-list"></div>
+    </section>
+
+    <!-- 素材 -->
+    <section class="health-view" id="study-view-material" data-study-view="material" hidden>
+      <div class="item-grid">
+        <a class="link-card" href="https://www.ysjf.com/material" target="_blank" rel="noopener">
+          <div class="lc-title">🎬 影视飓风·素材站<span class="tag">外链</span></div>
+          <div class="lc-desc">免费高质量视频素材,空镜、转场、声音设计的灵感库。</div>
+        </a>
+        <a class="link-card" href="https://unsplash.com/" target="_blank" rel="noopener">
+          <div class="lc-title">📸 Unsplash<span class="tag">外链</span></div>
+          <div class="lc-desc">全球摄影师免费共享的高质量图库,本站的背景图就来自这里。</div>
+        </a>
+        <a class="link-card" href="#" title="TODO: 填入UI灵感站链接">
+          <div class="lc-title">🖥️ UI 灵感收藏<span class="tag">整理中</span></div>
+          <div class="lc-desc">我觉得好看的网站与界面设计,持续收录。</div>
+        </a>
+        <a class="link-card" href="#">
+          <div class="lc-title">✨ AI 作品集<span class="tag">即将上线</span></div>
+          <div class="lc-desc">用 AI 创作的图像与视觉实验。</div>
+        </a>
+      </div>
+    </section>
+
+    <!-- 摄影 -->
+    <section class="health-view" id="study-view-photo" data-study-view="photo" hidden>
+      <div class="card">
+        <div class="section-sub" style="margin-top:0;">📷 我的摄影</div>
+        <p class="price-note" style="margin:0;">胶片与数码,记录城市和天空的光。作品集整理中——想好怎么放(自己传图,还是链到已有相册)告诉我,我来接。</p>
+      </div>
+    </section>
+
+    <!-- 口语 -->
+    <section class="health-view" id="study-view-speak" data-study-view="speak" hidden>
+      <div class="card" style="margin-bottom:18px;">
+        <div class="section-sub" style="margin-top:0;display:flex;align-items:center;justify-content:space-between;">
+          <span>🗣️ 口语练习</span>
+          <span class="refresh-btn" id="speak-add-toggle">＋ 抽句</span>
+        </div>
+        <p class="price-note" style="margin:0 0 4px;">把演讲原文粘进来,AI 挑出值得跟读的句子(按面试/旅游/日常分类,给出句型骨架)。跟读 → 录音回放 → 写自己的版本让 AI 挑毛病。</p>
+        <div id="speak-add-box" style="display:none;margin-top:14px;">
+          <textarea id="speak-source" rows="6" placeholder="粘贴演讲文字稿(YouTube 转录 / englishspeecheschannel.com 全文都行)…"
+            style="width:100%;resize:vertical;background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.14);border-radius:10px;padding:12px;color:var(--text-main);font-size:13.5px;line-height:1.75;font-family:inherit;outline:none;"></textarea>
+          <input id="speak-source-name" type="text" placeholder="这段话出自谁/哪场演讲(可不填)"
+            style="width:100%;margin-top:8px;background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.14);border-radius:10px;padding:9px 12px;color:var(--text-main);font-size:13px;font-family:inherit;outline:none;">
+          <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:10px;">
+            <button class="zen-mode-btn" id="speak-extract-btn" style="flex:1;min-width:150px;">让 AI 抽 4-6 句</button>
+            <button class="zen-mode-btn" id="speak-manual-btn" style="flex:1;min-width:110px;background:rgba(255,255,255,0.14);">手动加一句</button>
+          </div>
+          <div id="speak-add-note" class="price-note" style="margin-top:8px;"></div>
+        </div>
+      </div>
+
+      <div class="bz-opts" id="speak-filters" style="margin-bottom:14px;">
+        <button class="theme-period bz-chip active" data-speak-filter="all">全部</button>
+        <button class="theme-period bz-chip" data-speak-filter="interview">商务</button>
+        <button class="theme-period bz-chip" data-speak-filter="travel">旅游</button>
+        <button class="theme-period bz-chip" data-speak-filter="daily">日常</button>
+      </div>
+
+      <div class="bz-opts" id="speak-func-filters" style="margin-bottom:16px;">
+        <button class="theme-period bz-chip active" data-speak-func="all">不限用途</button>
+        <button class="theme-period bz-chip" data-speak-func="experience">描述经历</button>
+        <button class="theme-period bz-chip" data-speak-func="opinion">表达观点</button>
+        <button class="theme-period bz-chip" data-speak-func="pushback">回应质疑</button>
+        <button class="theme-period bz-chip" data-speak-func="rapport">建立关系</button>
+      </div>
+
+      <div id="speak-list"></div>
+    </section>
   </div>
 </div>
 
@@ -1882,10 +2065,11 @@ function applyCabinTheme(slotKey) {
 }
 
 let currentBgImage = null;   // 当前生效的背景图(静读页复用)
+let currentBgShot = null;    // 当前生效背景图的完整信息(收藏/取消收藏时用)
 /* 背景模糊强度(px):0 = 完全清晰 · 8~10 = 轻柔(推荐,兼顾美观与文字可读)
    18 = 强模糊(任何图都不会影响文字)。改这一个数字即可。 */
 const BG_BLUR_PX = 0;
-const UNSPLASH_CACHE = "arinrin_unsplash_";
+const UNSPLASH_CACHE = "arinrin_unsplash_v2_";
 
 /* 从 Unsplash 取图:按"日期+时段"缓存一天,省额度也保证一天内画面稳定 */
 async function fetchUnsplash(slot) {
@@ -1911,14 +2095,532 @@ async function fetchUnsplash(slot) {
   return null;
 }
 
+/* ===== 背景图收藏 ===== */
+const BG_FAV_KEY = "arinrin_bg_favorites";
+function bgFavorites() { return readLocalJSON(BG_FAV_KEY, []); }
+function saveBgFavorites(list) { try { localStorage.setItem(BG_FAV_KEY, JSON.stringify(list)); } catch (e) {} }
+function isBgFavorited(url) { return bgFavorites().some(f => f.url === url); }
+
+/* 这张图在 Unsplash 上的页面。老缓存/老接口可能只给了站点首页,这里做几层兜底 */
+function unsplashPhotoLink(d) {
+  if (!d) return "https://unsplash.com";
+  const cand = d.unsplashLink || "";
+  if (cand && cand.indexOf("/photos/") >= 0) return cand;
+  if (d.id) return "https://unsplash.com/photos/" + d.id + "?utm_source=arinrin_space&utm_medium=referral";
+  return cand || "https://unsplash.com";
+}
+function toggleBgFavorite(shot) {
+  if (!shot || !shot.url) return;
+  let list = bgFavorites();
+  if (list.some(f => f.url === shot.url)) {
+    list = list.filter(f => f.url !== shot.url);
+  } else {
+    list.unshift({
+      url: shot.url, author: shot.author || "", authorLink: shot.authorLink || "",
+      unsplashLink: unsplashPhotoLink(shot), id: shot.id || "", favoritedAt: Date.now()
+    });
+    list = list.slice(0, 200);
+  }
+  saveBgFavorites(list);
+  setCredit(shot); // 重画一下心形状态
+  if (document.getElementById("bg-fav-gallery")) renderBgFavGallery();
+}
+
+/* =========================================================
+   口语练习 · 书房
+   句库(AI 从演讲原文抽句)→ 跟读(TTS 标准音 + 录音回放)→ 自己造句让 AI 挑毛病
+   ========================================================= */
+const SPEAK_KEY = "arinrin_speak_sentences";
+const SPEAK_SCENES = { interview: "商务", travel: "旅游", daily: "日常" };
+/* 商务 = 面试 + 会议 + 汇报 + 谈判。键名沿用 interview,老句子不用迁移 */
+function speakScene(k) { return (k === "business" || k === "interview") ? "interview" : (SPEAK_SCENES[k] ? k : "daily"); }
+/* 功能标签:这句话拿来干什么。面试前可以只筛「回应质疑」那一组集中练 */
+const SPEAK_FUNCS = { experience: "描述经历", opinion: "表达观点", pushback: "回应质疑", rapport: "建立关系" };
+function speakFunc(k) { return SPEAK_FUNCS[k] ? k : ""; }
+let speakFuncFilter = "all";
+let speakFilter = "all";
+let speakOpenId = null;
+let speakRecorder = null, speakChunks = [], speakStream = null;
+
+function speakSentences() { return readLocalJSON(SPEAK_KEY, []); }
+function saveSpeakSentences(list) { try { localStorage.setItem(SPEAK_KEY, JSON.stringify(list)); } catch (e) {} }
+
+function initSpeak() {
+  const toggle = document.getElementById("speak-add-toggle");
+  if (toggle && !toggle.dataset.bound) {
+    toggle.dataset.bound = "1";
+    toggle.addEventListener("click", () => {
+      const box = document.getElementById("speak-add-box");
+      box.style.display = box.style.display === "none" ? "" : "none";
+    });
+    document.getElementById("speak-extract-btn").addEventListener("click", speakExtract);
+    document.getElementById("speak-manual-btn").addEventListener("click", speakManualAdd);
+    document.querySelectorAll("[data-speak-filter]").forEach(b => {
+      b.addEventListener("click", () => {
+        speakFilter = b.dataset.speakFilter;
+        document.querySelectorAll("[data-speak-filter]").forEach(x => x.classList.toggle("active", x === b));
+        renderSpeakList();
+      });
+    });
+    document.querySelectorAll("[data-speak-func]").forEach(b => {
+      b.addEventListener("click", () => {
+        speakFuncFilter = b.dataset.speakFunc;
+        document.querySelectorAll("[data-speak-func]").forEach(x => x.classList.toggle("active", x === b));
+        renderSpeakList();
+      });
+    });
+  }
+  renderSpeakList();
+}
+
+/* ---- 从演讲原文抽句 ---- */
+async function speakExtract() {
+  const note = document.getElementById("speak-add-note");
+  const raw = document.getElementById("speak-source").value.trim();
+  const src = document.getElementById("speak-source-name").value.trim();
+  if (!raw) { note.textContent = "先把演讲原文粘进来。"; return; }
+  if (!hasAIKey()) { note.textContent = "还没配置 AI key(右下角 ⚙️AI)。也可以先「手动加一句」。"; return; }
+
+  const btn = document.getElementById("speak-extract-btn");
+  btn.disabled = true; btn.textContent = "正在挑句子…";
+  note.textContent = "";
+
+  const prompt = `下面是一段英文演讲原文。请挑出 4-6 个最值得中文学习者跟读和借用的句子。
+
+挑选标准:有力量、结构值得借用;包含中国学习者"词都认识但自己说不出来"的结构(转折 but/instead/rather than、对比 not A but B、让步 even if/as long as、地道短语动词 drown out / let sb down / connect the dots 之类)。
+不要选:中学课本水平的简单句、纯数据陈述、离开语境就没意义的专有名词堆砌。
+
+场景只有三类,每句只归一个最有价值的:
+- interview(商务):英文面试、会议发言、向上汇报、谈判、和同事上级沟通——这是她的首要目标,优先归这类
+- travel(旅游):问路、值机、点单、求助等出行功能性表达
+- daily(日常):人际、情绪、生活观察类表达
+
+func 是"这句话拿来干什么",也只有四类:
+- experience(描述经历):讲自己做过什么、经历过什么、结果如何
+- opinion(表达观点):陈述看法、判断、原则、方法论
+- pushback(回应质疑):被追问、被反驳、不同意、承认不知道、争取时间——这类最难即兴说出口,看到就优先收
+- rapport(建立关系):寒暄、感谢、赞赏、拉近距离、缓和气氛
+
+严格只返回 JSON 数组,不要任何解释或 markdown:
+[{"en":"原句原文,不要改写","zh":"中文意思,口语化","scene":"interview 或 travel 或 daily","func":"experience 或 opinion 或 pushback 或 rapport","skeleton":"抽象出的句型骨架,用[方括号]标出可替换部分","note":"一句话说清中文学习者通常会怎么表达同一个意思、差在哪"}]
+
+演讲原文:
+${raw.slice(0, 12000)}`;
+
+  try {
+    const out = await callAI(prompt, "你是一位懂中文母语者痛点的英语口语教练。只返回规定的 JSON 数组。");
+    const arr = JSON.parse(out.trim().replace(/```json|```/g, "").trim());
+    if (!Array.isArray(arr) || !arr.length) throw new Error("没抽到句子");
+    const list = speakSentences();
+    arr.forEach(x => {
+      if (!x || !x.en) return;
+      list.unshift({
+        id: Date.now().toString(36) + Math.random().toString(36).slice(2, 6),
+        en: x.en, zh: x.zh || "", scene: SPEAK_SCENES[x.scene] ? x.scene : "daily",
+        skeleton: x.skeleton || "", note: x.note || "",
+        source: src, addedAt: Date.now(), practiced: 0, lastAt: 0
+      });
+    });
+    saveSpeakSentences(list.slice(0, 400));
+    document.getElementById("speak-source").value = "";
+    document.getElementById("speak-add-box").style.display = "none";
+    renderSpeakList();
+  } catch (e) {
+    note.textContent = "抽句失败(" + (e.message || e) + "),可以重试或手动加。";
+  }
+  btn.disabled = false; btn.textContent = "让 AI 抽 4-6 句";
+}
+
+function speakManualAdd() {
+  const en = prompt("要练的英文句子:");
+  if (!en || !en.trim()) return;
+  const list = speakSentences();
+  list.unshift({
+    id: Date.now().toString(36) + Math.random().toString(36).slice(2, 6),
+    en: en.trim(), zh: "", scene: "daily", func: "", skeleton: "", note: "",
+    source: document.getElementById("speak-source-name").value.trim(),
+    addedAt: Date.now(), practiced: 0, lastAt: 0
+  });
+  saveSpeakSentences(list);
+  renderSpeakList();
+}
+
+/* ---- 列表 ---- */
+function renderSpeakList() {
+  const el = document.getElementById("speak-list");
+  if (!el) return;
+  let list = speakSentences();
+  if (speakFilter !== "all") list = list.filter(x => x.scene === speakFilter);
+  if (speakFuncFilter !== "all") list = list.filter(x => x.func === speakFuncFilter);
+
+  if (!list.length) {
+    el.innerHTML = '<div class="price-note">' +
+      (speakSentences().length ? "这个筛选下还没有句子,换个标签看看。" : "句库还是空的。点右上角「＋ 抽句」,把一段演讲原文粘进来试试。") +
+      "</div>";
+    return;
+  }
+
+  el.innerHTML = list.map(s => {
+    const open = s.id === speakOpenId;
+    return '<div class="speak-card' + (open ? " open" : "") + '" data-speak-id="' + s.id + '">' +
+      '<div class="sp-head">' +
+        '<span class="sp-scene sp-' + s.scene + '">' + SPEAK_SCENES[s.scene] + "</span>" +
+        (s.func ? '<span class="sp-func">' + SPEAK_FUNCS[s.func] + "</span>" : "") +
+        (s.practiced ? '<span class="sp-count">练过 ' + s.practiced + " 次</span>" : "") +
+        '<button class="sp-del" data-speak-del="' + s.id + '" title="删除">✕</button>' +
+      "</div>" +
+      '<div class="sp-en">' + escapeHtml(s.en) + "</div>" +
+      (s.zh ? '<div class="sp-zh">' + escapeHtml(s.zh) + "</div>" : "") +
+      (open ? speakDetailHtml(s) : '<div class="sp-more">点开练习 ↓</div>') +
+      "</div>";
+  }).join("");
+
+  el.querySelectorAll("[data-speak-id]").forEach(card => {
+    card.addEventListener("click", (e) => {
+      if (e.target.closest("[data-speak-del]") || e.target.closest(".sp-detail")) return;
+      speakOpenId = speakOpenId === card.dataset.speakId ? null : card.dataset.speakId;
+      speakStopRecording(true);
+      renderSpeakList();
+    });
+  });
+  el.querySelectorAll("[data-speak-del]").forEach(b => {
+    b.addEventListener("click", (e) => {
+      e.stopPropagation();
+      if (!confirm("删掉这句?")) return;
+      saveSpeakSentences(speakSentences().filter(x => x.id !== b.dataset.speakDel));
+      renderSpeakList();
+    });
+  });
+  if (speakOpenId) speakBindDetail(list.find(x => x.id === speakOpenId));
+}
+
+function speakDetailHtml(s) {
+  return '<div class="sp-detail">' +
+    (s.skeleton ? '<div class="sp-line"><b>句型骨架</b>' + escapeHtml(s.skeleton) + "</div>" : "") +
+    (s.note ? '<div class="sp-line"><b>差在哪</b>' + escapeHtml(s.note) + "</div>" : "") +
+    (s.source ? '<div class="sp-line"><b>出处</b>' + escapeHtml(s.source) + "</div>" : "") +
+    '<div class="sp-actions">' +
+      '<button class="zen-mode-btn sp-btn" id="sp-play">🔊 标准发音</button>' +
+      '<button class="zen-mode-btn sp-btn" id="sp-rec">🎙️ 录音</button>' +
+    "</div>" +
+    '<audio id="sp-audio" controls style="display:none;width:100%;margin-top:10px;"></audio>' +
+    '<div id="sp-rec-note" class="price-note" style="margin-top:6px;"></div>' +
+    '<div class="sp-line" style="margin-top:14px;"><b>换成你的话</b>用这个骨架造一句和你自己经历相关的,AI 会帮你看地不地道。</div>' +
+    '<textarea id="sp-mine" rows="2" placeholder="My own version…" style="width:100%;resize:vertical;background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.14);border-radius:10px;padding:10px;color:var(--text-main);font-size:13.5px;font-family:inherit;outline:none;"></textarea>' +
+    '<div style="display:flex;gap:8px;margin-top:8px;flex-wrap:wrap;">' +
+      '<button class="zen-mode-btn sp-btn" id="sp-check">让 AI 挑毛病</button>' +
+      '<button class="zen-mode-btn sp-btn" id="sp-done" style="background:rgba(255,255,255,0.14);">✓ 练过一遍</button>' +
+    "</div>" +
+    '<div id="sp-feedback"></div>' +
+    "</div>";
+}
+
+function speakBindDetail(s) {
+  if (!s) return;
+  const speak = (rate) => {
+    if (!("speechSynthesis" in window)) {
+      document.getElementById("sp-rec-note").textContent = "这个浏览器不支持朗读。";
+      return;
+    }
+    speechSynthesis.cancel();
+    const u = new SpeechSynthesisUtterance(s.en);
+    u.lang = "en-US"; u.rate = rate;
+    const v = speechSynthesis.getVoices().filter(x => /en[-_]US/i.test(x.lang));
+    if (v.length) u.voice = v[0];
+    speechSynthesis.speak(u);
+  };
+  document.getElementById("sp-play").addEventListener("click", () => speak(1));
+  document.getElementById("sp-rec").addEventListener("click", speakToggleRecording);
+  document.getElementById("sp-check").addEventListener("click", () => speakCheckMine(s));
+  document.getElementById("sp-done").addEventListener("click", () => {
+    const list = speakSentences();
+    const i = list.findIndex(x => x.id === s.id);
+    if (i >= 0) { list[i].practiced = (list[i].practiced || 0) + 1; list[i].lastAt = Date.now(); saveSpeakSentences(list); }
+    renderSpeakList();
+  });
+}
+
+/* ---- 录音 ---- */
+async function speakToggleRecording() {
+  const note = document.getElementById("sp-rec-note");
+  const btn = document.getElementById("sp-rec");
+  if (speakRecorder && speakRecorder.state === "recording") { speakStopRecording(); return; }
+  if (!navigator.mediaDevices || !window.MediaRecorder) {
+    note.textContent = "这个浏览器不支持录音(iOS 需要 Safari 14.3 以上)。"; return;
+  }
+  try {
+    speakStream = await navigator.mediaDevices.getUserMedia({ audio: true });
+    speakChunks = [];
+    speakRecorder = new MediaRecorder(speakStream);
+    speakRecorder.ondataavailable = e => { if (e.data.size) speakChunks.push(e.data); };
+    speakRecorder.onstop = () => {
+      const blob = new Blob(speakChunks, { type: speakChunks[0] ? speakChunks[0].type : "audio/webm" });
+      const audio = document.getElementById("sp-audio");
+      if (audio) { audio.src = URL.createObjectURL(blob); audio.style.display = ""; }
+      if (speakStream) { speakStream.getTracks().forEach(t => t.stop()); speakStream = null; }
+      const b = document.getElementById("sp-rec");
+      if (b) { b.textContent = "🎙️ 重录"; b.classList.remove("recording"); }
+      const n = document.getElementById("sp-rec-note");
+      if (n) n.textContent = "录完了,点上面的播放条听听自己和标准发音差在哪。录音只留在这个页面,不会上传。";
+    };
+    speakRecorder.start();
+    btn.textContent = "⏹️ 停止"; btn.classList.add("recording");
+    note.textContent = "正在录音…";
+  } catch (e) {
+    note.textContent = "没拿到麦克风权限,浏览器地址栏那里允许一下。";
+  }
+}
+
+function speakStopRecording(silent) {
+  if (speakRecorder && speakRecorder.state === "recording") speakRecorder.stop();
+  else if (speakStream) { speakStream.getTracks().forEach(t => t.stop()); speakStream = null; }
+  if (silent) speakRecorder = null;
+}
+
+/* ---- AI 检查自己造的句 ---- */
+async function speakCheckMine(s) {
+  const mine = document.getElementById("sp-mine").value.trim();
+  const out = document.getElementById("sp-feedback");
+  if (!mine) { out.innerHTML = '<div class="price-note">先写一句你自己的版本。</div>'; return; }
+  if (!hasAIKey()) { out.innerHTML = '<div class="price-note">这一步需要 AI key(右下角 ⚙️AI)。</div>'; return; }
+  const btn = document.getElementById("sp-check");
+  btn.disabled = true; btn.textContent = "看着呢…";
+  const prompt = `原句(来自英文演讲):${s.en}
+${s.skeleton ? "句型骨架:" + s.skeleton : ""}
+学习者仿写的句子:${mine}
+
+请点评这句仿写。要求:
+1. 先说这句话母语者听着有没有问题,有问题直接指出是哪里(语法/搭配/语序/用词太中式)。
+2. 给一个改写版本,尽量保留她原本想表达的意思和她用的骨架。
+3. 如果原句本来就没问题,就直说没问题,不要硬挑。
+4. 最后一句:这句话在商务场景(面试、会议、汇报、谈判)里具体能用在什么时候;如果它属于"回应质疑"这一类,顺便说清被追问时该怎么起头。
+用中文点评,英文例句保留英文。三段以内,每段短,不要用 markdown 符号。`;
+  try {
+    const fb = await callAI(prompt, "你是一位直接、具体、不敷衍的英语口语教练,面向中文母语的学习者。");
+    out.innerHTML = '<div class="align-verdict" style="margin-top:12px;text-align:left;">' + escapeHtml(fb) + "</div>";
+  } catch (e) {
+    out.innerHTML = '<div class="price-note">点评失败(' + escapeHtml(e.message || String(e)) + ")。</div>";
+  }
+  btn.disabled = false; btn.textContent = "让 AI 挑毛病";
+}
+
+/* =========================================================
+   看过的 · 书房 · 清单
+   书籍 / 电影 / 剧集 / 演出 / 其他,只存本地
+   ========================================================= */
+const LOGBOOK_KEY = "arinrin_logbook";
+const LOG_TYPES = {
+  book:   { label: "书籍", icon: "📖" },
+  film:   { label: "电影", icon: "🎬" },
+  script: { label: "剧集", icon: "📺" },
+  show:   { label: "演出", icon: "🎭" },
+  other:  { label: "其他", icon: "✦" }
+};
+let logFilter = "all", logType = "book", logRating = 0;
+
+function logbook() { return readLocalJSON(LOGBOOK_KEY, []); }
+function saveLogbook(list) { try { localStorage.setItem(LOGBOOK_KEY, JSON.stringify(list)); } catch (e) {} }
+
+function initLogbook() {
+  const toggle = document.getElementById("log-add-toggle");
+  if (toggle && !toggle.dataset.bound) {
+    toggle.dataset.bound = "1";
+    toggle.addEventListener("click", () => {
+      const box = document.getElementById("log-add-box");
+      const open = box.style.display === "none";
+      box.style.display = open ? "" : "none";
+      if (open && !document.getElementById("log-date").value) {
+        document.getElementById("log-date").value = localDateKey(new Date());
+      }
+    });
+    document.querySelectorAll("[data-log-type]").forEach(b => {
+      b.addEventListener("click", () => {
+        logType = b.dataset.logType;
+        document.querySelectorAll("[data-log-type]").forEach(x => x.classList.toggle("active", x === b));
+      });
+    });
+    document.querySelectorAll("[data-log-star]").forEach(st => {
+      st.addEventListener("click", () => {
+        const v = Number(st.dataset.logStar);
+        logRating = (logRating === v) ? 0 : v;   // 再点一次取消
+        paintLogStars();
+      });
+    });
+    document.querySelectorAll("[data-log-filter]").forEach(b => {
+      b.addEventListener("click", () => {
+        logFilter = b.dataset.logFilter;
+        document.querySelectorAll("[data-log-filter]").forEach(x => x.classList.toggle("active", x === b));
+        renderLogbook();
+      });
+    });
+    document.getElementById("log-save").addEventListener("click", saveLogEntry);
+  }
+  renderLogbook();
+}
+
+function paintLogStars() {
+  document.querySelectorAll("[data-log-star]").forEach(st => {
+    const on = Number(st.dataset.logStar) <= logRating;
+    st.textContent = on ? "★" : "☆";
+    st.classList.toggle("on", on);
+  });
+}
+
+function saveLogEntry() {
+  const title = document.getElementById("log-title").value.trim();
+  const msg = document.getElementById("log-note-msg");
+  if (!title) { msg.textContent = "先写个名字。"; return; }
+  const list = logbook();
+  list.unshift({
+    id: Date.now().toString(36) + Math.random().toString(36).slice(2, 6),
+    type: LOG_TYPES[logType] ? logType : "book",
+    title: title,
+    date: document.getElementById("log-date").value || localDateKey(new Date()),
+    rating: logRating,
+    note: document.getElementById("log-note").value.trim(),
+    addedAt: Date.now()
+  });
+  saveLogbook(list.slice(0, 2000));
+  document.getElementById("log-title").value = "";
+  document.getElementById("log-note").value = "";
+  logRating = 0; paintLogStars();
+  msg.textContent = "";
+  document.getElementById("log-add-box").style.display = "none";
+  renderLogbook();
+}
+
+function renderLogbook() {
+  const el = document.getElementById("log-list");
+  const stat = document.getElementById("log-stat");
+  if (!el) return;
+  const all = logbook();
+
+  // 顶部统计:今年各看了多少
+  if (stat) {
+    const year = String(new Date().getFullYear());
+    const thisYear = all.filter(x => (x.date || "").slice(0, 4) === year);
+    stat.textContent = thisYear.length
+      ? year + " 年到现在:" + Object.keys(LOG_TYPES)
+          .map(k => ({ k, n: thisYear.filter(x => x.type === k).length }))
+          .filter(x => x.n)
+          .map(x => LOG_TYPES[x.k].label + " " + x.n).join(" · ")
+      : "书籍、电影、剧集、演出,看完随手记一笔。只存在你自己的浏览器里。";
+  }
+
+  let list = all.slice().sort((a, b) => (b.date || "").localeCompare(a.date || ""));
+  if (logFilter !== "all") list = list.filter(x => x.type === logFilter);
+
+  if (!list.length) {
+    el.innerHTML = '<div class="price-note">' +
+      (all.length ? "这个分类下还没有记录。" : "还没记过。看完一本书、一部电影,回来点「＋ 记一条」。") + "</div>";
+    return;
+  }
+
+  let lastYear = "";
+  el.innerHTML = list.map(x => {
+    const y = (x.date || "").slice(0, 4);
+    let head = "";
+    if (y && y !== lastYear) { lastYear = y; head = '<div class="log-year">' + y + "</div>"; }
+    const t = LOG_TYPES[x.type] || LOG_TYPES.book;
+    return head +
+      '<div class="log-row">' +
+        '<div class="log-icon">' + t.icon + "</div>" +
+        '<div class="log-body">' +
+          '<div class="log-title">' + escapeHtml(x.title) +
+            (x.rating ? '<span class="log-rate">' + "★".repeat(x.rating) + "</span>" : "") + "</div>" +
+          (x.note ? '<div class="log-note">' + escapeHtml(x.note) + "</div>" : "") +
+        "</div>" +
+        '<div class="log-date">' + (x.date || "").slice(5).replace("-", "/") + "</div>" +
+        '<button class="log-del" data-log-del="' + x.id + '" title="删除">✕</button>' +
+      "</div>";
+  }).join("");
+
+  el.querySelectorAll("[data-log-del]").forEach(b => {
+    b.addEventListener("click", () => {
+      if (!confirm("删掉这条?")) return;
+      saveLogbook(logbook().filter(x => x.id !== b.dataset.logDel));
+      renderLogbook();
+    });
+  });
+}
+
+/* ===== 书房分区切换 ===== */
+let studyTabsInited = false;
+function initStudyTabs() {
+  if (studyTabsInited) return;
+  document.querySelectorAll("[data-study-tab]").forEach(tab => {
+    tab.addEventListener("click", () => {
+      const key = tab.dataset.studyTab;
+      document.querySelectorAll("[data-study-tab]").forEach(t => {
+        const active = t === tab;
+        t.classList.toggle("active", active);
+        t.setAttribute("aria-selected", String(active));
+      });
+      document.querySelectorAll("[data-study-view]").forEach(view => {
+        const active = view.dataset.studyView === key;
+        view.classList.toggle("active", active);
+        view.hidden = !active;
+      });
+      if (key === "collect") renderBgFavGallery();
+      if (key === "speak") initSpeak();
+      if (key === "log") initLogbook();
+    });
+  });
+  studyTabsInited = true;
+}
+
+function renderBgFavGallery() {
+  const el = document.getElementById("bg-fav-gallery");
+  const refreshBtn = document.getElementById("bg-fav-refresh");
+  if (!el) return;
+  const list = bgFavorites();
+  if (refreshBtn) {
+    refreshBtn.style.display = list.length ? "" : "none";
+    if (!refreshBtn.dataset.bound) {
+      refreshBtn.dataset.bound = "1";
+      refreshBtn.addEventListener("click", () => {
+        if (!confirm("清空全部收藏的背景图?")) return;
+        saveBgFavorites([]); renderBgFavGallery();
+      });
+    }
+  }
+  if (!list.length) {
+    el.innerHTML = '<div class="price-note">还没收藏,喜欢哪张背景图,点右下角的 ♡ 就行。</div>';
+    return;
+  }
+  el.innerHTML = '<div class="bg-fav-grid">' + list.map(f => `
+    <div class="bg-fav-item">
+      <a href="${unsplashPhotoLink(f)}" target="_blank" rel="noopener" title="在 Unsplash 查看原图">
+        <img src="${f.url}" loading="lazy" alt="">
+      </a>
+      <button class="bg-fav-remove" data-fav-remove="${escapeHtml(f.url)}" title="取消收藏">✕</button>
+      <div class="bg-fav-author">${escapeHtml(f.author || "")}</div>
+    </div>`).join("") + "</div>";
+  el.querySelectorAll("[data-fav-remove]").forEach(b => {
+    b.addEventListener("click", (e) => {
+      e.preventDefault(); e.stopPropagation();
+      saveBgFavorites(bgFavorites().filter(f => f.url !== b.dataset.favRemove));
+      renderBgFavGallery();
+      if (currentBgShot && currentBgShot.url === b.dataset.favRemove) setCredit(currentBgShot); // 心形状态跟着同步
+    });
+  });
+}
+
+
 function setCredit(d) {
   const el = document.getElementById("photo-credit");
   if (!el) return;
   if (!d || !d.author) { el.innerHTML = ""; return; }
   // Unsplash API 条款要求署名摄影师与 Unsplash,并可点击
-  el.innerHTML = '摄影 <a href="' + d.authorLink + '" target="_blank" rel="noopener">' +
-    escapeHtml(d.author) + '</a> / <a href="' + d.unsplashLink +
+  const on = isBgFavorited(d.url);
+  el.innerHTML =
+    '<button class="bg-fav-btn' + (on ? " on" : "") + '" id="bg-fav-btn" title="' + (on ? "取消收藏这张背景图" : "收藏这张背景图") + '">' +
+    (on ? "♥" : "♡") + "</button>" +
+    '摄影 <a href="' + d.authorLink + '" target="_blank" rel="noopener">' +
+    escapeHtml(d.author) + '</a> / <a href="' + unsplashPhotoLink(d) +
     '" target="_blank" rel="noopener">Unsplash</a>';
+  const btn = document.getElementById("bg-fav-btn");
+  if (btn) btn.addEventListener("click", () => toggleBgFavorite(d));
 }
 
 async function applyBackground(force) {
@@ -1945,6 +2647,7 @@ async function applyBackground(force) {
   paint(pickGradient(slot), false);
   setCredit(null);
   currentBgImage = null;
+  currentBgShot = null;
 
   // 第二层:Unsplash(配了 key 才有)
   const shot = await fetchUnsplash(slot);
@@ -1952,6 +2655,7 @@ async function applyBackground(force) {
     const ok = await loadImageOrNull(shot.url);
     if (ok && slot.key === currentSlotKey) {
       currentBgImage = shot.url;
+      currentBgShot = shot;
       paint('url("' + shot.url + '")', true);
       setCredit(shot);
       return;
@@ -1977,7 +2681,95 @@ function tick() {
     `${p(now.getHours())}:${p(now.getMinutes())}:${p(now.getSeconds())}`;
 }
 
-/* ===== Daily affirmations(I am 风格:第一人称·现在时) ===== */
+/* ===== 地点 · 天气 · 空气质量(IP 粗定位,免 key,免弹窗授权) ===== */
+const GEO_CACHE_KEY = "arinrin_geo_weather";
+const GEO_CACHE_MS = 30 * 60 * 1000; // 30 分钟缓存,避免每次开页都打三次接口
+
+// WMO 天气代码 → 简短中文 + emoji
+const WMO_DESC = {
+  0: ["晴", "☀️"], 1: ["大致晴", "🌤️"], 2: ["多云", "⛅"], 3: ["阴", "☁️"],
+  45: ["雾", "🌫️"], 48: ["雾凇", "🌫️"],
+  51: ["小毛雨", "🌦️"], 53: ["毛雨", "🌦️"], 55: ["大毛雨", "🌦️"],
+  56: ["冻雨", "🌧️"], 57: ["冻雨", "🌧️"],
+  61: ["小雨", "🌧️"], 63: ["中雨", "🌧️"], 65: ["大雨", "🌧️"],
+  66: ["冻雨", "🌧️"], 67: ["冻雨", "🌧️"],
+  71: ["小雪", "🌨️"], 73: ["中雪", "🌨️"], 75: ["大雪", "❄️"], 77: ["雪粒", "🌨️"],
+  80: ["阵雨", "🌦️"], 81: ["阵雨", "🌦️"], 82: ["强阵雨", "⛈️"],
+  85: ["阵雪", "🌨️"], 86: ["强阵雪", "🌨️"],
+  95: ["雷阵雨", "⛈️"], 96: ["雷雨伴冰雹", "⛈️"], 99: ["雷雨伴冰雹", "⛈️"]
+};
+function wmoDesc(code) { return WMO_DESC[code] || ["—", "🌡️"]; }
+
+// 国标 AQI 六档(与返回的 US AQI 数值同一套 0-500 分档,量级一致,作展示用近似)
+function aqiLabel(aqi) {
+  if (aqi == null || isNaN(aqi)) return null;
+  if (aqi <= 50) return "优";
+  if (aqi <= 100) return "良";
+  if (aqi <= 150) return "轻度污染";
+  if (aqi <= 200) return "中度污染";
+  if (aqi <= 300) return "重度污染";
+  return "严重污染";
+}
+
+async function initGeoWeather() {
+  const el = document.getElementById("geo-line");
+  if (!el) return;
+
+  try {
+    const cached = JSON.parse(localStorage.getItem(GEO_CACHE_KEY) || "null");
+    if (cached && Date.now() - cached.at < GEO_CACHE_MS) { renderGeoLine(cached.data); return; }
+  } catch (e) {}
+
+  // 1) IP 粗定位(城市级,不弹权限请求;失败换一家再试一次)
+  let geo = null;
+  for (const url of ["https://ipapi.co/json/", "https://ipwho.is/"]) {
+    try {
+      const r = await fetch(url);
+      const j = await r.json();
+      if (j && (j.latitude || j.lat) && !j.error) {
+        geo = {
+          city: j.city || j.region || j.country_name || "",
+          lat: j.latitude || j.lat,
+          lon: j.longitude || j.lon
+        };
+        break;
+      }
+    } catch (e) {}
+  }
+  if (!geo || !geo.lat) return; // 定位失败就安静地不显示这一行,不影响其他内容
+
+  // 2) 天气 + 空气质量(Open-Meteo,免 key,支持浏览器直接跨域请求)
+  let data = { city: geo.city };
+  try {
+    const wr = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${geo.lat}&longitude=${geo.lon}&current=temperature_2m,weather_code`);
+    const wj = await wr.json();
+    if (wj && wj.current) { data.temp = Math.round(wj.current.temperature_2m); data.code = wj.current.weather_code; }
+  } catch (e) {}
+  try {
+    const ar = await fetch(`https://air-quality-api.open-meteo.com/v1/air-quality?latitude=${geo.lat}&longitude=${geo.lon}&current=us_aqi`);
+    const aj = await ar.json();
+    if (aj && aj.current) data.aqi = Math.round(aj.current.us_aqi);
+  } catch (e) {}
+
+  try { localStorage.setItem(GEO_CACHE_KEY, JSON.stringify({ at: Date.now(), data })); } catch (e) {}
+  renderGeoLine(data);
+}
+
+function renderGeoLine(data) {
+  const el = document.getElementById("geo-line");
+  if (!el || !data) return;
+  const parts = [];
+  if (data.city) parts.push(escapeHtml(data.city));
+  if (data.temp != null) {
+    const [desc, emoji] = wmoDesc(data.code);
+    parts.push(emoji + " " + data.temp + "°C " + desc);
+  }
+  const label = aqiLabel(data.aqi);
+  if (label) parts.push('<span class="gl-aqi">AQI ' + data.aqi + " · " + label + "</span>");
+  el.innerHTML = parts.join(' <span class="gl-dot">·</span> ');
+}
+
+
 const AFFIRMATIONS = [
   "I am becoming the person I want to be.",
   "I don't have to live up to anyone else's expectations.",
@@ -2105,7 +2897,7 @@ function openPanel(key) {
   if (key === "mystic") loadMystic();
   if (key === "ai") loadAIDaily();
   if (key === "fitness") loadHealth();
-  if (key === "aesthetic") initRead();
+  if (key === "aesthetic") { initStudyTabs(); initRead(); renderBgFavGallery(); initSpeak(); initLogbook(); }
   if (key === "explore") { loadDaily(); loadCalendar(); initWhys(); renderWhys(); initSlow(); initAlign(); initThemeExperiment(); }
 }
 function closePanels() {
@@ -6037,6 +6829,7 @@ applyBackground(true);
 tick();
 setDaily();
 refreshAffirmPool();
+initGeoWeather();
 document.getElementById("affirm-card").addEventListener("click", setDaily);
 setInterval(tick, 1000);
 setInterval(() => applyBackground(false), 60 * 1000);
