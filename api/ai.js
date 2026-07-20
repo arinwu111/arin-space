@@ -29,6 +29,15 @@ const PROVIDERS = {
   gemini:   { url: "https://generativelanguage.googleapis.com/v1beta/models", model: "gemini-2.0-flash", env: "GEMINI_API_KEY", style: "gemini" },
 };
 
+// 带图/带 PDF 时切换到各家的视觉模型;不在表里的服务商不支持看图
+const VISION_MODEL = {
+  openai: "gpt-4o-mini",
+  claude: "claude-3-5-sonnet-20241022",
+  gemini: "gemini-2.0-flash",
+  qwen:   "qwen-vl-plus",
+  zhipu:  "glm-4v-flash",
+};
+
 export default async function handler(req, res) {
   res.setHeader("Access-Control-Allow-Origin", "*");
   res.setHeader("Access-Control-Allow-Methods", "POST, OPTIONS");
@@ -42,10 +51,27 @@ export default async function handler(req, res) {
   const system = (body && body.system) || "你是一位专业、亲和、诚实的助手。";
   const providerName = (body && body.provider) || "deepseek";
   const visitorKey = (body && body.apiKey) || "";
+  // 可选:图片(数组,base64)与 PDF(单个,base64,仅 Claude 支持)
+  //   images: [{ media_type:"image/jpeg", data:"..." }]
+  //   pdf:    { data:"..." }
+  const images = Array.isArray(body && body.images) ? body.images.slice(0, 4) : [];
+  const pdf = (body && body.pdf && body.pdf.data) ? body.pdf : null;
 
   const p = PROVIDERS[providerName];
   if (!p) return res.status(400).json({ error: "不支持的 provider:" + providerName });
   if (!prompt) return res.status(400).json({ error: "缺少 prompt" });
+
+  const hasMedia = images.length > 0 || !!pdf;
+  if (hasMedia && !VISION_MODEL[providerName]) {
+    return res.status(400).json({ error: "该服务商不支持识别图片,请在 ⚙️AI 里换成 OpenAI / Claude / Gemini / 通义 / 智谱。" });
+  }
+  if (pdf && providerName !== "claude") {
+    return res.status(400).json({ error: "PDF 识别目前只有 Claude 支持,可换 Claude,或把报告截图后按图片上传。" });
+  }
+  const mediaBytes = images.reduce((n, im) => n + ((im && im.data) ? im.data.length : 0), 0) + (pdf ? pdf.data.length : 0);
+  if (mediaBytes > 6000000) {
+    return res.status(413).json({ error: "图片/PDF 太大,请压缩后再试。" });
+  }
 
   // —— 谁的 key,花谁的钱 ——
   // 默认只用访客自己填的 key。服务器上的 key(环境变量)必须同时带上 OWNER_TOKEN
@@ -68,20 +94,38 @@ export default async function handler(req, res) {
 
   try {
     let url = p.url, headers = { "Content-Type": "application/json" }, payload;
+    const model = hasMedia ? VISION_MODEL[providerName] : p.model;
     if (p.style === "gemini") {
-      url = `${p.url}/${p.model}:generateContent?key=${encodeURIComponent(key)}`;
+      url = `${p.url}/${model}:generateContent?key=${encodeURIComponent(key)}`;
+      const parts = images.map(im => ({ inline_data: { mime_type: im.media_type || "image/jpeg", data: im.data } }));
+      parts.push({ text: prompt });
       payload = {
         systemInstruction: { parts: [{ text: system }] },
-        contents: [{ role: "user", parts: [{ text: prompt }] }],
+        contents: [{ role: "user", parts: parts }],
         generationConfig: { temperature: 0.7, maxOutputTokens: 2000 },
       };
     } else if (p.style === "claude") {
       headers["x-api-key"] = key;
       headers["anthropic-version"] = "2023-06-01";
-      payload = { model: p.model, max_tokens: 2000, system: system, messages: [{ role: "user", content: prompt }] };
+      let content = prompt;
+      if (hasMedia) {
+        content = [];
+        images.forEach(im => content.push({ type: "image", source: { type: "base64", media_type: im.media_type || "image/jpeg", data: im.data } }));
+        if (pdf) content.push({ type: "document", source: { type: "base64", media_type: "application/pdf", data: pdf.data } });
+        content.push({ type: "text", text: prompt });
+      }
+      payload = { model: model, max_tokens: 2000, system: system, messages: [{ role: "user", content: content }] };
     } else {
       headers["Authorization"] = "Bearer " + key;
-      payload = { model: p.model, messages: [{ role: "system", content: system }, { role: "user", content: prompt }], temperature: 0.7, max_tokens: 2000 };
+      let userContent = prompt;
+      if (hasMedia) {
+        userContent = images.map(im => ({
+          type: "image_url",
+          image_url: { url: "data:" + (im.media_type || "image/jpeg") + ";base64," + im.data }
+        }));
+        userContent.push({ type: "text", text: prompt });
+      }
+      payload = { model: model, messages: [{ role: "system", content: system }, { role: "user", content: userContent }], temperature: 0.7, max_tokens: 2000 };
     }
 
     const r = await fetch(url, { method: "POST", headers, body: JSON.stringify(payload) });

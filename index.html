@@ -382,15 +382,33 @@
   .shen-box { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 4px; }
   .shen-tag { font-size: 12px; padding: 5px 10px; border-radius: 8px; background: rgba(255,255,255,0.06); border: 1px solid var(--glass-border); color: var(--text-sub); }
 
-  /* 今日健康清单 */
+  /* 健身 / 健康行动面板 */
+  .health-hero { margin-bottom: 18px; padding: 22px 24px; }
+  .health-kicker { font-size: 12px; color: var(--text-sub); letter-spacing: 1.5px; margin-bottom: 7px; }
+  .health-hero h3 { font-size: 23px; line-height: 1.45; margin: 0 0 7px; }
+  .health-hero p { font-size: 13px; color: var(--text-sub); line-height: 1.75; margin: 0; }
+  .health-hero-meta { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-top: 16px; flex-wrap: wrap; }
+  .health-source { display: inline-flex; align-items: center; gap: 7px; font-size: 12px; color: var(--text-sub); }
+  .health-source::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: #7fe0a4; box-shadow: 0 0 10px rgba(127,224,164,.6); }
+  .health-sync-btn { border: 1px solid var(--glass-border); background: rgba(255,255,255,.07); color: var(--text-sub); border-radius: 14px; padding: 6px 11px; font: inherit; font-size: 12px; }
+  .health-sync-btn:disabled { opacity: .7; cursor: default; }
+
+  .health-tabs { display: flex; gap: 8px; margin-bottom: 14px; overflow-x: auto; padding-bottom: 2px; scrollbar-width: none; }
+  .health-tabs::-webkit-scrollbar { display: none; }
+  .health-tab { flex: 0 0 auto; border: 1px solid var(--glass-border); background: rgba(255,255,255,.06); color: var(--text-sub); border-radius: 18px; padding: 8px 15px; cursor: pointer; font: inherit; font-size: 13px; }
+  .health-tab.active { background: rgba(255,255,255,.22); color: var(--text-main); border-color: rgba(255,255,255,.4); }
+  .health-view { display: none; }
+  .health-view.active { display: block; }
   .health-group-label { font-size: 13px; color: var(--text-sub); font-weight: 600; margin: 18px 0 10px; display: flex; align-items: center; gap: 6px; }
   .health-item {
-    display: flex; align-items: flex-start; gap: 12px;
+    width: 100%; display: flex; align-items: flex-start; gap: 12px; text-align: left;
     padding: 12px 14px; margin-bottom: 10px;
     background: rgba(255,255,255,0.05); border: 1px solid var(--glass-border);
     border-radius: 10px; cursor: pointer; transition: background 0.2s, opacity 0.2s;
+    color: var(--text-main); font: inherit;
   }
   .health-item:hover { background: rgba(255,255,255,0.09); }
+  .health-item:focus-visible, .health-tab:focus-visible, .health-log-btn:focus-visible { outline: 2px solid rgba(255,255,255,.82); outline-offset: 2px; }
   .health-item.done { opacity: 0.55; }
   .health-check {
     width: 22px; height: 22px; flex-shrink: 0; border-radius: 6px;
@@ -398,10 +416,65 @@
     font-size: 14px; color: transparent; transition: all 0.2s; margin-top: 1px;
   }
   .health-item.done .health-check { background: #7fe0a4; border-color: #7fe0a4; color: #1a2a1e; }
-  .health-body .h-title { font-size: 15px; font-weight: 600; }
+  .health-body { display: block; min-width: 0; }
+  .health-body .h-title { display: block; font-size: 15px; font-weight: 600; }
   .health-item.done .h-title { text-decoration: line-through; }
-  .health-body .h-why { font-size: 12px; color: var(--text-sub); line-height: 1.6; margin-top: 3px; }
+  .health-body .h-why { display: block; font-size: 12px; color: var(--text-sub); line-height: 1.6; margin-top: 3px; }
   .health-body .h-time { font-size: 11px; color: var(--text-sub); opacity: 0.75; margin-top: 4px; }
+  .health-evidence { display: inline-block; font-size: 10px; letter-spacing: .3px; padding: 2px 7px; border-radius: 8px; margin-left: 7px; vertical-align: 1px; background: rgba(127,224,164,.13); color: #b9f2cc; font-weight: 500; }
+
+  .health-week-grid, .health-metrics { display: grid; grid-template-columns: repeat(3,1fr); gap: 12px; }
+  .health-week-card, .health-metric { background: rgba(255,255,255,.05); border: 1px solid var(--glass-border); border-radius: 12px; padding: 15px; }
+  .health-week-card .hw-label, .health-metric .hm-label { font-size: 12px; color: var(--text-sub); }
+  .health-week-card .hw-value, .health-metric .hm-value { font-size: 24px; font-weight: 700; margin: 7px 0 10px; font-variant-numeric: tabular-nums; }
+  .health-week-card .hw-why { font-size: 11px; color: var(--text-sub); line-height: 1.55; min-height: 35px; }
+  .health-log-btn { width: 100%; margin-top: 10px; border: 1px solid var(--glass-border); background: rgba(255,255,255,.1); color: var(--text-main); border-radius: 10px; padding: 8px 7px; cursor: pointer; font: inherit; font-size: 12px; }
+  .health-log-btn:hover { background: rgba(255,255,255,.18); }
+  .health-progress-track { height: 5px; border-radius: 4px; background: rgba(255,255,255,.09); overflow: hidden; }
+  .health-progress-fill { height: 100%; width: 0; border-radius: 4px; background: #7fe0a4; transition: width .25s ease; }
+  .health-metrics { margin-top: 14px; }
+  .health-metric .hm-value { margin-bottom: 0; font-size: 20px; }
+  .hm-cards { display: flex; gap: 10px; margin: 12px 0; flex-wrap: wrap; }
+  .hm-card {
+    flex: 1; min-width: 90px; background: rgba(255,255,255,0.06);
+    border-radius: 12px; padding: 12px 10px; text-align: center;
+  }
+  .hm-num { font-size: 19px; font-weight: 600; color: var(--text-main); }
+  .hm-label { font-size: 11px; color: var(--text-sub); margin-top: 4px; line-height: 1.5; }
+  .hm-bars { display: flex; gap: 6px; align-items: flex-end; height: 52px; margin: 10px 2px 4px; }
+  .hm-bar-wrap { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 3px; }
+  .hm-bar { width: 100%; max-width: 26px; border-radius: 4px 4px 0 0; background: rgba(255,255,255,0.28); }
+  .hm-bar-day { font-size: 10px; color: var(--text-sub); }
+  .hm-list { margin-top: 8px; }
+  .hm-row { font-size: 12.5px; color: var(--text-sub); padding: 4px 0; border-bottom: 1px dashed rgba(255,255,255,0.08); }
+  .hm-row:last-child { border-bottom: none; }
+  .health-sync-note { margin-top: 14px; padding: 12px 14px; border-radius: 10px; background: rgba(255,255,255,.04); color: var(--text-sub); font-size: 12px; line-height: 1.7; }
+  .health-privacy { width: 100%; margin-top: 12px; padding-top: 11px; border-top: 1px solid rgba(255,255,255,.08); }
+  .health-privacy summary { cursor: pointer; color: var(--text-sub); font-size: 12px; list-style: none; }
+  .health-privacy summary::-webkit-details-marker { display: none; }
+  .health-privacy summary::after { content: "查看"; float: right; opacity: .65; font-size: 11px; }
+  .health-privacy[open] summary::after { content: "收起"; }
+  .health-privacy p { margin: 9px 0 0; font-size: 11px; line-height: 1.75; color: var(--text-sub); }
+  .health-trend-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 12px; margin-top: 10px; }
+  .health-trend-card { background: rgba(255,255,255,.05); border: 1px solid var(--glass-border); border-radius: 12px; padding: 14px; }
+  .health-trend-card .ht-label { font-size: 12px; color: var(--text-sub); }
+  .health-trend-card .ht-value { font-size: 22px; font-weight: 700; margin: 6px 0 4px; font-variant-numeric: tabular-nums; }
+  .health-trend-card .ht-note { font-size: 11px; color: var(--text-sub); line-height: 1.55; }
+  .health-history { margin-top: 16px; }
+  .health-history-row { display: grid; grid-template-columns: minmax(84px,1fr) repeat(3,minmax(70px,.7fr)); gap: 8px; align-items: center; padding: 9px 2px; border-bottom: 1px solid rgba(255,255,255,.07); font-size: 12px; }
+  .health-history-row:last-child { border-bottom: none; }
+  .health-history-row .hh-week { color: var(--text-sub); }
+  .health-history-head { color: var(--text-sub); font-size: 11px; }
+
+  .health-info-card { padding: 14px 2px; border-bottom: 1px solid rgba(255,255,255,.08); }
+  .health-info-card:last-child { border-bottom: none; }
+  .health-info-card h4 { font-size: 15px; margin: 0 0 5px; }
+  .health-info-card p { font-size: 12px; color: var(--text-sub); line-height: 1.7; margin: 0; }
+  .health-ai-details { margin-top: 20px; }
+  .health-ai-details > summary { list-style: none; cursor: pointer; font-size: 13px; color: var(--text-sub); padding: 11px 2px; }
+  .health-ai-details > summary::-webkit-details-marker { display: none; }
+  .health-ai-details > summary::after { content: "展开"; float: right; font-size: 11px; opacity: .7; }
+  .health-ai-details[open] > summary::after { content: "收起"; }
 
   /* 健身 AI 输入 */
   .health-textarea {
@@ -416,6 +489,13 @@
     background: rgba(255,255,255,0.08); border: 1px solid var(--glass-border); color: var(--text-sub);
   }
   .health-upload-btn:hover { background: rgba(255,255,255,0.16); }
+
+  @media (max-width: 680px) {
+    .health-week-grid, .health-metrics, .health-trend-grid { grid-template-columns: 1fr; }
+    .health-week-card .hw-why { min-height: 0; }
+    .health-hero h3 { font-size: 20px; }
+    .health-history-row { grid-template-columns: minmax(76px,1fr) repeat(3,minmax(56px,.7fr)); font-size: 11px; }
+  }
 
   /* 网球赛事 */
   .tennis-row {
@@ -1004,7 +1084,7 @@
     position: fixed; inset: 0; z-index: 100;
     background: linear-gradient(160deg,#1c1f42 0%,#4a3a63 40%,#8c5566 70%,#c97b5d 100%);
     display: flex; flex-direction: column; align-items: center; justify-content: center;
-    gap: 26px;
+    gap: 17px; padding: 28px 18px; overflow-y: auto;
     opacity: 0; pointer-events: none;
     transition: opacity 0.8s ease;
   }
@@ -1050,6 +1130,14 @@
     padding: 1px 7px; border-radius: 8px; white-space: nowrap;
   }
   .zen .zen-why { font-size: 12px; color: var(--text-sub); max-width: 340px; text-align: center; line-height: 1.75; opacity: 0.85; }
+  .zen-durations { display: flex; gap: 7px; }
+  .zen-durations button {
+    border: 1px solid rgba(255,255,255,.2); background: rgba(255,255,255,.07);
+    color: var(--text-sub); border-radius: 14px; padding: 5px 12px; cursor: pointer; font: inherit; font-size: 11px;
+  }
+  .zen-durations button.active { background: rgba(255,255,255,.23); color: var(--text-main); border-color: rgba(255,255,255,.4); }
+  .zen-durations button:focus-visible { outline: 2px solid rgba(255,255,255,.85); outline-offset: 2px; }
+  .zen-safety { max-width: 440px; text-align: center; font-size: 11px; line-height: 1.6; color: rgba(255,255,255,.58); }
   .zen .zen-stats { font-size: 12px; color: var(--text-sub); opacity: 0.75; }
   .zen .zen-start {
     background: rgba(255,255,255,0.9); color: #2a2340; border: none;
@@ -1087,6 +1175,9 @@
     .top-row { grid-template-columns: 1fr; }
     .item-grid { grid-template-columns: 1fr; }
     .panel-inner { padding: 56px 20px 96px; }
+    .zen { justify-content: flex-start; padding-top: 42px; }
+    .breath-wrap { width: 180px; height: 180px; }
+    .breath-ball { width: 92px; height: 92px; }
   }
 </style>
 <script src="https://cdn.jsdelivr.net/npm/lunar-javascript@1.6.12/lunar.js"></script>
@@ -1140,7 +1231,7 @@
         <button class="nav-item" data-panel="fitness">
           <div class="icon">🏃</div>
           <div class="name">健身</div>
-          <div class="sub">跑步 · 网球 · 力量</div>
+          <div class="sub">行动 · 训练 · 饮食</div>
         </button>
         <button class="nav-item" data-panel="ai">
           <div class="icon">🤖</div>
@@ -1408,33 +1499,90 @@
   <button class="panel-close" data-close aria-label="关闭">✕</button>
   <div class="panel-inner">
     <div class="panel-head"><div class="p-icon">🏃</div><h2>健身</h2></div>
-    <p class="panel-intro">身体是第一生产力。下面的清单基于科学研究,你也可以上传自己的健康报告,让 AI 结合你的真实情况调整今日重点。</p>
+    <p class="panel-intro">不在训练时盯屏幕。这里只保留值得反复做的健康动作,打开后用几十秒看清今天和本周的重点。</p>
 
-    <!-- AI 个性化输入 -->
-    <div class="card" style="margin-bottom:20px;">
-      <div class="section-sub" style="margin-top:0;">🩺 结合我的数据(AI 个性化)</div>
-      <p class="price-note" style="margin:0 0 12px;">贴入或上传任何和你身体/作息相关的数据:健康报告、体测结果、训练计划、你的目标或今天的安排都行。AI 会读懂后,把今日清单调成更贴合你的版本。</p>
-      <textarea id="health-input" class="health-textarea" placeholder="例如:最近睡眠平均6小时、静息心率62、体脂22%;本周私教练背和腿;我想备赛10公里跑,目标55分钟内…"></textarea>
-      <div class="health-upload-row">
-        <label class="health-upload-btn">
-          上传文件(txt / 图片 / pdf)
-          <input type="file" id="health-file" accept=".txt,.csv,image/*,.pdf" style="display:none;">
-        </label>
-        <span id="health-file-name" class="price-note" style="margin:0;"></span>
+    <div class="card health-hero">
+      <div class="health-kicker">今天最值得做</div>
+      <h3 id="health-today-title">先守住光照、活动、饮食和睡眠</h3>
+      <p id="health-today-note">不要求每天全做。完成三件基础动作,通常比追逐更多“优化技巧”更有价值。</p>
+      <div class="health-hero-meta">
+        <span class="health-source" id="health-source-label">当前使用本机轻量记录</span>
+        <button class="health-sync-btn" id="health-sync-status" type="button" disabled title="需要后续接入 iOS HealthKit 或同步服务">Apple Health · 待接入</button>
       </div>
-      <button class="zen-mode-btn" id="health-ai-btn" style="width:100%;margin-top:12px;">让 AI 结合我的数据调整今日清单</button>
-      <div id="health-ai-note" class="price-note" style="margin-top:8px;"></div>
+      <details class="health-privacy">
+        <summary>🔒 本机数据与隐私</summary>
+        <p>行动勾选、饮食、周训练和未来的健康快照默认只保存在当前浏览器,不会公开给访客或自动同步给其他用户。相同浏览器用户、同源网页脚本或获得备份文件的人仍可能读取这些数据。只有你主动使用下方 AI 功能时,你输入的那段文字才会发送到所选模型服务。</p>
+      </details>
     </div>
 
-    <!-- 今日清单 -->
-    <div class="card">
-      <div class="section-sub" style="margin-top:0;display:flex;align-items:center;justify-content:space-between;">
-        <span>✅ 今日健康清单</span>
-        <span id="health-progress" style="font-size:13px;color:var(--text-sub);">0 / 0</span>
-      </div>
-      <div id="health-list"></div>
-      <div class="price-note">清单每天自动重置 · 勾选状态保存在本机浏览器 · 依据 Huberman/哈佛等公开研究,仅为健康教育,不构成医疗建议</div>
+    <div class="health-tabs" role="tablist" aria-label="健身与健康分类">
+      <button class="health-tab active" type="button" role="tab" aria-selected="true" data-health-tab="today">今日行动</button>
+      <button class="health-tab" type="button" role="tab" aria-selected="false" data-health-tab="week">本周训练</button>
+      <button class="health-tab" type="button" role="tab" aria-selected="false" data-health-tab="food">饮食恢复</button>
+      <button class="health-tab" type="button" role="tab" aria-selected="false" data-health-tab="optional">可选补充</button>
     </div>
+
+    <section class="health-view active" id="health-view-today" data-health-view="today">
+      <div class="card">
+        <div class="section-sub" style="margin-top:0;display:flex;align-items:center;justify-content:space-between;">
+          <span>✅ 今日行动</span>
+          <span id="health-progress" style="font-size:13px;color:var(--text-sub);">0 / 0</span>
+        </div>
+        <div id="health-list"></div>
+        <div class="price-note">每天自动重置 · 只需点一下完成状态 · 基础动作优先,可选技巧不制造负担</div>
+      </div>
+    </section>
+
+    <section class="health-view" id="health-view-week" data-health-view="week" hidden>
+      <div class="card">
+        <div class="section-sub" style="margin-top:0;">📈 本周底盘</div>
+        <div class="health-week-grid" id="health-week-grid"></div>
+        <div class="health-metrics" id="health-auto-metrics"></div>
+        <div class="section-sub" style="margin-top:22px;">🗓️ 近期统计</div>
+        <div class="health-trend-grid" id="health-trend-grid"></div>
+        <div class="health-history" id="health-week-history"></div>
+        <div class="health-sync-note">以后接入 Apple Health 后,这里会自动读取睡眠、步数、训练时长和静息心率。健身时不用打开网页；页面只在事后汇总趋势并调整第二天的行动优先级。</div>
+      </div>
+    </section>
+
+    <section class="health-view" id="health-view-food" data-health-view="food" hidden>
+      <div class="card">
+        <div class="section-sub" style="margin-top:0;display:flex;align-items:center;justify-content:space-between;">
+          <span>🥗 饮食与恢复</span>
+          <span id="food-progress" style="font-size:13px;color:var(--text-sub);">0 / 0</span>
+        </div>
+        <div id="food-list"></div>
+        <div class="price-note">强调食物多样性与可持续选择,不把“抗炎”“抗氧”做成补剂任务</div>
+      </div>
+    </section>
+
+    <section class="health-view" id="health-view-optional" data-health-view="optional" hidden>
+      <div class="card">
+        <div class="section-sub" style="margin-top:0;">🧪 可选补充</div>
+        <div class="health-info-card"><h4>蛋白粉</h4><p>只是方便的蛋白质来源。日常食物能满足需求时,不需要额外打卡。</p></div>
+        <div class="health-info-card"><h4>肌酸</h4><p>对力量、爆发力和增肌训练可能有帮助,但不是健康底盘,也不替代训练、饮食和睡眠。</p></div>
+        <div class="health-info-card"><h4>维生素 D、铁、镁等</h4><p>根据饮食、症状、检查结果和专业建议决定。铁剂尤其不应作为通用日常建议。</p></div>
+        <div class="health-info-card"><h4>高剂量抗氧化补剂</h4><p>不列入行动清单。维生素 C、E 等高剂量补充不直接提升运动表现,还可能干扰部分训练适应。</p></div>
+      </div>
+    </section>
+
+    <details class="health-ai-details">
+      <summary>有体检数据或特殊目标时,再用 AI 调整</summary>
+      <div class="card">
+        <div class="section-sub" style="margin-top:0;">🩺 AI 个性化（可选）</div>
+        <p class="price-note" style="margin:0 0 12px;">只贴入与目标直接相关的摘要,不要上传姓名、证件号或完整病历。内容会发送到你选择的模型服务进行分析。</p>
+        <textarea id="health-input" class="health-textarea" placeholder="例如:最近睡眠平均6小时;本周计划两次力量、一次网球;目标是稳定体能…"></textarea>
+        <div class="health-upload-row">
+          <label class="health-upload-btn">
+            上传报告(txt / csv / 图片 / PDF)
+            <input type="file" id="health-file" accept=".txt,.csv,.pdf,image/*,text/plain,text/csv,application/pdf" style="display:none;">
+          </label>
+          <span id="health-file-name" class="price-note" style="margin:0;"></span>
+        </div>
+        <button class="zen-mode-btn" id="health-ai-btn" style="width:100%;margin-top:12px;">生成 4–6 条今日优先行动</button>
+        <div id="health-ai-note" class="price-note" style="margin-top:8px;"></div>
+      </div>
+    </details>
 
     <!-- 网球赛事日历 -->
     <div class="card" style="margin-top:20px;">
@@ -1564,7 +1712,7 @@
   <div class="ai-modal-inner">
     <button class="panel-close" id="ai-modal-close" aria-label="关闭">✕</button>
     <div class="section-sub" style="margin-top:0;">⚙️ AI 设置</div>
-    <p class="price-note" style="margin:0 0 14px;">本站的 AI 功能(八字解读、健康报告分析等)需要一个大模型 key。<strong>你填的 key 只存在你自己的浏览器里,不会上传保存</strong>,用的是你自己的额度。</p>
+    <p class="price-note" style="margin:0 0 14px;">本站的 AI 功能需要一个大模型 key。Key 会保存在当前浏览器,并在调用时发送到本站接口及你选择的模型服务。建议使用单独、可限额、可随时撤销的 key,不要在公共设备保存。</p>
     <div class="bazi-row">
       <label>选择模型</label>
       <select id="ai-provider">
@@ -1620,16 +1768,22 @@
 </div>
 
 <!-- 冥想模式覆盖层 -->
-<div class="zen" id="zen" role="dialog" aria-label="冥想模式" aria-hidden="true">
+<div class="zen" id="zen" role="dialog" aria-modal="true" aria-label="冥想模式" aria-hidden="true" tabindex="-1">
   <div class="zen-purposes" id="zen-purposes"></div>
   <div class="breath-wrap">
     <div class="breath-ring"></div>
     <div class="breath-ball"></div>
   </div>
-  <div class="phase" id="zen-phase"></div>
+  <div class="phase" id="zen-phase" aria-live="polite"></div>
   <div class="zen-hint" id="zen-hint"></div>
   <div class="zen-why" id="zen-why"></div>
-  <div class="zen-timer" id="zen-timer">00:00</div>
+  <div class="zen-durations" id="zen-durations" role="group" aria-label="练习时长">
+    <button type="button" data-zen-seconds="60">1 分钟</button>
+    <button type="button" class="active" data-zen-seconds="180">3 分钟</button>
+    <button type="button" data-zen-seconds="300">5 分钟</button>
+  </div>
+  <div class="zen-safety">保持自然舒适,不要用力吸气或憋气。不适、头晕、胸闷或手脚发麻时立即恢复正常呼吸。</div>
+  <div class="zen-timer" id="zen-timer">00:00 / 03:00</div>
   <button class="zen-start" id="zen-start">开始</button>
   <div class="zen-stats" id="zen-stats"></div>
   <button class="zen-exit" id="zen-exit">离开小屋</button>
@@ -3098,10 +3252,197 @@ function renderAlignHistory() {
 }
 
 /* =========================================================
+   Apple Health 同步(快捷指令 → /api/health → 这里)
+   ========================================================= */
+const HEALTH_TOKEN_KEY = "arinrin_health_token";
+const HEALTH_CACHE_KEY = "arinrin_health_cache";
+
+function healthToken() { return localStorage.getItem(HEALTH_TOKEN_KEY) || ""; }
+function healthCache() { return readLocalJSON(HEALTH_CACHE_KEY, null); }
+
+function initHealthSync() {
+  const btn = document.getElementById("health-sync-status");
+  const label = document.getElementById("health-source-label");
+  if (!btn) return;
+  btn.disabled = false;
+  btn.removeAttribute("title");
+  if (!btn.dataset.bound) {
+    btn.dataset.bound = "1";
+    btn.addEventListener("click", function () {
+      if (!healthToken()) {
+        const t = prompt("粘贴你的健康同步口令(与 Vercel 环境变量 HEALTH_TOKEN 一致):");
+        if (!t || !t.trim()) return;
+        localStorage.setItem(HEALTH_TOKEN_KEY, t.trim());
+      }
+      fetchHealthData(true);
+    });
+  }
+  renderHealthSyncState();
+  const cache = healthCache();
+  if (healthToken() && (!cache || Date.now() - (cache.fetchedAt || 0) > 30 * 60 * 1000)) {
+    fetchHealthData(false);
+  } else {
+    renderHealthMetrics();
+  }
+}
+
+function renderHealthSyncState(msg) {
+  const btn = document.getElementById("health-sync-status");
+  const label = document.getElementById("health-source-label");
+  if (!btn) return;
+  const cache = healthCache();
+  if (msg) { btn.textContent = msg; return; }
+  if (!healthToken()) {
+    btn.textContent = "连接 Apple Health";
+    if (label) label.textContent = "当前使用本机轻量记录";
+    return;
+  }
+  btn.textContent = "↻ 立即同步";
+  if (label && cache && cache.fetchedAt) {
+    const m = Math.round((Date.now() - cache.fetchedAt) / 60000);
+    label.textContent = "Apple Health 已连接 · " + (m < 1 ? "刚刚同步" : m < 60 ? m + " 分钟前同步" : Math.round(m / 60) + " 小时前同步");
+  } else if (label) {
+    label.textContent = "Apple Health 已连接 · 尚未同步";
+  }
+}
+
+async function fetchHealthData(manual) {
+  const token = healthToken();
+  if (!token) return;
+  renderHealthSyncState("同步中…");
+  try {
+    const res = await fetch("/api/health?token=" + encodeURIComponent(token));
+    const data = await res.json();
+    if (data.error) throw new Error(data.error);
+    localStorage.setItem(HEALTH_CACHE_KEY, JSON.stringify({ data: data, fetchedAt: Date.now() }));
+    renderHealthSyncState();
+    renderHealthMetrics();
+  } catch (e) {
+    renderHealthSyncState();
+    if (manual) {
+      const label = document.getElementById("health-source-label");
+      if (label) label.textContent = "同步失败:" + (e.message || e);
+      if (String(e.message || "").indexOf("token") >= 0) localStorage.removeItem(HEALTH_TOKEN_KEY);
+    }
+  }
+}
+
+/* 睡眠片段 → 每晚小时数(归到醒来那天,跳过"在床上"片段) */
+function sleepHoursByNight(segs) {
+  const by = {};
+  (segs || []).forEach(function (s) {
+    if (!s.start || !s.end) return;
+    const stage = (s.stage || "").toLowerCase();
+    if (stage.indexOf("床") >= 0 || stage.indexOf("in bed") >= 0 || stage.indexOf("inbed") >= 0) return;
+    const a = new Date(s.start).getTime(), b = new Date(s.end).getTime();
+    if (!a || !b || b <= a) return;
+    const day = s.end.slice(0, 10);
+    by[day] = (by[day] || 0) + (b - a) / 3600000;
+  });
+  return by;
+}
+
+function lastNDates(n) {
+  const out = [];
+  for (let i = n - 1; i >= 0; i--) {
+    const d = new Date(); d.setDate(d.getDate() - i);
+    out.push(localDateKey(d));
+  }
+  return out;
+}
+
+/* 健康摘要文本(给 AI 用) */
+function healthSummaryText(days) {
+  const cache = healthCache();
+  if (!cache || !cache.data) return "";
+  const d = cache.data, dates = lastNDates(days || 14);
+  const sleepBy = sleepHoursByNight(d.sleep);
+  const lines = [];
+  dates.forEach(function (dt) {
+    const parts = [];
+    if (d.steps && d.steps[dt] != null) parts.push("步数" + d.steps[dt]);
+    if (sleepBy[dt]) parts.push("睡眠" + sleepBy[dt].toFixed(1) + "h");
+    (d.workouts || []).filter(function (w) { return w.date === dt; }).forEach(function (w) {
+      parts.push(w.type + w.min + "分钟" + (w.km ? w.km + "km" : ""));
+    });
+    if (parts.length) lines.push(dt.slice(5) + ":" + parts.join(","));
+  });
+  return lines.length ? "【Apple Health 最近数据】\n" + lines.join("\n") : "";
+}
+
+function renderHealthMetrics() {
+  const el = document.getElementById("health-auto-metrics");
+  if (!el) return;
+  const cache = healthCache();
+  if (!cache || !cache.data) {
+    el.innerHTML = healthToken()
+      ? '<div class="price-note">还没有同步到数据。在 iPhone 上跑一次「健康同步」快捷指令,再回来点「↻ 立即同步」。</div>'
+      : "";
+    return;
+  }
+  const d = cache.data;
+  const week = lastNDates(7);
+  const sleepBy = sleepHoursByNight(d.sleep);
+
+  let stepSum = 0, stepDays = 0;
+  week.forEach(function (dt) { if (d.steps && d.steps[dt] != null) { stepSum += d.steps[dt]; stepDays++; } });
+  let sleepSum = 0, sleepDays = 0;
+  week.forEach(function (dt) { if (sleepBy[dt]) { sleepSum += sleepBy[dt]; sleepDays++; } });
+  const wk = (d.workouts || []).filter(function (w) { return week.indexOf(w.date) >= 0; });
+  const wkMin = wk.reduce(function (n, w) { return n + (w.min || 0); }, 0);
+  const wkKm = Math.round(wk.reduce(function (n, w) { return n + (w.km || 0); }, 0) * 10) / 10;
+
+  const maxStep = Math.max.apply(null, week.map(function (dt) { return (d.steps && d.steps[dt]) || 0; }).concat([1]));
+  const bars = week.map(function (dt) {
+    const v = (d.steps && d.steps[dt]) || 0;
+    const h = Math.max(3, Math.round(v / maxStep * 34));
+    return '<div class="hm-bar-wrap" title="' + dt.slice(5) + " · " + v + ' 步"><div class="hm-bar" style="height:' + h + 'px;"></div><div class="hm-bar-day">' + Number(dt.slice(8)) + "</div></div>";
+  }).join("");
+
+  el.innerHTML =
+    '<div class="hm-cards">' +
+    '<div class="hm-card"><div class="hm-num">' + (stepDays ? Math.round(stepSum / stepDays).toLocaleString() : "—") + '</div><div class="hm-label">日均步数</div></div>' +
+    '<div class="hm-card"><div class="hm-num">' + (sleepDays ? (sleepSum / sleepDays).toFixed(1) + "h" : "—") + '</div><div class="hm-label">平均睡眠</div></div>' +
+    '<div class="hm-card"><div class="hm-num">' + (wk.length ? wk.length + " 次" : "—") + '</div><div class="hm-label">本周训练' + (wkMin ? " · " + wkMin + "min" : "") + (wkKm ? " · " + wkKm + "km" : "") + "</div></div>" +
+    "</div>" +
+    '<div class="hm-bars">' + bars + "</div>" +
+    (wk.length ? '<div class="hm-list">' + wk.map(function (w) {
+      return '<div class="hm-row">' + w.date.slice(5) + " · " + escapeHtml(w.type) + " " + w.min + "min" + (w.km ? " · " + w.km + "km" : "") + "</div>";
+    }).join("") + "</div>" : "");
+}
+
+/* =========================================================
    主题实验 · 主题周 / 主题月
    独立于人生设计的开放探索:成功拓展方向,失败确认边界
    ========================================================= */
 const THEME_EXPERIMENT_KEY = "arinrin_theme_experiments_v1";
+function getThemeExperiments() {
+  try {
+    const rows = JSON.parse(localStorage.getItem(THEME_EXPERIMENT_KEY)) || [];
+    return Array.isArray(rows) ? rows : [];
+  } catch (e) { return []; }
+}
+function saveThemeExperiments(rows) {
+  try { localStorage.setItem(THEME_EXPERIMENT_KEY, JSON.stringify(rows)); } catch (e) {}
+}
+function localYmd(d) {
+  return d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0") + "-" + String(d.getDate()).padStart(2, "0");
+}
+function themeCycleEnd(startYmd, cycle) {
+  const d = new Date(startYmd + "T12:00:00");
+  d.setDate(d.getDate() + (cycle === "month" ? 29 : 6));
+  return localYmd(d);
+}
+function themeSignalLabel(signal) {
+  if (signal === "expand") return "长出了新方向";
+  if (signal === "close" || signal === "less") return "确认边界,安心结束";
+  return "值得继续探索";
+}
+function shortDate(ymd) {
+  if (!ymd) return "—";
+  const p = ymd.split("-");
+  return Number(p[1]) + " 月 " + Number(p[2]) + " 日";
+}
 let themeView = "main";        /* main | history | form | complete */
 let themeTargetId = null;      /* form 编辑哪条 / complete 哪条 */
 let themeFormCycle = "week";   /* 新建时的周期 */
@@ -3820,79 +4161,353 @@ async function runCommittee() {
 }
 
 
-/* ===== 健身:今日健康清单(基于科学协议) ===== */
+/* ===== 健身:低输入行动指引 ===== */
 const HEALTH_PLAN = [
-  { group: "☀️ 晨间", items: [
-    { t: "起床后尽快到户外晒 10-30 分钟自然光", why: "晨间强光校准昼夜节律,提升白天清醒度、帮助当晚更早入睡(Huberman 反复强调的第一优先级)。阴天也要,时间加长。" },
-    { t: "醒后延后 90-120 分钟再摄入咖啡因", why: "睡醒后腺苷仍在代谢,立刻喝咖啡会造成午后能量崩溃;延后摄入能减少下午困倦与对咖啡的依赖。" }
+  { group: "☀️ 光照与节律", items: [
+    { id: "morning-light", t: "起床后尽早去户外接触 10–30 分钟自然光", why: "把它当作昼夜节律的稳定锚点。阴天可以适当延长,不要隔着深色玻璃直视太阳。", evidence: "基础" }
   ]},
-  { group: "🏃 白天", items: [
-    { t: "安排一段运动窗口(力量或有氧任一)", why: "规律运动改善胰岛素敏感、情绪与睡眠质量。哈佛公共卫生建议每周至少 150 分钟中等强度。" },
-    { t: "每工作 90 分钟起身活动 / 走动几分钟", why: "久坐抵消运动收益;短暂活动改善血糖与专注力,符合超日节律(ultradian)的工作-休息结构。" },
-    { t: "午餐后散步 10 分钟", why: "餐后步行显著降低血糖峰值,减少下午困倦(多项代谢研究支持)。" }
+  { group: "🏃 活动", items: [
+    { id: "purposeful-move", t: "今天完成一次有目的的活动", why: "训练日按原计划完成;非训练日快走 20–30 分钟即可。网页不负责在训练中指导动作。", evidence: "基础" },
+    { id: "movement-break", t: "久坐约 60–90 分钟后,起身活动 2–5 分钟", why: "少坐、多动本身就有价值;短活动也可以累计,不必等到有完整运动时间。", evidence: "基础" },
+    { id: "post-meal-walk", t: "较大一餐后轻松走约 10 分钟", why: "餐后低强度活动有助于平缓餐后血糖反应,也常能减少饭后昏沉。", evidence: "实用" }
   ]},
-  { group: "🧠 专注 / 多巴胺", items: [
-    { t: "选一个'深度工作'时段,期间远离手机与短视频", why: "碎片化刷屏拉高多巴胺基线,让平静的任务显得无聊。刻意留出低刺激的专注区间,能恢复对普通努力的耐受度。" },
-    { t: "把最难的任务放在多巴胺/精力最高的时段做", why: "顺应个人精力节律做重要事,比靠意志力硬扛更可持续。" }
-  ]},
-  { group: "🌙 晚间降刺激", items: [
-    { t: "睡前 1-2 小时调暗灯光、减少强光与屏幕", why: "夜间强光(尤其顶光/蓝光)抑制褪黑素、推迟入睡。暖光、低位光源更友好。" },
-    { t: "睡前 2-3 小时不再进食 / 不碰咖啡因、酒精", why: "咖啡因半衰期长达 5-6 小时;酒精破坏深睡与 REM。晚食影响体温下降与入睡。" },
-    { t: "固定就寝与起床时间(哪怕周末)", why: "睡眠'规律性'比单纯时长更能预测健康与死亡风险(近年大样本研究结论)。" }
+  { group: "🌙 恢复", items: [
+    { id: "sleep-window", t: "今晚给睡眠留出至少 7 小时窗口", why: "时长、质量和规律性都重要。优先保证睡眠,再考虑冷水、红光等可选技巧。", evidence: "基础" },
+    { id: "evening-downshift", t: "睡前 1 小时降低整体光线和刺激", why: "调暗环境、结束高唤起工作;下午或晚上避免咖啡因,睡前避免大量饮食和酒精。", evidence: "基础" }
   ]}
 ];
 
-function healthKey() {
-  return "arinrin_health_" + new Date().toISOString().slice(0, 10); // 按日期存,自动每天重置
+const FOOD_PLAN = [
+  { group: "🥗 今天吃什么", items: [
+    { id: "food-protein", t: "每顿主餐安排一种清晰的蛋白质来源", why: "优先从鱼、蛋、奶、豆类、禽肉或瘦肉获取;蛋白粉只是吃不够时的便利选项。", evidence: "基础" },
+    { id: "food-color", t: "至少两餐出现蔬菜或完整水果,颜色尽量不同", why: "食物多样性比追逐单一“抗氧化成分”更可靠,也能同时带来纤维和多种微量营养素。", evidence: "基础" },
+    { id: "food-fiber-fat", t: "今天吃一次全谷物、豆类、坚果或种子", why: "用富含纤维的食物和不饱和脂肪替代部分精制碳水与高饱和脂肪组合。", evidence: "基础" },
+    { id: "food-swap", t: "少一次含糖饮料或高度加工零食", why: "不用追求完美饮食;只替换一个高糖、高盐或高饱和脂肪选择,更容易长期保持。", evidence: "实用" }
+  ]}
+];
+
+function localDateKey(date) {
+  const d = date || new Date();
+  const p = n => String(n).padStart(2, "0");
+  return d.getFullYear() + "-" + p(d.getMonth() + 1) + "-" + p(d.getDate());
 }
-function getHealthState() {
-  try { return JSON.parse(localStorage.getItem(healthKey())) || {}; }
-  catch (e) { return {}; }
+function healthKey() { return "arinrin_health_" + localDateKey(); }
+function foodKey() { return "arinrin_food_" + localDateKey(); }
+function weekKeyFor(date) {
+  const d = new Date(date || new Date());
+  const daysFromMonday = (d.getDay() + 6) % 7;
+  d.setDate(d.getDate() - daysFromMonday);
+  return "arinrin_health_week_" + localDateKey(d);
 }
+function weekKey() { return weekKeyFor(new Date()); }
+function readLocalJSON(key, fallback) {
+  try { return JSON.parse(localStorage.getItem(key)) || fallback; }
+  catch (e) { return fallback; }
+}
+function getHealthState() { return readLocalJSON(healthKey(), {}); }
 function saveHealthState(s) { localStorage.setItem(healthKey(), JSON.stringify(s)); }
+function getFoodState() { return readLocalJSON(foodKey(), {}); }
+function saveFoodState(s) { localStorage.setItem(foodKey(), JSON.stringify(s)); }
 
 function getTodayPlan() {
-  try {
-    const custom = JSON.parse(localStorage.getItem("arinrin_health_plan_" + new Date().toISOString().slice(0,10)));
-    if (custom && custom.length) return custom;
-  } catch (e) {}
-  return HEALTH_PLAN;
+  const custom = readLocalJSON("arinrin_health_plan_" + localDateKey(), null);
+  return custom && custom.length ? custom : HEALTH_PLAN;
 }
-function renderHealth() {
-  const listEl = document.getElementById("health-list");
-  const plan = getTodayPlan();
-  const state = getHealthState();
+
+function renderChecklist(listEl, plan, state, onToggle) {
   let total = 0, done = 0;
-  let html = "";
+  listEl.replaceChildren();
   plan.forEach((g, gi) => {
-    html += `<div class="health-group-label">${g.group}</div>`;
-    g.items.forEach((it, ii) => {
-      const id = gi + "-" + ii;
+    const label = document.createElement("div");
+    label.className = "health-group-label";
+    label.textContent = g.group;
+    listEl.appendChild(label);
+    (g.items || []).forEach((it, ii) => {
+      const id = it.id || (gi + "-" + ii);
       const isDone = !!state[id];
       total++; if (isDone) done++;
-      html += `
-        <div class="health-item ${isDone ? 'done' : ''}" data-id="${id}">
-          <div class="health-check">✓</div>
-          <div class="health-body">
-            <div class="h-title">${it.t}</div>
-            <div class="h-why">${it.why}</div>
-          </div>
-        </div>`;
+      const button = document.createElement("button");
+      button.type = "button";
+      button.className = "health-item" + (isDone ? " done" : "");
+      button.dataset.id = id;
+      button.setAttribute("role", "checkbox");
+      button.setAttribute("aria-checked", String(isDone));
+
+      const check = document.createElement("span");
+      check.className = "health-check";
+      check.setAttribute("aria-hidden", "true");
+      check.textContent = "✓";
+      const body = document.createElement("span");
+      body.className = "health-body";
+      const title = document.createElement("span");
+      title.className = "h-title";
+      title.textContent = it.t || "行动";
+      if (it.evidence) {
+        const badge = document.createElement("span");
+        badge.className = "health-evidence";
+        badge.textContent = it.evidence;
+        title.appendChild(badge);
+      }
+      const why = document.createElement("span");
+      why.className = "h-why";
+      why.textContent = it.why || "";
+      body.append(title, why);
+      button.append(check, body);
+      button.addEventListener("click", () => onToggle(id));
+      listEl.appendChild(button);
     });
   });
-  listEl.innerHTML = html;
-  document.getElementById("health-progress").textContent = done + " / " + total;
-  listEl.querySelectorAll(".health-item").forEach(item => {
-    item.addEventListener("click", () => {
-      const s = getHealthState();
-      const id = item.dataset.id;
-      s[id] = !s[id];
-      saveHealthState(s);
-      renderHealth();
+  return { total, done };
+}
+
+function updateHealthHero(done, total) {
+  const title = document.getElementById("health-today-title");
+  const note = document.getElementById("health-today-note");
+  const snapshot = getHealthSnapshot();
+  if (snapshot.sleepMinutes && snapshot.sleepMinutes < 360) {
+    title.textContent = "昨晚睡得偏少,今天优先恢复和低强度活动";
+    note.textContent = "不用靠高强度训练补偿疲惫。守住自然光、轻松活动、正常吃饭和今晚的睡眠窗口。";
+  } else if (done >= Math.min(3, total)) {
+    title.textContent = "今天的基础盘已经守住";
+    note.textContent = `已完成 ${done} 项。剩余内容是加分项,不需要为了全勾完而增加负担。`;
+  } else {
+    title.textContent = "先守住光照、活动、饮食和睡眠";
+    note.textContent = `今天先从 ${Math.min(3, Math.max(total - done, 0))} 件基础动作开始。完成三件,通常比追逐更多优化技巧更有价值。`;
+  }
+}
+
+function renderHealth() {
+  const state = getHealthState();
+  const result = renderChecklist(document.getElementById("health-list"), getTodayPlan(), state, id => {
+    const next = getHealthState();
+    next[id] = !next[id];
+    saveHealthState(next);
+    renderHealth();
+  });
+  document.getElementById("health-progress").textContent = result.done + " / " + result.total;
+  updateHealthHero(result.done, result.total);
+}
+
+function renderFood() {
+  const state = getFoodState();
+  const result = renderChecklist(document.getElementById("food-list"), FOOD_PLAN, state, id => {
+    const next = getFoodState();
+    next[id] = !next[id];
+    saveFoodState(next);
+    renderFood();
+  });
+  document.getElementById("food-progress").textContent = result.done + " / " + result.total;
+}
+
+function getWeekState() { return readLocalJSON(weekKey(), { strength: 0, cardio: 0, recovery: 0 }); }
+function saveWeekState(state) { localStorage.setItem(weekKey(), JSON.stringify(state)); }
+const WEEK_GOALS = [
+  { key: "strength", label: "力量训练", goal: 2, unit: "次", add: 1, why: "覆盖主要肌群,每周至少 2 天" },
+  { key: "cardio", label: "中等强度有氧", goal: 150, unit: "分钟", add: 30, why: "以每周累计为准,不要求每天训练" },
+  { key: "recovery", label: "主动恢复", goal: 1, unit: "天", add: 1, why: "轻松走路、拉伸或完全休息都可以" }
+];
+
+function renderWeeklyHealth() {
+  const state = getWeekState();
+  const grid = document.getElementById("health-week-grid");
+  grid.replaceChildren();
+  WEEK_GOALS.forEach(item => {
+    const card = document.createElement("div");
+    card.className = "health-week-card";
+    const label = document.createElement("div"); label.className = "hw-label"; label.textContent = item.label;
+    const value = document.createElement("div"); value.className = "hw-value"; value.textContent = (state[item.key] || 0) + " / " + item.goal + " " + item.unit;
+    const track = document.createElement("div"); track.className = "health-progress-track";
+    const fill = document.createElement("div"); fill.className = "health-progress-fill"; fill.style.width = Math.min(100, ((state[item.key] || 0) / item.goal) * 100) + "%";
+    track.appendChild(fill);
+    const why = document.createElement("div"); why.className = "hw-why"; why.textContent = item.why;
+    const button = document.createElement("button"); button.type = "button"; button.className = "health-log-btn";
+    button.textContent = item.key === "cardio" ? "+ 记录 30 分钟" : "+ 完成一次";
+    button.addEventListener("click", () => {
+      const next = getWeekState(); next[item.key] = (next[item.key] || 0) + item.add; saveWeekState(next); renderWeeklyHealth();
     });
+    card.append(label, value, track, why, button);
+    grid.appendChild(card);
+  });
+  renderHealthMetrics();
+  renderHealthTrends();
+}
+
+function dateKeyDaysAgo(days) {
+  const d = new Date();
+  d.setHours(12, 0, 0, 0);
+  d.setDate(d.getDate() - days);
+  return localDateKey(d);
+}
+function planItemIds(plan) {
+  const ids = [];
+  (plan || []).forEach((group, gi) => (group.items || []).forEach((item, ii) => ids.push(item.id || (gi + "-" + ii))));
+  return ids;
+}
+function planForDate(dateKey) {
+  const custom = readLocalJSON("arinrin_health_plan_" + dateKey, null);
+  return custom && custom.length ? custom : HEALTH_PLAN;
+}
+function summarizeChecklist(days, prefix, planGetter) {
+  let done = 0, total = 0, trackedDays = 0, stableDays = 0;
+  for (let i = 0; i < days; i++) {
+    const dateKey = dateKeyDaysAgo(i);
+    const storageKey = prefix + dateKey;
+    const raw = localStorage.getItem(storageKey);
+    if (raw === null) continue;
+    const state = readLocalJSON(storageKey, {});
+    const ids = planItemIds(planGetter(dateKey));
+    const dayDone = ids.filter(id => !!state[id]).length;
+    trackedDays++; done += dayDone; total += ids.length;
+    if (dayDone >= Math.min(3, ids.length)) stableDays++;
+  }
+  return { done, total, trackedDays, stableDays, rate: total ? Math.round(done / total * 100) : null };
+}
+function recentHealthSnapshots(days) {
+  const rows = [];
+  for (let i = 0; i < days; i++) {
+    const dateKey = dateKeyDaysAgo(i);
+    const raw = localStorage.getItem("arinrin_health_snapshot_" + dateKey);
+    if (raw === null) continue;
+    const value = readLocalJSON("arinrin_health_snapshot_" + dateKey, null);
+    if (value) rows.push(value);
+  }
+  return rows;
+}
+function averageMetric(rows, key) {
+  const values = rows.map(row => row[key]).filter(hasHealthMetric).map(Number);
+  return values.length ? { value: values.reduce((sum, value) => sum + value, 0) / values.length, count: values.length } : null;
+}
+function appendTrendCard(box, labelText, valueText, noteText) {
+  const card = document.createElement("div"); card.className = "health-trend-card";
+  const label = document.createElement("div"); label.className = "ht-label"; label.textContent = labelText;
+  const value = document.createElement("div"); value.className = "ht-value"; value.textContent = valueText;
+  const note = document.createElement("div"); note.className = "ht-note"; note.textContent = noteText;
+  card.append(label, value, note); box.appendChild(card);
+}
+function renderHealthTrends() {
+  const box = document.getElementById("health-trend-grid");
+  if (!box) return;
+  const action7 = summarizeChecklist(7, "arinrin_health_", planForDate);
+  const food7 = summarizeChecklist(7, "arinrin_food_", () => FOOD_PLAN);
+  const action28 = summarizeChecklist(28, "arinrin_health_", planForDate);
+  const snapshots = recentHealthSnapshots(7);
+  const sleep = averageMetric(snapshots, "sleepMinutes");
+  const steps = averageMetric(snapshots, "steps");
+  const exerciseValues = snapshots.map(row => row.exerciseMinutes).filter(hasHealthMetric).map(Number);
+  const exerciseTotal = exerciseValues.length ? Math.round(exerciseValues.reduce((sum, value) => sum + value, 0)) : null;
+  box.replaceChildren();
+  appendTrendCard(box, "近 7 日 · 基础行动", action7.rate === null ? "暂无记录" : action7.rate + "%", action7.trackedDays ? `${action7.done} / ${action7.total} 项 · 记录 ${action7.trackedDays} 天` : "从第一次勾选开始统计");
+  appendTrendCard(box, "近 7 日 · 饮食恢复", food7.rate === null ? "暂无记录" : food7.rate + "%", food7.trackedDays ? `${food7.done} / ${food7.total} 项 · 记录 ${food7.trackedDays} 天` : "从第一次勾选开始统计");
+  appendTrendCard(box, "近 28 日 · 稳住基础", action28.trackedDays ? action28.stableDays + " 天" : "暂无记录", action28.trackedDays ? `在 ${action28.trackedDays} 个记录日中完成至少 3 项` : "不会把启用前的日期算作未完成");
+  appendTrendCard(box, "近 7 日 · 平均睡眠", sleep ? formatSleep(sleep.value) : "待同步", sleep ? `来自 ${sleep.count} 天健康数据` : "接入 Apple Health 后自动统计");
+  appendTrendCard(box, "近 7 日 · 平均步数", steps ? Math.round(steps.value).toLocaleString() : "待同步", steps ? `来自 ${steps.count} 天健康数据` : "接入 Apple Health 后自动统计");
+  appendTrendCard(box, "近 7 日 · 训练时长", exerciseTotal === null ? "待同步" : exerciseTotal + " 分钟", exerciseValues.length ? `来自 ${exerciseValues.length} 天健康数据` : "接入 Apple Health 后自动统计");
+  renderWeekHistory();
+}
+function renderWeekHistory() {
+  const box = document.getElementById("health-week-history");
+  if (!box) return;
+  const rows = [];
+  for (let i = 0; i < 8; i++) {
+    const d = new Date(); d.setHours(12, 0, 0, 0); d.setDate(d.getDate() - i * 7);
+    const key = weekKeyFor(d);
+    if (localStorage.getItem(key) === null) continue;
+    rows.push({ key, date: key.slice(-10), state: readLocalJSON(key, {}) });
+  }
+  box.replaceChildren();
+  if (!rows.length) {
+    const empty = document.createElement("div"); empty.className = "health-sync-note"; empty.textContent = "完成第一次本周记录后,这里会保留最近 8 周的力量、有氧和恢复历史。"; box.appendChild(empty); return;
+  }
+  const head = document.createElement("div"); head.className = "health-history-row health-history-head";
+  ["周起始", "力量", "有氧", "恢复"].forEach(text => { const cell = document.createElement("span"); cell.textContent = text; head.appendChild(cell); });
+  box.appendChild(head);
+  rows.forEach(row => {
+    const line = document.createElement("div"); line.className = "health-history-row";
+    const labels = [row.date.slice(5).replace("-", "/"), (row.state.strength || 0) + " 次", (row.state.cardio || 0) + " 分", (row.state.recovery || 0) + " 天"];
+    labels.forEach((text, index) => { const cell = document.createElement("span"); if (!index) cell.className = "hh-week"; cell.textContent = text; line.appendChild(cell); });
+    box.appendChild(line);
   });
 }
-function loadHealth() { renderHealth(); initHealthAI(); renderTennis(); }
+
+function getHealthSnapshot(dateKey) {
+  return readLocalJSON(dateKey ? ("arinrin_health_snapshot_" + dateKey) : "arinrin_health_snapshot", {});
+}
+function hasHealthMetric(value) {
+  return value !== null && value !== undefined && value !== "" && Number.isFinite(Number(value));
+}
+function formatSleep(minutes) {
+  if (!hasHealthMetric(minutes)) return "待同步";
+  const m = Math.max(0, Math.round(Number(minutes)));
+  return Math.floor(m / 60) + "小时" + (m % 60 ? (m % 60) + "分" : "");
+}
+function renderHealthMetrics() {
+  const snapshot = getHealthSnapshot();
+  const sourceLabel = document.getElementById("health-source-label");
+  const syncStatus = document.getElementById("health-sync-status");
+  if (snapshot.updatedAt) {
+    sourceLabel.textContent = "已收到自动健康数据";
+    syncStatus.textContent = "Apple Health · 已同步";
+  } else {
+    sourceLabel.textContent = "当前使用本机轻量记录";
+    syncStatus.textContent = "Apple Health · 待接入";
+  }
+  const metrics = [
+    { label: "昨夜睡眠", value: formatSleep(snapshot.sleepMinutes) },
+    { label: "今日步数", value: hasHealthMetric(snapshot.steps) ? Number(snapshot.steps).toLocaleString() : "待同步" },
+    { label: "近 7 日训练", value: hasHealthMetric(snapshot.weekExerciseMinutes) ? Math.round(Number(snapshot.weekExerciseMinutes)) + " 分钟" : "待同步" }
+  ];
+  const box = document.getElementById("health-auto-metrics");
+  box.replaceChildren();
+  metrics.forEach(m => {
+    const card = document.createElement("div"); card.className = "health-metric";
+    const label = document.createElement("div"); label.className = "hm-label"; label.textContent = m.label;
+    const value = document.createElement("div"); value.className = "hm-value"; value.textContent = m.value;
+    card.append(label, value); box.appendChild(card);
+  });
+}
+
+/* 未来由 iOS / HealthKit 同步层调用。只写入本机浏览器。
+   字段: date、sleepMinutes、steps、exerciseMinutes、weekExerciseMinutes、restingHeartRate、updatedAt */
+window.setArinrinHealthSnapshot = function (snapshot) {
+  if (!snapshot || typeof snapshot !== "object") return false;
+  const suppliedDate = String(snapshot.date || "");
+  const snapshotDate = /^\d{4}-\d{2}-\d{2}$/.test(suppliedDate) ? suppliedDate : localDateKey();
+  const safe = {
+    date: snapshotDate,
+    sleepMinutes: Number(snapshot.sleepMinutes) || null,
+    steps: Number(snapshot.steps) || null,
+    exerciseMinutes: Number(snapshot.exerciseMinutes) || null,
+    weekExerciseMinutes: Number(snapshot.weekExerciseMinutes) || null,
+    restingHeartRate: Number(snapshot.restingHeartRate) || null,
+    updatedAt: snapshot.updatedAt || new Date().toISOString()
+  };
+  localStorage.setItem("arinrin_health_snapshot", JSON.stringify(safe));
+  localStorage.setItem("arinrin_health_snapshot_" + snapshotDate, JSON.stringify(safe));
+  renderHealthMetrics(); renderHealthTrends(); renderHealth();
+  return true;
+};
+
+let healthTabsInited = false;
+function initHealthTabs() {
+  if (healthTabsInited) return;
+  document.querySelectorAll("[data-health-tab]").forEach(tab => {
+    tab.addEventListener("click", () => {
+      const key = tab.dataset.healthTab;
+      document.querySelectorAll("[data-health-tab]").forEach(t => {
+        const active = t === tab; t.classList.toggle("active", active); t.setAttribute("aria-selected", String(active));
+      });
+      document.querySelectorAll("[data-health-view]").forEach(view => {
+        const active = view.dataset.healthView === key; view.classList.toggle("active", active); view.hidden = !active;
+      });
+      if (key === "week") renderWeeklyHealth();
+    });
+  });
+  healthTabsInited = true;
+}
+
+function loadHealth() {
+  initHealthTabs(); renderHealth(); renderFood(); renderWeeklyHealth(); initHealthAI(); initHealthSync(); renderTennis();
+}
 
 /* ---- 网球赛事日历(2026) ---- */
 const TENNIS = [
@@ -3934,24 +4549,69 @@ function renderTennis() {
 
 /* ---- 健身 AI 个性化 ---- */
 let healthAIInited = false;
+let healthAIImages = [];   // [{media_type,data}] 压缩后的报告图片
+let healthAIPdf = null;    // {data} 仅 Claude 支持
+
+function shrinkImageFile(file) {
+  return new Promise(function (resolve, reject) {
+    const reader = new FileReader();
+    reader.onload = function () {
+      const img = new Image();
+      img.onload = function () {
+        const MAX = 1600;
+        let w = img.width, h = img.height;
+        if (Math.max(w, h) > MAX) { const k = MAX / Math.max(w, h); w = Math.round(w * k); h = Math.round(h * k); }
+        const cv = document.createElement("canvas");
+        cv.width = w; cv.height = h;
+        cv.getContext("2d").drawImage(img, 0, 0, w, h);
+        const dataUrl = cv.toDataURL("image/jpeg", 0.85);
+        resolve({ media_type: "image/jpeg", data: dataUrl.split(",")[1] });
+      };
+      img.onerror = function () { reject(new Error("图片无法读取(HEIC 可先截图或转成 JPG)")); };
+      img.src = reader.result;
+    };
+    reader.onerror = function () { reject(new Error("文件读取失败")); };
+    reader.readAsDataURL(file);
+  });
+}
+
 function initHealthAI() {
   if (healthAIInited) return;
-  // 文件上传:txt 直接读文字;图片/pdf 提示暂只支持文字
-  document.getElementById("health-file").addEventListener("change", (e) => {
+  document.getElementById("health-file").addEventListener("change", async (e) => {
     const f = e.target.files[0];
     if (!f) return;
-    document.getElementById("health-file-name").textContent = f.name;
+    const note = document.getElementById("health-ai-note");
+    const nameEl = document.getElementById("health-file-name");
     if (f.type.startsWith("text") || f.name.endsWith(".txt") || f.name.endsWith(".csv")) {
+      nameEl.textContent = f.name;
       const reader = new FileReader();
       reader.onload = () => {
         const ta = document.getElementById("health-input");
         ta.value = (ta.value ? ta.value + "\n\n" : "") + reader.result.slice(0, 4000);
       };
       reader.readAsText(f);
+    } else if (f.type.startsWith("image/")) {
+      note.textContent = "正在压缩图片…";
+      try {
+        const im = await shrinkImageFile(f);
+        healthAIImages.push(im);
+        if (healthAIImages.length > 3) healthAIImages = healthAIImages.slice(-3);
+        nameEl.textContent = "已附 " + healthAIImages.length + " 张报告图片(识别时随请求发送)";
+        note.textContent = "";
+      } catch (err) { note.textContent = String(err.message || err); }
+    } else if (f.type === "application/pdf" || f.name.endsWith(".pdf")) {
+      if (f.size > 4 * 1024 * 1024) { note.textContent = "PDF 太大(>4MB),建议截图后按图片上传。"; return; }
+      const reader = new FileReader();
+      reader.onload = () => {
+        healthAIPdf = { data: String(reader.result).split(",")[1] };
+        nameEl.textContent = f.name + "(PDF · 仅 Claude 支持识别)";
+        note.textContent = "";
+      };
+      reader.readAsDataURL(f);
     } else {
-      document.getElementById("health-ai-note").textContent =
-        "图片/PDF 暂时无法自动读取内容,请把关键数字手动摘录到上方文本框(未来版本会支持图片识别)。";
+      note.textContent = "支持 txt / csv / 图片 / PDF。";
     }
+    e.target.value = "";
   });
   document.getElementById("health-ai-btn").addEventListener("click", runHealthAI);
   healthAIInited = true;
@@ -3961,32 +4621,47 @@ async function runHealthAI() {
   const btn = document.getElementById("health-ai-btn");
   const note = document.getElementById("health-ai-note");
   const content = document.getElementById("health-input").value.trim();
-  if (!content) { note.textContent = "请先粘贴或上传你的报告内容。"; return; }
+  if (!content && !healthAIImages.length && !healthAIPdf) { note.textContent = "先写点情况,或上传报告(文字/图片/PDF)。"; return; }
   if (!hasAIKey()) { note.innerHTML = "还没设置 AI key。请点右下角「⚙️ AI」填入你自己的 key(用你自己的额度)。"; return; }
   btn.textContent = "AI 分析中…"; btn.disabled = true; note.textContent = "";
 
   const baseList = HEALTH_PLAN.map(g => g.group + ":" + g.items.map(i => i.t).join("；")).join("\n");
   const prompt =
-`我有一份基于科学研究的通用每日健康清单如下:
+`我有一份以低输入、可持续为目标的通用每日健康行动清单:
 ${baseList}
 
 现在这是我提供的个人数据/情况(可能包含健康报告、体测、训练计划、目标或日程):
-${content.slice(0, 3000)}
+${content.slice(0, 3000) || "(见随附的报告图片/PDF)"}
+${healthAIImages.length || healthAIPdf ? "随附了体检/运动报告的图片或 PDF,请先读出其中与行动相关的关键数值再给建议。" : ""}
+${healthSummaryText(14) ? healthSummaryText(14).slice(0, 1200) : ""}
 
-请结合我的真实情况,给出一份"今日健康清单"(8-12 条),按 晨间/白天/专注/晚间 四个时段分组。每条包含一句具体行动 + 一句为什么(尽量结合我提供的数据)。
+请结合这些信息,只调整今天的优先级,给出总计 4-6 条行动。行动必须低摩擦、具体,不要求用户在训练中打开网页。
+不得诊断疾病、解释化验异常、调整药物、推荐高剂量补剂或给出激进训练计划。若信息提到胸痛、晕厥、严重呼吸困难、急性损伤、孕期高风险或其他红旗症状,只给出暂停相关活动并寻求专业评估的安全行动。
+每条包含一句具体行动 + 一句简短原因,最多分成 3 组。
 严格只返回 JSON,格式:
 {"groups":[{"group":"☀️ 晨间","items":[{"t":"行动","why":"原因"}]}]}
 不要有 JSON 以外的任何文字。`;
 
   try {
-    const raw = await callAI(prompt, "你是一位循证的健康与运动顾问,只返回规定格式的 JSON。");
+    const raw = await callAI(prompt, "你是一位循证的健康与运动顾问,只返回规定格式的 JSON。",
+      { images: healthAIImages, pdf: healthAIPdf });
     let txt = (raw || "").trim().replace(/```json|```/g, "").trim();
     const parsed = JSON.parse(txt);
-    if (parsed.groups && parsed.groups.length) {
-      localStorage.setItem("arinrin_health_plan_" + new Date().toISOString().slice(0,10), JSON.stringify(parsed.groups));
+    if (Array.isArray(parsed.groups) && parsed.groups.length) {
+      let count = 0;
+      const safeGroups = parsed.groups.slice(0, 3).map(g => ({
+        group: String(g.group || "今日重点").slice(0, 30),
+        items: (Array.isArray(g.items) ? g.items : []).filter(() => count++ < 6).map(it => ({
+          t: String(it.t || "").slice(0, 120),
+          why: String(it.why || "").slice(0, 220),
+          evidence: "个性化"
+        })).filter(it => it.t)
+      })).filter(g => g.items.length);
+      if (!safeGroups.length) throw new Error("未生成有效行动");
+      localStorage.setItem("arinrin_health_plan_" + localDateKey(), JSON.stringify(safeGroups));
       localStorage.removeItem(healthKey());
       renderHealth();
-      note.textContent = "已根据你的数据生成个性化清单 ✓";
+      note.textContent = "已生成今天的 4–6 条优先行动 ✓";
     } else {
       note.textContent = "AI 返回格式异常,请重试。";
     }
@@ -3997,7 +4672,7 @@ ${content.slice(0, 3000)}
 }
 function resetHealthBtn() {
   const btn = document.getElementById("health-ai-btn");
-  btn.textContent = "让 AI 结合报告调整今日清单"; btn.disabled = false;
+  btn.textContent = "生成 4–6 条今日优先行动"; btn.disabled = false;
 }
 
 /* ===== AI:AI HOT 每日动态 ===== */
@@ -4929,7 +5604,7 @@ async function loadAIDailyByDate(date) {
   }
 }
 
-/* ===== 冥想小屋:两种呼吸模式 ===== */
+/* ===== 冥想小屋:低负担呼吸练习 ===== */
 const zen = document.getElementById("zen");
 const zenPhase = document.getElementById("zen-phase");
 const zenHint = document.getElementById("zen-hint");
@@ -4940,22 +5615,25 @@ let zenRunStart = null;     // 本段计时起点
 let zenElapsed = 0;         // 已累计秒数(跨暂停)
 let zenRunning = false;
 let zenMode = "calm";
+let zenDuration = 180;
+let zenCompleted = false;
+let zenSessionLogged = false;
+let zenReturnFocus = null;
+const zenReduceMotion = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)");
 
-/* 生理性叹息(Huberman cyclic sighing):
-   鼻吸2.5s → 补吸1s → 嘴缓慢呼气6.5s,周期10s
-   箱式呼吸:吸4s → 屏4s → 呼4s → 屏4s,周期16s */
+/* 节奏刻意保持温和。屏息不是必需,任何阶段不舒服都可以回到自然呼吸。 */
 const MODES = {
   energy: {
-    label: "提神", icon: "🔥", cycle: 6,
-    hint: "深深吸气 4 秒 → 快速呼出 2 秒",
-    why: "吸气长于呼气会小幅提升心率、唤起交感神经,适合早晨或午后犯困时。",
-    scale: [1, 1.9], keys: [[0,1],[4,1.9],[6,1]],
-    phases: [ { name: "吸气", at: 0 }, { name: "快呼", at: 4 } ]
+    label: "清醒", icon: "☀️", cycle: 6,
+    hint: "自然吸气 3 秒 → 自然呼气 3 秒",
+    why: "等长、不过度的呼吸适合短暂停顿和重新集中。真正困倦时,自然光、走动和睡眠通常比强行呼吸更重要。",
+    scale: [1, 1.75], keys: [[0,1],[3,1.75],[6,1]],
+    phases: [ { name: "吸气", at: 0 }, { name: "呼气", at: 3 } ]
   },
   focus: {
     label: "专注", icon: "🎯", cycle: 16,
     hint: "吸气 4 → 屏息 4 → 呼气 4 → 屏息 4",
-    why: "箱式呼吸让吸呼等长,稳定自主神经,是特种部队用来在压力下保持清醒的方法。",
+    why: "箱式呼吸提供清晰节奏,可以作为工作切换前的短暂停顿。屏息不舒服时直接跳过,改为自然等长呼吸。",
     scale: [1, 1.85], keys: [[0,1],[4,1.85],[8,1.85],[12,1],[16,1]],
     phases: [ { name: "吸气", at: 0 }, { name: "屏息", at: 4 },
       { name: "呼气", at: 8 }, { name: "屏息", at: 12 } ]
@@ -4963,16 +5641,16 @@ const MODES = {
   calm: {
     label: "放松", icon: "🌊", cycle: 10,
     hint: "鼻子吸气 → 再补吸一小口 → 嘴巴缓慢呼尽",
-    why: "生理性叹息:两段式吸气重新撑开肺泡,加倍延长的呼气快速降低唤起水平——降焦虑最快的一招。",
+    why: "循环叹息强调较长呼气。一项随机研究发现,每天练习 5 分钟与情绪改善和呼吸频率下降相关;它是放松工具,不替代焦虑治疗。",
     scale: [1, 1.85], keys: [[0,1],[2.5,1.55],[2.9,1.52],[3.7,1.85],[10,1]],
     phases: [ { name: "吸气", at: 0 }, { name: "再吸一口", at: 2.5 }, { name: "缓慢呼气", at: 3.7 } ]
   },
   sleep: {
-    label: "助眠", icon: "🌙", cycle: 19,
-    hint: "吸气 4 → 屏息 7 → 呼气 8",
-    why: "4-7-8 呼吸:长屏息与更长的呼气强化副交感活动,适合睡前让身体降档。",
-    scale: [1, 1.8], keys: [[0,1],[4,1.8],[11,1.8],[19,1]],
-    phases: [ { name: "吸气", at: 0 }, { name: "屏息", at: 4 }, { name: "缓慢呼气", at: 11 } ]
+    label: "睡前", icon: "🌙", cycle: 10,
+    hint: "轻柔吸气 4 秒 → 缓慢呼气 6 秒",
+    why: "不屏息的长呼气更容易执行,适合作为睡前降速仪式。它帮助放松,但不是失眠治疗。",
+    scale: [1, 1.8], keys: [[0,1],[4,1.8],[10,1]],
+    phases: [ { name: "吸气", at: 0 }, { name: "缓慢呼气", at: 4 } ]
   }
 };
 
@@ -5025,10 +5703,48 @@ function updatePhase() {
 function zenTotalSeconds() {
   return zenElapsed + (zenRunning ? (Date.now() - zenRunStart) / 1000 : 0);
 }
-function updateZenTimer() {
-  const s = Math.floor(zenTotalSeconds());
+function formatZenTime(seconds) {
+  const s = Math.max(0, Math.floor(seconds));
   const p = n => String(n).padStart(2, "0");
-  zenTimer.textContent = `${p(Math.floor(s / 60))}:${p(s % 60)}`;
+  return `${p(Math.floor(s / 60))}:${p(s % 60)}`;
+}
+function finishZen() {
+  if (!zenRunning) return;
+  zenElapsed = zenDuration;
+  zenRunning = false;
+  zenCompleted = true;
+  clearInterval(phaseTick); clearInterval(zenTick);
+  if (!zenSessionLogged) { logZenSession(zenDuration); zenSessionLogged = true; }
+  zenPhase.textContent = "完成";
+  zenTimer.textContent = `${formatZenTime(zenDuration)} / ${formatZenTime(zenDuration)}`;
+  const btn = document.getElementById("zen-start");
+  btn.textContent = "完成 · 离开";
+  btn.classList.remove("running");
+  document.querySelector(".breath-ball").style.transform = `scale(${MODES[zenMode].scale[0]})`;
+  renderZenStats();
+}
+function updateZenTimer() {
+  const total = zenTotalSeconds();
+  if (total >= zenDuration) { finishZen(); return; }
+  zenTimer.textContent = `${formatZenTime(total)} / ${formatZenTime(zenDuration)}`;
+}
+function setZenDuration(seconds) {
+  if (zenRunning) return;
+  const value = Number(seconds);
+  if (![60, 180, 300].includes(value)) return;
+  zenDuration = value;
+  zenElapsed = 0;
+  zenCompleted = false;
+  zenSessionLogged = false;
+  zenPhase.textContent = "";
+  zenTimer.textContent = `00:00 / ${formatZenTime(zenDuration)}`;
+  const start = document.getElementById("zen-start");
+  start.textContent = "开始";
+  document.querySelectorAll("[data-zen-seconds]").forEach(button => {
+    const active = Number(button.dataset.zenSeconds) === value;
+    button.classList.toggle("active", active);
+    button.setAttribute("aria-pressed", String(active));
+  });
 }
 function setZenMode(mode) {
   if (!MODES[mode]) return;
@@ -5038,8 +5754,11 @@ function setZenMode(mode) {
   document.getElementById("zen-why").textContent = m.why;
   zenCycleStart = Date.now();   // 换呼吸法时重置节奏,但不清空已计时长
   // 用 JS 驱动光球缩放,不同呼吸法节奏各异,不再依赖固定 CSS 动画
-  document.querySelectorAll("#zen .zen-purpose").forEach(b =>
-    b.classList.toggle("active", b.dataset.mode === mode));
+  document.querySelectorAll("#zen .zen-purpose").forEach(b => {
+    const active = b.dataset.mode === mode;
+    b.classList.toggle("active", active);
+    b.setAttribute("aria-pressed", String(active));
+  });
   if (!zenRunning) {
     // 未开始/暂停时:光球停在静止大小,不自己动起来
     document.querySelector(".breath-ball").style.transform = `scale(${m.scale[0]})`;
@@ -5048,6 +5767,10 @@ function setZenMode(mode) {
 
 /* 光球按关键帧曲线插值 —— 叹息的"吸→微顿→再补吸"靠这个还原 */
 function animateBall() {
+  if (zenReduceMotion && zenReduceMotion.matches) {
+    document.querySelector(".breath-ball").style.transform = "scale(1)";
+    return;
+  }
   const m = MODES[zenMode];
   const t = ((Date.now() - zenCycleStart) / 1000) % m.cycle;
   const k = m.keys;
@@ -5066,24 +5789,34 @@ function animateBall() {
 function renderZenPurposes() {
   const box = document.getElementById("zen-purposes");
   const suggested = suggestMode();
-  box.innerHTML = Object.entries(MODES).map(([k, m]) => `
-    <button class="zen-purpose ${k === zenMode ? "active" : ""}" data-mode="${k}">
-      <span class="zp-icon">${m.icon}</span>
-      <span class="zp-label">${m.label}</span>
-      ${k === suggested ? `<span class="zp-tip">此刻推荐</span>` : ""}
-    </button>`).join("");
-  box.querySelectorAll(".zen-purpose").forEach(b =>
-    b.addEventListener("click", () => setZenMode(b.dataset.mode)));
+  box.replaceChildren();
+  Object.entries(MODES).forEach(([key, mode]) => {
+    const button = document.createElement("button");
+    button.type = "button";
+    button.className = "zen-purpose" + (key === zenMode ? " active" : "");
+    button.dataset.mode = key;
+    button.setAttribute("aria-pressed", String(key === zenMode));
+    const icon = document.createElement("span"); icon.className = "zp-icon"; icon.textContent = mode.icon;
+    const label = document.createElement("span"); label.className = "zp-label"; label.textContent = mode.label;
+    button.append(icon, label);
+    if (key === suggested) {
+      const tip = document.createElement("span"); tip.className = "zp-tip"; tip.textContent = "按时间推荐"; button.appendChild(tip);
+    }
+    button.addEventListener("click", () => setZenMode(key));
+    box.appendChild(button);
+  });
 }
 
 function startZen() {
   if (zenRunning) return;
+  if (zenCompleted) return;
   zenRunning = true;
   zenRunStart = Date.now();
   zenCycleStart = Date.now();
   const btn = document.getElementById("zen-start");
   btn.textContent = "暂停";
   btn.classList.add("running");
+  document.querySelectorAll("[data-zen-seconds]").forEach(button => button.disabled = true);
   updatePhase(); animateBall(); updateZenTimer();
   phaseTick = setInterval(() => { updatePhase(); animateBall(); }, 100);
   zenTick = setInterval(updateZenTimer, 1000);
@@ -5096,44 +5829,63 @@ function pauseZen() {
   const btn = document.getElementById("zen-start");
   btn.textContent = "继续";
   btn.classList.remove("running");
+  document.querySelectorAll("[data-zen-seconds]").forEach(button => button.disabled = false);
   zenPhase.textContent = "已暂停";
   document.querySelector(".breath-ball").style.transform = `scale(${MODES[zenMode].scale[0]})`;
 }
 
 function enterZen() {
+  zenReturnFocus = document.activeElement;
   zenMode = suggestMode();       // 按时段推荐,但不自动开始
   zenElapsed = 0; zenRunning = false; zenRunStart = null;
+  zenCompleted = false; zenSessionLogged = false;
   zenCycleStart = Date.now();
   zen.classList.add("on");
   zen.setAttribute("aria-hidden", "false");
   renderZenPurposes();
   setZenMode(zenMode);
   zenPhase.textContent = "";
-  zenTimer.textContent = "00:00";
+  setZenDuration(180);
   const btn = document.getElementById("zen-start");
   btn.textContent = "开始";
   btn.classList.remove("running");
+  document.querySelectorAll("[data-zen-seconds]").forEach(button => button.disabled = false);
   document.querySelector(".breath-ball").style.transform = `scale(${MODES[zenMode].scale[0]})`;
   renderZenStats();
+  setTimeout(() => btn.focus(), 0);
 }
 function exitZen() {
   if (zenRunning) zenElapsed += (Date.now() - zenRunStart) / 1000;
   zenRunning = false;
-  logZenSession(zenElapsed);
+  if (!zenSessionLogged) logZenSession(Math.min(zenElapsed, zenDuration));
   zen.classList.remove("on");
   zen.setAttribute("aria-hidden", "true");
   clearInterval(phaseTick); clearInterval(zenTick);
   renderZenStats();
+  if (zenReturnFocus && typeof zenReturnFocus.focus === "function") zenReturnFocus.focus();
 }
+document.querySelectorAll("[data-zen-seconds]").forEach(button => {
+  button.setAttribute("aria-pressed", String(Number(button.dataset.zenSeconds) === zenDuration));
+  button.addEventListener("click", () => setZenDuration(button.dataset.zenSeconds));
+});
 document.getElementById("cabin-btn").addEventListener("click", enterZen);
 document.getElementById("zen-exit").addEventListener("click", exitZen);
 document.getElementById("zen-start").addEventListener("click", () => {
+  if (zenCompleted) { exitZen(); return; }
   zenRunning ? pauseZen() : startZen();
 });
 document.addEventListener("keydown", e => {
-  if (e.key !== "Escape") return;
-  if (zen.classList.contains("on")) { exitZen(); return; }
-  closePanels();
+  if (e.key === "Escape") {
+    if (zen.classList.contains("on")) { exitZen(); return; }
+    closePanels(); return;
+  }
+  if (e.key === "Tab" && zen.classList.contains("on")) {
+    const focusable = Array.from(zen.querySelectorAll("button:not([disabled])"));
+    if (!focusable.length) return;
+    const first = focusable[0], last = focusable[focusable.length - 1];
+    if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
+    else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
+  }
 });
 
 /* ===== AI 设置 + 通用调用 ===== */
@@ -5143,12 +5895,15 @@ function getAIConfig() {
     apiKey: localStorage.getItem("arinrin_ai_key") || ""
   };
 }
-async function callAI(prompt, system) {
+async function callAI(prompt, system, opts) {
   const cfg = getAIConfig();
+  const body = { prompt, system: system || "", provider: cfg.provider, apiKey: cfg.apiKey };
+  if (opts && opts.images && opts.images.length) body.images = opts.images;
+  if (opts && opts.pdf) body.pdf = opts.pdf;
   const res = await fetch("/api/ai", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ prompt, system: system || "", provider: cfg.provider, apiKey: cfg.apiKey })
+    body: JSON.stringify(body)
   });
   const data = await res.json();
   if (data.error) throw new Error(data.error);
