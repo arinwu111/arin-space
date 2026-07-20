@@ -8,7 +8,30 @@
 const BASE = "https://aihot.virxact.com/api/public";
 const UA = "arinrin-space/1.0 (+https://arinrin.space)"; // 可识别、非浏览器 UA(官方要求)
 
-module.exports = async function handler(req, res) {
+// —— 简易限流:同一 IP 一段时间内限次数,没配 Upstash 也不影响正常使用 ——
+async function rateLimited(req, res, bucket, limit, windowSec) {
+  const url = process.env.UPSTASH_REDIS_REST_URL, token = process.env.UPSTASH_REDIS_REST_TOKEN;
+  if (!url || !token) return false;
+  try {
+    const ip = ((req.headers["x-forwarded-for"] || req.socket?.remoteAddress || "unknown") + "").split(",")[0].trim();
+    const key = "rl:" + bucket + ":" + ip;
+    const r1 = await fetch(url, { method: "POST", headers: { Authorization: "Bearer " + token, "Content-Type": "application/json" }, body: JSON.stringify(["INCR", key]) });
+    const count = (await r1.json()).result;
+    if (count === 1) {
+      fetch(url, { method: "POST", headers: { Authorization: "Bearer " + token, "Content-Type": "application/json" }, body: JSON.stringify(["EXPIRE", key, windowSec]) }).catch(() => {});
+    }
+    if (count > limit) {
+      res.setHeader("Retry-After", String(windowSec));
+      res.status(429).json({ error: "请求太频繁,请稍后再试。" });
+      return true;
+    }
+    return false;
+  } catch (e) { return false; }
+}
+
+async function handler(req, res) {
+  if (await rateLimited(req, res, "aihot", 60, 600)) return; // 10 分钟内 60 次(服务端本身也有缓存,门槛可以松一点)
+
   const type = (req.query.type || "daily").toString();
   const take = Math.min(parseInt(req.query.take, 10) || 25, 100);
 
@@ -57,4 +80,7 @@ module.exports = async function handler(req, res) {
   } catch (e) {
     res.status(502).json({ error: "fetch failed: " + (e && e.message) });
   }
-};
+}
+
+handler.config = { maxDuration: 30 };
+module.exports = handler;

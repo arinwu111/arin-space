@@ -42,12 +42,36 @@ const VISION_MODEL = {
 // 把上限提到 Hobby 允许的最大值 60 秒,避免正常请求被平台掐断。
 export const config = { maxDuration: 60 };
 
+// —— 简易限流(基于 Upstash Redis,和 health.js 共用同一个数据库,同一 IP 同一时间窗内限次数)——
+// 没配 Upstash 环境变量时自动放行,不影响正常使用;限流服务本身出错也放行,不能因为它挂了误伤正常用户
+async function redisCmd(cmd) {
+  const url = process.env.UPSTASH_REDIS_REST_URL, token = process.env.UPSTASH_REDIS_REST_TOKEN;
+  const r = await fetch(url, { method: "POST", headers: { Authorization: "Bearer " + token, "Content-Type": "application/json" }, body: JSON.stringify(cmd) });
+  return (await r.json()).result;
+}
+async function rateLimited(req, res, bucket, limit, windowSec) {
+  if (!process.env.UPSTASH_REDIS_REST_URL || !process.env.UPSTASH_REDIS_REST_TOKEN) return false;
+  try {
+    const ip = ((req.headers["x-forwarded-for"] || req.socket?.remoteAddress || "unknown") + "").split(",")[0].trim();
+    const key = "rl:" + bucket + ":" + ip;
+    const count = await redisCmd(["INCR", key]);
+    if (count === 1) redisCmd(["EXPIRE", key, windowSec]).catch(() => {});
+    if (count > limit) {
+      res.setHeader("Retry-After", String(windowSec));
+      res.status(429).json({ error: "请求太频繁,请 " + Math.ceil(windowSec / 60) + " 分钟后再试。" });
+      return true;
+    }
+    return false;
+  } catch (e) { return false; }
+}
+
 export default async function handler(req, res) {
   res.setHeader("Access-Control-Allow-Origin", "*");
   res.setHeader("Access-Control-Allow-Methods", "POST, OPTIONS");
   res.setHeader("Access-Control-Allow-Headers", "Content-Type");
   if (req.method === "OPTIONS") return res.status(200).end();
   if (req.method !== "POST") return res.status(405).json({ error: "只支持 POST" });
+  if (await rateLimited(req, res, "ai", 30, 600)) return; // 每 IP 10 分钟 30 次
 
   let body = req.body;
   if (typeof body === "string") { try { body = JSON.parse(body); } catch (e) { body = {}; } }

@@ -37,11 +37,28 @@ const cutoff = () => {
 // 同样把超时提到 Hobby 允许的最大值,避免快捷指令一次推送较多行数据时被平台掐断。
 export const config = { maxDuration: 60 };
 
+// —— 简易限流:同一 IP 一段时间内限次数,没配置也不影响正常使用 ——
+async function rateLimited(req, res, bucket, limit, windowSec) {
+  try {
+    const ip = ((req.headers["x-forwarded-for"] || req.socket?.remoteAddress || "unknown") + "").split(",")[0].trim();
+    const key = "rl:" + bucket + ":" + ip;
+    const count = await redis(["INCR", key]);
+    if (count === 1) redis(["EXPIRE", key, windowSec]).catch(() => {});
+    if (count > limit) {
+      res.setHeader("Retry-After", String(windowSec));
+      res.status(429).json({ error: "请求太频繁,请稍后再试。" });
+      return true;
+    }
+    return false;
+  } catch (e) { return false; } // Upstash 没配好时不能因为限流本身报错就把正常请求也拦下
+}
+
 export default async function handler(req, res) {
   res.setHeader("Access-Control-Allow-Origin", "*");
   res.setHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
   res.setHeader("Access-Control-Allow-Headers", "Content-Type");
   if (req.method === "OPTIONS") return res.status(200).end();
+  if (await rateLimited(req, res, "health", req.method === "GET" ? 120 : 40, 600)) return; // 10 分钟内 GET 120 次 / POST 40 次
 
   const token = process.env.HEALTH_TOKEN;
   const given = (req.query.token || "").toString();
