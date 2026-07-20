@@ -34,6 +34,9 @@ const cutoff = () => {
   return d.toISOString().slice(0, 10);
 };
 
+// 同样把超时提到 Hobby 允许的最大值,避免快捷指令一次推送较多行数据时被平台掐断。
+export const config = { maxDuration: 60 };
+
 export default async function handler(req, res) {
   res.setHeader("Access-Control-Allow-Origin", "*");
   res.setHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS");

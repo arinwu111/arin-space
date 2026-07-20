@@ -2385,6 +2385,12 @@ const BAZI_HORIZONS = {
   year:  { label: "近一年",   scope: "未来一年内(以流年为纲、流月为目,跨年时说明两个流年的差别)" }
 };
 let baziCtx = null;
+const BAZI_STATE_KEY = "arinrin_bazi_state"; // 只存生辰输入 + 上次选的板块/期限/已生成的解读,不上传服务器
+
+function saveBaziState(patch) {
+  const cur = readLocalJSON(BAZI_STATE_KEY, {});
+  try { localStorage.setItem(BAZI_STATE_KEY, JSON.stringify(Object.assign(cur, patch))); } catch (e) {}
+}
 
 function baziPicked() {
   const secs = Array.from(document.querySelectorAll("[data-bz-sec].active"))
@@ -2438,8 +2444,9 @@ async function runBaziReading() {
       "你是一位现代的八字命理顾问:懂传统排盘,但用今天的语言说话,坦诚说明这是概率性的参考。不用 markdown 标题符号,用「一、二、三」或板块名加冒号分段。");
     out.innerHTML = '<div class="align-verdict" style="margin-top:14px;">' + escapeHtml(reading) + "</div>" +
       '<div class="polaris-set" style="margin-top:8px;"><span class="refresh-btn" id="bz-read-again">换个板块/期限再看一次</span></div>';
+    saveBaziState({ reading: reading });
     const again = document.getElementById("bz-read-again");
-    if (again) again.addEventListener("click", () => { out.innerHTML = ""; });
+    if (again) again.addEventListener("click", () => { out.innerHTML = ""; saveBaziState({ reading: "" }); });
   } catch (e) {
     note.textContent = "生成失败(" + (e.message || e) + "),稍后再试,或用复制提示词的方式。";
   }
@@ -2452,6 +2459,7 @@ function calcBazi() {
   const hourSel = parseInt(document.getElementById("bz-hour").value, 10);
   const sex = document.getElementById("bz-sex").value;
   if (!dateVal) { resultEl.innerHTML = `<div class="watch-empty">请先选择出生日期。</div>`; return; }
+  saveBaziState({ dateVal: dateVal, hourSel: hourSel, sex: sex });
   if (typeof Solar === "undefined") { resultEl.innerHTML = `<div class="watch-empty">排盘库加载失败,部署到线上后正常。</div>`; return; }
   try {
     const [y, mo, d] = dateVal.split("-").map(Number);
@@ -2580,12 +2588,35 @@ function calcBazi() {
 
     // 板块多选
     resultEl.querySelectorAll("[data-bz-sec]").forEach(b =>
-      b.addEventListener("click", () => b.classList.toggle("active")));
+      b.addEventListener("click", () => {
+        b.classList.toggle("active");
+        saveBaziState({ secs: Array.from(resultEl.querySelectorAll("[data-bz-sec].active")).map(x => x.dataset.bzSec) });
+      }));
     // 期限单选
     resultEl.querySelectorAll("[data-bz-hor]").forEach(b =>
       b.addEventListener("click", () => {
         resultEl.querySelectorAll("[data-bz-hor]").forEach(x => x.classList.toggle("active", x === b));
+        saveBaziState({ hor: b.dataset.bzHor });
       }));
+
+    // 恢复上次选的板块/期限(有存档时覆盖默认选中状态)
+    const savedSel = readLocalJSON(BAZI_STATE_KEY, {});
+    if (Array.isArray(savedSel.secs)) {
+      resultEl.querySelectorAll("[data-bz-sec]").forEach(b =>
+        b.classList.toggle("active", savedSel.secs.indexOf(b.dataset.bzSec) >= 0));
+    }
+    if (savedSel.hor) {
+      resultEl.querySelectorAll("[data-bz-hor]").forEach(b =>
+        b.classList.toggle("active", b.dataset.bzHor === savedSel.hor));
+    }
+    // 恢复上次已经生成过的解读(不用重新调用 AI)
+    if (savedSel.reading) {
+      document.getElementById("bz-read-out").innerHTML =
+        '<div class="align-verdict" style="margin-top:14px;">' + escapeHtml(savedSel.reading) + "</div>" +
+        '<div class="polaris-set" style="margin-top:8px;"><span class="refresh-btn" id="bz-read-again">换个板块/期限再看一次</span></div>';
+      const again = document.getElementById("bz-read-again");
+      if (again) again.addEventListener("click", () => { document.getElementById("bz-read-out").innerHTML = ""; saveBaziState({ reading: "" }); });
+    }
 
     document.getElementById("bz-read-btn").addEventListener("click", runBaziReading);
     document.getElementById("bz-prompt-toggle").addEventListener("click", () => {
@@ -2621,6 +2652,16 @@ function loadMystic() {
       });
     });
     document.getElementById("bz-calc-btn").addEventListener("click", calcBazi);
+
+    // 恢复上次填过的生辰,自动重新排盘(本地算,几乎不耗时;板块/期限/已生成的解读在 calcBazi 里恢复)
+    const savedBazi = readLocalJSON(BAZI_STATE_KEY, {});
+    if (savedBazi.dateVal) {
+      document.getElementById("bz-date").value = savedBazi.dateVal;
+      if (savedBazi.hourSel != null) document.getElementById("bz-hour").value = savedBazi.hourSel;
+      if (savedBazi.sex) document.getElementById("bz-sex").value = savedBazi.sex;
+      calcBazi();
+    }
+
     mysticInited = true;
   }
 }

@@ -38,6 +38,10 @@ const VISION_MODEL = {
   zhipu:  "glm-4v-flash",
 };
 
+// Hobby 版函数默认超时只有 10 秒,AI 回话(尤其带图/PDF 时)经常超过这个数;
+// 把上限提到 Hobby 允许的最大值 60 秒,避免正常请求被平台掐断。
+export const config = { maxDuration: 60 };
+
 export default async function handler(req, res) {
   res.setHeader("Access-Control-Allow-Origin", "*");
   res.setHeader("Access-Control-Allow-Methods", "POST, OPTIONS");
