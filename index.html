@@ -3327,7 +3327,10 @@ function podcastMarkdownInline(text) {
 }
 
 function renderPodcastMarkdown(raw) {
-  const text = String(raw || "").replace(/^---\s*\n[\s\S]*?\n---\s*\n?/, "");
+  let text = String(raw || "").trim();
+  const outerFence = text.match(/^```(?:markdown|md)?\s*\n([\s\S]*?)\n```\s*$/i);
+  if (outerFence) text = outerFence[1];
+  text = text.replace(/^---\s*\n[\s\S]*?\n---\s*\n?/, "");
   const lines = text.split(/\r?\n/);
   const html = [];
   let paragraph = [];
