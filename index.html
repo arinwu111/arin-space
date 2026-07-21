@@ -3472,7 +3472,7 @@ async function fetchPaperWebpage() {
 }
 
 function paperAnalysisPrompt(title, articleText, hasPdf) {
-  return `请仔细阅读并分析${hasPdf ? "随请求附上的 PDF 论文" : "下方文章"}。你是一位第一性原理思考者，擅长从基本原理、明确假设与常识出发推演研究思路。省略所有客套话，严格用 Markdown 输出；不要使用任何形式的 LaTeX，公式必须改写成纯文本。\n\n论文标题：${title || "未提供"}\n\n请按以下结构回答，并完整覆盖所有子问题：\n\n# 1. Task\n这篇文章解决的是什么问题？尽可能形式化地写出输入、输出、目标、约束与评价标准。\n\n# 2. Challenge\n传统方法解决这个问题时遇到了哪些挑战？说明困难产生的根本原因，而不只是罗列现象。\n\n# 3. Insight & Novelty\n## 3.1 Inspiration\n作者的 Insight 分别受到什么观察、矛盾、已有方法或基本原理启发？\n## 3.2 Insight\n作者的 Insight 究竟是什么、属于哪个层面的 Insight？逐一说明每个 Insight 与上述 Inspiration 的对应关系。\n## 3.3 Novelty\nNovelty 体现在哪里？区分架构、方法、策略、训练、数据或评价层面的创新，并说明它如何支持作者的 Insight。\n## 3.4 创新链条\n对每一个 Novelty，严格使用以下格式：\n【创新点解决的问题是什么】->【受哪个 Insight 启发】->【设计了什么创新点，尽可能具体描述】\n\n# 4. Potential flaw\n## 4.1 情境局限\n当前问题设定有什么局限？能否通过延伸架构处理维度更多、条件更多或约束更多的新情境？\n## 4.2 数据困难\n在当前设定下，数据具有什么不良性质时会特别难解决？解释原因。\n## 4.3 值得深挖的问题\n上述困难中，哪一种最值得继续挖掘并发展成新的 paper？说明研究价值与可验证方向。\n\n# 5. Motivation\n用第一性原理还原作者想到 general idea 的路径。优先写成连续问句，例如：“之前的方法……，那是否可以……？”从问题本质出发，给出最合理、最容易抵达本文 idea 的推演过程。\n\n要求：区分论文明确写出的内容与基于论文作出的推断；证据不足时直接说明，不要虚构。${hasPdf ? "" : `\n\n文章正文：\n${articleText.slice(0, 14500)}`}`;
+  return `请仔细阅读并分析${hasPdf ? "随请求附上的 PDF 论文" : "下方文章"}。你是一位第一性原理思考者，擅长从基本原理、明确假设与常识出发推演研究思路。无论论文原文使用哪种语言，主体解读必须使用简体中文；专业术语、方法名、模型名、数据集名与变量可以保留英文，并在必要时给出简短中文解释。省略所有客套话，严格用 Markdown 输出；不要使用任何形式的 LaTeX，公式必须改写成纯文本。\n\n论文标题：${title || "未提供"}\n\n请按以下结构回答，并完整覆盖所有子问题：\n\n# 1. Task\n这篇文章解决的是什么问题？尽可能形式化地写出输入、输出、目标、约束与评价标准。\n\n# 2. Challenge\n传统方法解决这个问题时遇到了哪些挑战？说明困难产生的根本原因，而不只是罗列现象。\n\n# 3. Insight & Novelty\n## 3.1 Inspiration\n作者的 Insight 分别受到什么观察、矛盾、已有方法或基本原理启发？\n## 3.2 Insight\n作者的 Insight 究竟是什么、属于哪个层面的 Insight？逐一说明每个 Insight 与上述 Inspiration 的对应关系。\n## 3.3 Novelty\nNovelty 体现在哪里？区分架构、方法、策略、训练、数据或评价层面的创新，并说明它如何支持作者的 Insight。\n## 3.4 创新链条\n对每一个 Novelty，严格使用以下格式：\n【创新点解决的问题是什么】->【受哪个 Insight 启发】->【设计了什么创新点，尽可能具体描述】\n\n# 4. Potential flaw\n## 4.1 情境局限\n当前问题设定有什么局限？能否通过延伸架构处理维度更多、条件更多或约束更多的新情境？\n## 4.2 数据困难\n在当前设定下，数据具有什么不良性质时会特别难解决？解释原因。\n## 4.3 值得深挖的问题\n上述困难中，哪一种最值得继续挖掘并发展成新的 paper？说明研究价值与可验证方向。\n\n# 5. Motivation\n用第一性原理还原作者想到 general idea 的路径。优先写成连续问句，例如：“之前的方法……，那是否可以……？”从问题本质出发，给出最合理、最容易抵达本文 idea 的推演过程。\n\n要求：区分论文明确写出的内容与基于论文作出的推断；证据不足时直接说明，不要虚构。${hasPdf ? "" : `\n\n文章正文：\n${articleText.slice(0, 14500)}`}`;
 }
 
 async function analyzePaper() {
@@ -3490,7 +3490,7 @@ async function analyzePaper() {
   try {
     paperResultMarkdown = await callAI(
       paperAnalysisPrompt(title, content, !!paperPdf),
-      "你是严谨的第一性原理论文分析者。忠于原文、显式区分事实与推断、不说客套话。",
+      "你是严谨的第一性原理论文分析者。所有解读必须使用简体中文，专业术语可保留英文。忠于原文、显式区分事实与推断、不说客套话。",
       { pdf: paperPdf, maxTokens: 4500 }
     );
     out.innerHTML = `<div class="paper-result">
