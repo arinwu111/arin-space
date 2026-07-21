@@ -100,6 +100,36 @@
   .sp-actions { display: flex; gap: 8px; flex-wrap: wrap; margin: 12px 0 4px; }
   .sp-btn { flex: 1; min-width: 96px; font-size: 13px; padding: 9px 10px; }
   .sp-btn.recording { background: rgba(255,107,138,0.28); }
+  /* 播客文稿 · 长文本存 IndexedDB */
+  .podcast-card { background: rgba(255,255,255,0.05); border: 1px solid var(--glass-border); border-radius: 12px; padding: 15px 16px; margin-bottom: 12px; }
+  .podcast-card-head { display: flex; align-items: flex-start; gap: 10px; }
+  .podcast-card-title { flex: 1; font-size: 15px; font-weight: 600; line-height: 1.55; }
+  .podcast-meta { color: var(--text-sub); font-size: 11px; line-height: 1.6; margin-top: 4px; }
+  .podcast-preview { color: var(--text-sub); font-size: 12.5px; line-height: 1.75; margin-top: 10px; }
+  .podcast-actions { display: flex; gap: 7px; flex-wrap: wrap; margin-top: 12px; }
+  .podcast-actions button { width: auto; padding: 7px 11px; font-size: 11px; }
+  .podcast-reader { overflow-wrap: anywhere; font-size: 14px; line-height: 1.95; color: var(--text-main); margin-top: 14px; padding-top: 14px; border-top: 1px solid rgba(255,255,255,.1); }
+  .podcast-reader h1, .podcast-reader h2, .podcast-reader h3, .podcast-reader h4 { line-height: 1.55; margin: 1.35em 0 .55em; color: var(--text-main); }
+  .podcast-reader h1 { font-size: 22px; } .podcast-reader h2 { font-size: 19px; } .podcast-reader h3 { font-size: 16px; }
+  .podcast-reader p { margin: 0 0 1em; }
+  .podcast-reader blockquote { margin: 1em 0; padding: 8px 14px; border-left: 3px solid rgba(255,255,255,.28); color: var(--text-sub); background: rgba(255,255,255,.035); }
+  .podcast-reader .md-list { padding-left: 1.2em; margin: .35em 0; color: var(--text-main); }
+  .podcast-reader .md-list::before { content: "•"; display: inline-block; width: 1.2em; margin-left: -1.2em; color: var(--text-sub); }
+  .podcast-reader code { padding: 2px 5px; border-radius: 5px; background: rgba(0,0,0,.25); font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: .9em; }
+  .podcast-reader pre { white-space: pre-wrap; padding: 12px; border-radius: 10px; background: rgba(0,0,0,.28); overflow-x: auto; margin: 1em 0; }
+  .podcast-reader pre code { padding: 0; background: none; }
+  .podcast-reader a { color: #b9d7ff; text-decoration: underline; text-underline-offset: 3px; }
+  .podcast-reader hr { border: 0; border-top: 1px solid rgba(255,255,255,.14); margin: 1.5em 0; }
+  /* 论文解读 */
+  .paper-source-grid { display: grid; grid-template-columns: 1fr auto; gap: 8px; margin-top: 10px; }
+  .paper-input, .paper-textarea {
+    width: 100%; background: rgba(255,255,255,.07); border: 1px solid rgba(255,255,255,.14);
+    border-radius: 10px; padding: 10px 12px; color: var(--text-main); font: inherit; font-size: 13px; outline: none;
+  }
+  .paper-textarea { min-height: 230px; line-height: 1.8; resize: vertical; margin-top: 10px; }
+  .paper-file-row { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-top: 10px; }
+  .paper-result { margin-top: 18px; padding: 18px; border-radius: 14px; border: 1px solid var(--glass-border); background: rgba(255,255,255,.055); }
+  @media (max-width: 620px) { .paper-source-grid { grid-template-columns: 1fr; } }
   .bg-fav-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(110px, 1fr)); gap: 10px; }
   .bg-fav-item { position: relative; border-radius: 10px; overflow: hidden; aspect-ratio: 4 / 3; background: rgba(255,255,255,0.05); }
   .bg-fav-item img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform .3s; }
@@ -831,6 +861,18 @@
     color: var(--text-main); font-size: 13px; line-height: 1.7; font-family: inherit;
     resize: vertical; outline: none;
   }
+  .freewrite-box { margin: 4px 0 18px; padding: 14px; border: 1px dashed rgba(255,255,255,.22); border-radius: 12px; background: rgba(255,255,255,.035); }
+  .freewrite-intro { font-size: 12px; color: var(--text-sub); line-height: 1.75; margin: 5px 0 10px; }
+  .freewrite-box > textarea {
+    width: 100%; min-height: 110px; background: rgba(0,0,0,.22); border: 1px solid var(--glass-border);
+    border-radius: 10px; padding: 10px 12px; color: var(--text-main); font: inherit; font-size: 13px;
+    line-height: 1.75; resize: vertical; outline: none;
+  }
+  .freewrite-actions { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 9px; }
+  .freewrite-actions button { flex: 1; min-width: 125px; }
+  .freewrite-diary { margin-top: 14px; }
+  .freewrite-diary textarea { min-height: 120px; }
+  .voice-listening { background: rgba(255,107,138,.25) !important; }
   .mood-row { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 16px; }
   .mood-btn {
     font-size: 20px; padding: 8px 12px; border-radius: 12px; cursor: pointer;
@@ -1713,6 +1755,8 @@
       <button class="health-tab" type="button" role="tab" aria-selected="false" data-study-tab="material">素材</button>
       <button class="health-tab" type="button" role="tab" aria-selected="false" data-study-tab="photo">摄影</button>
       <button class="health-tab" type="button" role="tab" aria-selected="false" data-study-tab="speak">口语</button>
+      <button class="health-tab" type="button" role="tab" aria-selected="false" data-study-tab="podcast">播客</button>
+      <button class="health-tab" type="button" role="tab" aria-selected="false" data-study-tab="paper">论文</button>
     </div>
 
     <!-- 收藏 -->
@@ -1840,6 +1884,52 @@
       </div>
 
       <div id="speak-list"></div>
+    </section>
+
+    <!-- 播客文稿 -->
+    <section class="health-view" id="study-view-podcast" data-study-view="podcast" hidden>
+      <div class="card" style="margin-bottom:18px;">
+        <div class="section-sub" style="margin-top:0;display:flex;align-items:center;justify-content:space-between;">
+          <span>🎙️ 播客文稿</span>
+          <span class="refresh-btn" id="podcast-bind-folder">绑定文稿文件夹</span>
+        </div>
+        <p class="price-note" style="margin:0;">选择一次存放文稿的文件夹，之后这里会直接读取其中的 Markdown；不用逐篇上传。</p>
+        <div id="podcast-folder-state" class="price-note" style="margin-top:10px;"></div>
+        <div class="podcast-actions" id="podcast-folder-actions" style="display:none;">
+          <button class="zen-mode-btn" id="podcast-refresh" type="button">↻ 重新读取</button>
+          <button class="zen-mode-btn" id="podcast-authorize" type="button" style="display:none;">允许读取</button>
+          <button class="zen-mode-btn" id="podcast-unbind" type="button" style="background:rgba(255,255,255,.12);">解除绑定</button>
+        </div>
+      </div>
+      <div class="watch-search" style="margin-bottom:14px;">
+        <input id="podcast-search" type="search" placeholder="搜索标题、节目、标签或正文">
+      </div>
+      <div id="podcast-list"></div>
+      <div class="price-note" style="margin-top:12px;">网站只读取文件内容，不会上传文稿，也不会改动原文件。当前功能推荐使用 Chrome 或 Edge。</div>
+    </section>
+
+    <!-- 论文解读 -->
+    <section class="health-view" id="study-view-paper" data-study-view="paper" hidden>
+      <div class="card" style="margin-bottom:18px;">
+        <div class="section-sub" style="margin-top:0;">🧭 第一性原理论文解读</div>
+        <p class="price-note" style="margin:0;">从问题本身出发，拆解任务、挑战、洞见、创新、潜在缺陷与研究动机。</p>
+
+        <input class="paper-input" id="paper-title" type="text" placeholder="论文标题（选填，导入文件后会自动填写）" style="margin-top:14px;">
+        <div class="paper-source-grid">
+          <input class="paper-input" id="paper-url" type="url" placeholder="粘贴论文或文章网址">
+          <button class="zen-mode-btn" id="paper-fetch" type="button">读取网页</button>
+        </div>
+        <textarea class="paper-textarea" id="paper-content" placeholder="也可以直接粘贴论文正文、摘要或网页内容…"></textarea>
+        <div class="paper-file-row">
+          <label class="zen-mode-btn" style="cursor:pointer;text-align:center;">选择 PDF / Markdown / TXT
+            <input id="paper-file" type="file" accept=".pdf,.md,.txt,application/pdf,text/plain,text/markdown" style="display:none;">
+          </label>
+          <span class="price-note" id="paper-file-name" style="margin:0;"></span>
+        </div>
+        <button class="zen-mode-btn" id="paper-analyze" type="button" style="width:100%;margin-top:12px;">开始解读</button>
+        <div class="price-note" id="paper-note" style="margin-top:8px;"></div>
+      </div>
+      <div id="paper-output"></div>
     </section>
   </div>
 </div>
@@ -3086,6 +3176,343 @@ function renderLogbook() {
   });
 }
 
+/* =========================================================
+   播客文稿 · 书房
+   长文本使用 IndexedDB，只保存在当前浏览器
+   ========================================================= */
+const PODCAST_DB = "arinrin_library";
+let podcastInited = false;
+let podcastOpenId = null;
+let podcastFilesCache = [];
+
+function podcastDB() {
+  return new Promise((resolve, reject) => {
+    const request = indexedDB.open(PODCAST_DB, 2);
+    request.onupgradeneeded = () => {
+      const db = request.result;
+      if (!db.objectStoreNames.contains("settings")) db.createObjectStore("settings", { keyPath: "key" });
+    };
+    request.onsuccess = () => resolve(request.result);
+    request.onerror = () => reject(request.error);
+  });
+}
+
+async function podcastSettingGet(key) {
+  const db = await podcastDB();
+  return new Promise((resolve, reject) => {
+    const req = db.transaction("settings", "readonly").objectStore("settings").get(key);
+    req.onsuccess = () => { db.close(); resolve(req.result ? req.result.value : null); };
+    req.onerror = () => { db.close(); reject(req.error); };
+  });
+}
+
+async function podcastSettingPut(key, value) {
+  const db = await podcastDB();
+  return new Promise((resolve, reject) => {
+    const tx = db.transaction("settings", "readwrite");
+    tx.objectStore("settings").put({ key, value });
+    tx.oncomplete = () => { db.close(); resolve(); };
+    tx.onerror = () => { db.close(); reject(tx.error); };
+  });
+}
+
+async function podcastSettingDelete(key) {
+  const db = await podcastDB();
+  return new Promise((resolve, reject) => {
+    const tx = db.transaction("settings", "readwrite");
+    tx.objectStore("settings").delete(key);
+    tx.oncomplete = () => { db.close(); resolve(); };
+    tx.onerror = () => { db.close(); reject(tx.error); };
+  });
+}
+
+function initPodcasts() {
+  if (!window.indexedDB || !window.showDirectoryPicker) {
+    document.getElementById("podcast-list").innerHTML = '<div class="price-note">当前浏览器不能绑定本机文件夹。请使用最新版 Chrome 或 Edge 打开网站。</div>';
+    return;
+  }
+  if (!podcastInited) {
+    podcastInited = true;
+    document.getElementById("podcast-bind-folder").addEventListener("click", async () => {
+      try {
+        const handle = await window.showDirectoryPicker({ mode: "read", id: "arinrin-podcasts" });
+        await podcastSettingPut("directory", handle);
+        await loadPodcastFolder(handle, true);
+      } catch (e) {
+        if (e && e.name !== "AbortError") document.getElementById("podcast-folder-state").textContent = "暂时无法读取这个文件夹，请重新选择。";
+      }
+    });
+    document.getElementById("podcast-refresh").addEventListener("click", async () => {
+      const handle = await podcastSettingGet("directory");
+      if (handle) loadPodcastFolder(handle, false);
+    });
+    document.getElementById("podcast-authorize").addEventListener("click", async () => {
+      const handle = await podcastSettingGet("directory");
+      if (handle) loadPodcastFolder(handle, true);
+    });
+    document.getElementById("podcast-unbind").addEventListener("click", async () => {
+      if (!confirm("解除这个文稿文件夹的绑定? 原文件不会被删除。")) return;
+      await podcastSettingDelete("directory");
+      podcastFilesCache = []; podcastOpenId = null;
+      document.getElementById("podcast-folder-actions").style.display = "none";
+      document.getElementById("podcast-folder-state").textContent = "还没有绑定文稿文件夹。";
+      renderPodcastFolderList();
+    });
+    document.getElementById("podcast-search").addEventListener("input", renderPodcastFolderList);
+  }
+  restorePodcastFolder();
+}
+
+async function restorePodcastFolder() {
+  const state = document.getElementById("podcast-folder-state");
+  try {
+    const handle = await podcastSettingGet("directory");
+    if (!handle) { state.textContent = "还没有绑定文稿文件夹。"; renderPodcastFolderList(); return; }
+    await loadPodcastFolder(handle, false);
+  } catch (e) {
+    state.textContent = "没有找到之前绑定的文件夹，请重新选择。";
+  }
+}
+
+async function loadPodcastFolder(handle, mayRequestPermission) {
+  const state = document.getElementById("podcast-folder-state");
+  const authorize = document.getElementById("podcast-authorize");
+  const actions = document.getElementById("podcast-folder-actions");
+  actions.style.display = "flex";
+  let permission = await handle.queryPermission({ mode: "read" });
+  if (permission !== "granted" && mayRequestPermission) permission = await handle.requestPermission({ mode: "read" });
+  if (permission !== "granted") {
+    state.textContent = `已记住「${handle.name}」，需要你的允许才能读取。`;
+    authorize.style.display = "";
+    podcastFilesCache = []; renderPodcastFolderList(); return;
+  }
+  authorize.style.display = "none";
+  state.textContent = `正在读取「${handle.name}」…`;
+  try {
+    podcastFilesCache = await readMarkdownDirectory(handle, "");
+    podcastFilesCache.sort((a, b) => b.modified - a.modified || a.path.localeCompare(b.path, "zh-CN"));
+    state.textContent = `已绑定「${handle.name}」 · 找到 ${podcastFilesCache.length} 篇 Markdown 文稿`;
+    renderPodcastFolderList();
+  } catch (e) {
+    state.textContent = "读取中断了，请重新授权或选择文件夹。";
+  }
+}
+
+async function readMarkdownDirectory(directory, prefix) {
+  const files = [];
+  for await (const [name, handle] of directory.entries()) {
+    if (handle.kind === "directory") {
+      files.push(...await readMarkdownDirectory(handle, prefix + name + "/"));
+    } else if (/\.md$/i.test(name)) {
+      const file = await handle.getFile();
+      files.push({ name, path: prefix + name, content: await file.text(), modified: file.lastModified || 0 });
+    }
+  }
+  return files;
+}
+
+function markdownDisplayTitle(file) {
+  const heading = String(file.content || "").match(/^#\s+(.+)$/m);
+  return heading ? heading[1].trim() : file.name.replace(/\.md$/i, "");
+}
+
+function podcastMarkdownInline(text) {
+  let safe = escapeHtml(text);
+  safe = safe.replace(/`([^`]+)`/g, "<code>$1</code>");
+  safe = safe.replace(/\*\*([^*]+)\*\*/g, "<strong>$1</strong>");
+  safe = safe.replace(/__([^_]+)__/g, "<strong>$1</strong>");
+  safe = safe.replace(/(^|[^*])\*([^*]+)\*/g, "$1<em>$2</em>");
+  safe = safe.replace(/\[([^\]]+)\]\((https?:\/\/[^\s)]+)\)/g, '<a href="$2" target="_blank" rel="noopener">$1</a>');
+  return safe;
+}
+
+function renderPodcastMarkdown(raw) {
+  const text = String(raw || "").replace(/^---\s*\n[\s\S]*?\n---\s*\n?/, "");
+  const lines = text.split(/\r?\n/);
+  const html = [];
+  let paragraph = [];
+  let code = [];
+  let inCode = false;
+  const flushParagraph = () => {
+    if (!paragraph.length) return;
+    html.push("<p>" + paragraph.map(podcastMarkdownInline).join("<br>") + "</p>");
+    paragraph = [];
+  };
+  lines.forEach(line => {
+    if (/^```/.test(line.trim())) {
+      if (inCode) { html.push("<pre><code>" + escapeHtml(code.join("\n")) + "</code></pre>"); code = []; inCode = false; }
+      else { flushParagraph(); inCode = true; }
+      return;
+    }
+    if (inCode) { code.push(line); return; }
+    if (!line.trim()) { flushParagraph(); return; }
+    const heading = line.match(/^(#{1,6})\s+(.+)$/);
+    if (heading) {
+      flushParagraph();
+      const level = Math.min(4, heading[1].length);
+      html.push(`<h${level}>${podcastMarkdownInline(heading[2])}</h${level}>`);
+      return;
+    }
+    if (/^\s*(---+|___+|\*\*\*+)\s*$/.test(line)) { flushParagraph(); html.push("<hr>"); return; }
+    const quote = line.match(/^>\s?(.*)$/);
+    if (quote) { flushParagraph(); html.push("<blockquote>" + podcastMarkdownInline(quote[1]) + "</blockquote>"); return; }
+    const list = line.match(/^\s*(?:[-+*]|\d+[.)])\s+(.+)$/);
+    if (list) { flushParagraph(); html.push('<div class="md-list">' + podcastMarkdownInline(list[1]) + "</div>"); return; }
+    paragraph.push(line);
+  });
+  if (inCode) html.push("<pre><code>" + escapeHtml(code.join("\n")) + "</code></pre>");
+  flushParagraph();
+  return html.join("");
+}
+
+function podcastPlainText(raw) {
+  return String(raw || "")
+    .replace(/^---\s*\n[\s\S]*?\n---\s*\n?/, "")
+    .replace(/```[\s\S]*?```/g, " ")
+    .replace(/^#{1,6}\s+/gm, "")
+    .replace(/^\s*(?:[-+*>]|\d+[.)])\s+/gm, "")
+    .replace(/!\[[^\]]*\]\([^)]*\)/g, "")
+    .replace(/\[([^\]]+)\]\([^)]*\)/g, "$1")
+    .replace(/[*_`~]/g, "")
+    .replace(/\s+/g, " ").trim();
+}
+
+function renderPodcastFolderList() {
+  const el = document.getElementById("podcast-list");
+  if (!el) return;
+  const query = document.getElementById("podcast-search").value.trim().toLowerCase();
+  const list = podcastFilesCache.filter(x => !query || (x.path + "\n" + x.content).toLowerCase().includes(query));
+  if (!list.length) {
+    el.innerHTML = `<div class="price-note">${podcastFilesCache.length ? "没有找到相关文稿。" : "绑定文件夹后，其中的 .md 文稿会出现在这里。"}</div>`;
+    return;
+  }
+  el.innerHTML = list.map((x, index) => {
+    const open = podcastOpenId === x.path;
+    const excerpt = podcastPlainText(x.content).slice(0, 160);
+    return `<article class="podcast-card">
+      <div class="podcast-card-title">${escapeHtml(markdownDisplayTitle(x))}
+        <div class="podcast-meta">${escapeHtml(x.path)}${x.modified ? " · " + new Date(x.modified).toLocaleDateString("zh-CN") : ""}</div>
+      </div>
+      ${open ? `<div class="podcast-reader">${renderPodcastMarkdown(x.content)}</div>` : `<div class="podcast-preview">${escapeHtml(excerpt)}${podcastPlainText(x.content).length > 160 ? "…" : ""}</div>`}
+      <div class="podcast-actions"><button class="zen-mode-btn" data-folder-podcast="${index}">${open ? "收起" : "阅读全文"}</button></div>
+    </article>`;
+  }).join("");
+  el.querySelectorAll("[data-folder-podcast]").forEach(button => button.addEventListener("click", () => {
+    const file = list[Number(button.dataset.folderPodcast)];
+    if (!file) return;
+    podcastOpenId = podcastOpenId === file.path ? null : file.path;
+    renderPodcastFolderList();
+  }));
+}
+
+/* =========================================================
+   论文解读 · 第一性原理框架
+   ========================================================= */
+let paperInited = false;
+let paperPdf = null;
+let paperResultMarkdown = "";
+
+function initPaper() {
+  if (paperInited) return;
+  paperInited = true;
+  document.getElementById("paper-file").addEventListener("change", loadPaperFile);
+  document.getElementById("paper-fetch").addEventListener("click", fetchPaperWebpage);
+  document.getElementById("paper-analyze").addEventListener("click", analyzePaper);
+}
+
+async function loadPaperFile(event) {
+  const file = event.target.files && event.target.files[0];
+  if (!file) return;
+  const note = document.getElementById("paper-note");
+  document.getElementById("paper-file-name").textContent = file.name;
+  if (!document.getElementById("paper-title").value) {
+    document.getElementById("paper-title").value = file.name.replace(/\.(pdf|md|txt)$/i, "");
+  }
+  paperPdf = null;
+  if (file.type === "application/pdf" || /\.pdf$/i.test(file.name)) {
+    if (file.size > 4.2 * 1024 * 1024) {
+      note.textContent = "PDF 太大，请压缩到约 4 MB 以内，或粘贴正文。";
+      event.target.value = ""; return;
+    }
+    const dataUrl = await new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => resolve(String(reader.result || ""));
+      reader.onerror = () => reject(reader.error);
+      reader.readAsDataURL(file);
+    });
+    paperPdf = { data: dataUrl.split(",")[1] || "" };
+    document.getElementById("paper-content").value = "";
+    note.textContent = "PDF 已就绪。当前 PDF 阅读需要在右下角 AI 设置中选择 Claude。";
+  } else {
+    document.getElementById("paper-content").value = await file.text();
+    note.textContent = "文字已读入，可以开始解读。";
+  }
+  event.target.value = "";
+}
+
+async function fetchPaperWebpage() {
+  const url = document.getElementById("paper-url").value.trim();
+  const note = document.getElementById("paper-note");
+  const btn = document.getElementById("paper-fetch");
+  if (!url) { note.textContent = "先粘贴文章网址。"; return; }
+  btn.disabled = true; btn.textContent = "正在读取…";
+  note.textContent = "";
+  try {
+    const res = await fetch("/api/article?url=" + encodeURIComponent(url));
+    const data = await res.json();
+    if (!res.ok || data.error) throw new Error(data.error || "读取失败");
+    paperPdf = null;
+    document.getElementById("paper-content").value = data.text || "";
+    if (!document.getElementById("paper-title").value && data.title) document.getElementById("paper-title").value = data.title;
+    note.textContent = `已读取网页正文${data.truncated ? "（内容较长，已截取主要部分）" : ""}。`;
+  } catch (e) {
+    note.textContent = "网页读取失败。遇到登录、付费墙或动态网页时，可以直接粘贴正文或上传 PDF。";
+  }
+  btn.disabled = false; btn.textContent = "读取网页";
+}
+
+function paperAnalysisPrompt(title, articleText, hasPdf) {
+  return `请仔细阅读并分析${hasPdf ? "随请求附上的 PDF 论文" : "下方文章"}。你是一位第一性原理思考者，擅长从基本原理、明确假设与常识出发推演研究思路。省略所有客套话，严格用 Markdown 输出；不要使用任何形式的 LaTeX，公式必须改写成纯文本。\n\n论文标题：${title || "未提供"}\n\n请按以下结构回答，并完整覆盖所有子问题：\n\n# 1. Task\n这篇文章解决的是什么问题？尽可能形式化地写出输入、输出、目标、约束与评价标准。\n\n# 2. Challenge\n传统方法解决这个问题时遇到了哪些挑战？说明困难产生的根本原因，而不只是罗列现象。\n\n# 3. Insight & Novelty\n## 3.1 Inspiration\n作者的 Insight 分别受到什么观察、矛盾、已有方法或基本原理启发？\n## 3.2 Insight\n作者的 Insight 究竟是什么、属于哪个层面的 Insight？逐一说明每个 Insight 与上述 Inspiration 的对应关系。\n## 3.3 Novelty\nNovelty 体现在哪里？区分架构、方法、策略、训练、数据或评价层面的创新，并说明它如何支持作者的 Insight。\n## 3.4 创新链条\n对每一个 Novelty，严格使用以下格式：\n【创新点解决的问题是什么】->【受哪个 Insight 启发】->【设计了什么创新点，尽可能具体描述】\n\n# 4. Potential flaw\n## 4.1 情境局限\n当前问题设定有什么局限？能否通过延伸架构处理维度更多、条件更多或约束更多的新情境？\n## 4.2 数据困难\n在当前设定下，数据具有什么不良性质时会特别难解决？解释原因。\n## 4.3 值得深挖的问题\n上述困难中，哪一种最值得继续挖掘并发展成新的 paper？说明研究价值与可验证方向。\n\n# 5. Motivation\n用第一性原理还原作者想到 general idea 的路径。优先写成连续问句，例如：“之前的方法……，那是否可以……？”从问题本质出发，给出最合理、最容易抵达本文 idea 的推演过程。\n\n要求：区分论文明确写出的内容与基于论文作出的推断；证据不足时直接说明，不要虚构。${hasPdf ? "" : `\n\n文章正文：\n${articleText.slice(0, 14500)}`}`;
+}
+
+async function analyzePaper() {
+  const title = document.getElementById("paper-title").value.trim();
+  const content = document.getElementById("paper-content").value.trim();
+  const note = document.getElementById("paper-note");
+  const out = document.getElementById("paper-output");
+  const btn = document.getElementById("paper-analyze");
+  if (!paperPdf && !content) { note.textContent = "请上传论文、粘贴正文或先读取网页。"; return; }
+  if (!hasAIKey()) { note.textContent = "请先在右下角 ⚙️ 完成 AI 设置。"; return; }
+  if (paperPdf && getAIConfig().provider !== "claude") { note.textContent = "PDF 阅读目前需要 Claude。请切换 AI 服务商，或粘贴论文正文。"; return; }
+  btn.disabled = true; btn.textContent = "正在拆解论文…";
+  note.textContent = "文章内容会发送给你在 AI 设置中选择的服务商。";
+  out.innerHTML = '<div class="paper-result"><div class="jn-empty">AI 正在从问题本身开始推演…</div></div>';
+  try {
+    paperResultMarkdown = await callAI(
+      paperAnalysisPrompt(title, content, !!paperPdf),
+      "你是严谨的第一性原理论文分析者。忠于原文、显式区分事实与推断、不说客套话。",
+      { pdf: paperPdf, maxTokens: 4500 }
+    );
+    out.innerHTML = `<div class="paper-result">
+      <div class="section-sub" style="margin-top:0;justify-content:space-between;"><span>论文解读</span><span><span class="refresh-btn" id="paper-copy">复制 Markdown</span> <span class="refresh-btn" id="paper-download">下载</span></span></div>
+      <div class="podcast-reader">${renderPodcastMarkdown(paperResultMarkdown)}</div>
+    </div>`;
+    document.getElementById("paper-copy").addEventListener("click", async event => {
+      await navigator.clipboard.writeText(paperResultMarkdown);
+      event.target.textContent = "已复制 ✓";
+    });
+    document.getElementById("paper-download").addEventListener("click", () => {
+      const safe = (title || "论文解读").replace(/[\\/:*?"<>|]/g, "-").slice(0, 80);
+      downloadFile(safe + "-解读.md", paperResultMarkdown, "text/markdown;charset=utf-8");
+    });
+    note.textContent = "解读完成。";
+  } catch (e) {
+    out.innerHTML = '<div class="paper-result"><div class="jn-empty">解读暂时失败，请稍后重试。</div></div>';
+    note.textContent = e.message || "AI 服务暂时不可用。";
+  }
+  btn.disabled = false; btn.textContent = "重新解读";
+}
+
 /* ===== 书房分区切换 ===== */
 let studyTabsInited = false;
 function initStudyTabs() {
@@ -3106,6 +3533,8 @@ function initStudyTabs() {
       if (key === "collect") renderBgFavGallery();
       if (key === "speak") initSpeak();
       if (key === "log") initLogbook();
+      if (key === "podcast") initPodcasts();
+      if (key === "paper") initPaper();
     });
   });
   studyTabsInited = true;
@@ -3444,6 +3873,7 @@ function openPanel(key) {
   if (key === "explore") { loadDaily(); loadCalendar(); initWhys(); renderWhys(); initSlow(); initAlign(); initThemeExperiment(); }
 }
 function closePanels() {
+  if (typeof stopDailyVoice === "function") stopDailyVoice();
   panels.forEach(x => x.classList.remove("on"));
   document.body.style.overflow = "";
 }
@@ -6411,6 +6841,7 @@ const DAILY_Q = {
 const MOODS = ["😀", "🙂", "😐", "😔", "😤", "😴"];
 
 let dailyOpen = null; // morning | evening | null
+let dailyRecognition = null;
 
 function renderWeekBar() {
   const el = document.getElementById("week-bar");
@@ -6460,6 +6891,7 @@ function renderDailyCards() {
 }
 
 function renderDailyForm() {
+  if (dailyRecognition) stopDailyVoice();
   const box = document.getElementById("daily-form");
   if (!box) return;
   if (!dailyOpen) { box.innerHTML = ""; return; }
@@ -6470,6 +6902,20 @@ function renderDailyForm() {
 
   box.innerHTML = `<div class="card" style="margin-bottom:20px;">
     <div class="section-sub" style="margin-top:0;">${isEve ? "🌙 晚间复盘" : "🌅 晨间准备"}</div>
+    <div class="freewrite-box">
+      <div class="dq-label">想到哪儿，说到哪儿</div>
+      <div class="freewrite-intro">不必先理清头绪。把想到的随意说下来，AI 会帮你梳理重点，填入下方三个问题，并整理成一篇今日手记。</div>
+      <textarea id="daily-freewrite" placeholder="可以打字，也可以点麦克风开始说…">${escapeHtml(entry.freeform || "")}</textarea>
+      <div class="freewrite-actions">
+        <button class="zen-mode-btn" id="daily-voice-btn" type="button" style="background:rgba(255,255,255,.12);">🎙️ 开始口述</button>
+        <button class="zen-mode-btn" id="daily-organize-btn" type="button">让 AI 帮我梳理</button>
+      </div>
+      <div id="daily-organize-note" class="price-note" style="margin-top:8px;"></div>
+      <div class="dq freewrite-diary" id="daily-diary-wrap" ${entry.diary ? "" : "hidden"}>
+        <div class="dq-label">整理后的今日手记</div>
+        <textarea id="daily-diary" placeholder="AI 整理后仍然可以自己修改。">${escapeHtml(entry.diary || "")}</textarea>
+      </div>
+    </div>
     ${isEve ? `<div class="dq"><div class="dq-label">此刻的心情</div>
       <div class="mood-row">${MOODS.map(m =>
         `<span class="mood-btn ${entry.mood === m ? "sel" : ""}" data-mood="${m}">${m}</span>`).join("")}</div></div>` : ""}
@@ -6482,6 +6928,10 @@ function renderDailyForm() {
   </div>`;
 
   const draft = { ...entry };
+  const freewrite = document.getElementById("daily-freewrite");
+  const diary = document.getElementById("daily-diary");
+  freewrite.addEventListener("input", () => { draft.freeform = freewrite.value; });
+  diary.addEventListener("input", () => { draft.diary = diary.value; });
   box.querySelectorAll("textarea[data-dq]").forEach(ta =>
     ta.addEventListener("input", () => { draft[ta.dataset.dq] = ta.value; }));
   box.querySelectorAll(".mood-btn").forEach(b =>
@@ -6490,6 +6940,8 @@ function renderDailyForm() {
       box.querySelectorAll(".mood-btn").forEach(x => x.classList.remove("sel"));
       b.classList.add("sel");
     }));
+  document.getElementById("daily-voice-btn").addEventListener("click", () => toggleDailyVoice(freewrite));
+  document.getElementById("daily-organize-btn").addEventListener("click", () => organizeDailyFreewrite(draft, qs));
   document.getElementById("daily-save-btn").addEventListener("click", () => {
     const jj = getJournal();
     const k = todayKey();
@@ -6499,6 +6951,89 @@ function renderDailyForm() {
     document.getElementById("daily-save-note").textContent = "已保存 ✓";
     renderWeekBar(); renderDailyCards();
   });
+}
+
+function stopDailyVoice() {
+  if (dailyRecognition) {
+    try { dailyRecognition.stop(); } catch (e) {}
+    dailyRecognition = null;
+  }
+}
+
+function toggleDailyVoice(textarea) {
+  const btn = document.getElementById("daily-voice-btn");
+  const note = document.getElementById("daily-organize-note");
+  if (dailyRecognition) {
+    stopDailyVoice();
+    if (btn) { btn.textContent = "🎙️ 继续口述"; btn.classList.remove("voice-listening"); }
+    return;
+  }
+  const Recognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+  if (!Recognition) { note.textContent = "这个浏览器暂不支持语音转文字，可以直接打字。电脑端建议使用 Chrome。"; return; }
+  const recognition = new Recognition();
+  dailyRecognition = recognition;
+  recognition.lang = "zh-CN";
+  recognition.continuous = true;
+  recognition.interimResults = true;
+  const before = textarea.value.trim();
+  let finalText = "";
+  recognition.onresult = event => {
+    let interim = "";
+    for (let i = event.resultIndex; i < event.results.length; i++) {
+      const text = event.results[i][0].transcript;
+      if (event.results[i].isFinal) finalText += text;
+      else interim += text;
+    }
+    textarea.value = [before, finalText + interim].filter(Boolean).join(before ? "\n" : "");
+    textarea.dispatchEvent(new Event("input"));
+  };
+  recognition.onerror = event => {
+    note.textContent = event.error === "not-allowed" ? "请允许麦克风权限后再试。" : "语音识别暂时中断，可以继续打字。";
+  };
+  recognition.onend = () => {
+    dailyRecognition = null;
+    const current = document.getElementById("daily-voice-btn");
+    if (current) { current.textContent = "🎙️ 继续口述"; current.classList.remove("voice-listening"); }
+  };
+  recognition.start();
+  btn.textContent = "⏹️ 结束口述";
+  btn.classList.add("voice-listening");
+  note.textContent = "正在听你说…文字会实时出现在上方。";
+}
+
+async function organizeDailyFreewrite(draft, qs) {
+  const raw = document.getElementById("daily-freewrite").value.trim();
+  const note = document.getElementById("daily-organize-note");
+  const btn = document.getElementById("daily-organize-btn");
+  if (!raw) { note.textContent = "先随手写一点，或者说一段。"; return; }
+  if (!hasAIKey()) { note.textContent = "请先在右下角 ⚙️ 完成 AI 设置。"; return; }
+  stopDailyVoice();
+  btn.disabled = true; btn.textContent = "正在整理…";
+  const fields = qs.map(q => `${q.k}: ${q.label}`).join("\n");
+  const period = dailyOpen === "evening" ? "晚间复盘" : "晨间准备";
+  const prompt = `这是用户为${period}随口说下的一段话。请保留事实与她原本的语气，不添加不存在的经历，把内容整理进指定字段，并改写成一篇自然、克制的第一人称日记。\n\n字段:\n${fields}\n\n原话:\n${raw.slice(0, 8000)}\n\n只返回 JSON 对象，不要 markdown。每个字段没有对应内容时填空字符串。diary 为 120-350 字的连贯日记，不要鸡汤，不要替用户下诊断。格式:{"${qs.map(q => q.k).join('\":\"\",\"')}":"","diary":""}`;
+  try {
+    const output = await callAI(prompt, "你是一位安静、忠实的日记整理助手。你负责梳理，不评判，也不虚构。只返回有效 JSON。");
+    const clean = output.trim().replace(/```json|```/g, "").trim();
+    const start = clean.indexOf("{");
+    const end = clean.lastIndexOf("}");
+    const data = JSON.parse(start >= 0 && end > start ? clean.slice(start, end + 1) : clean);
+    qs.forEach(q => {
+      if (typeof data[q.k] !== "string") return;
+      draft[q.k] = data[q.k];
+      const field = document.querySelector(`[data-dq="${q.k}"]`);
+      if (field) field.value = data[q.k];
+    });
+    draft.freeform = raw;
+    draft.diary = typeof data.diary === "string" ? data.diary : raw;
+    const diary = document.getElementById("daily-diary");
+    diary.value = draft.diary;
+    document.getElementById("daily-diary-wrap").hidden = false;
+    note.textContent = "已经梳理好了。你可以继续修改，确认后再保存。";
+  } catch (e) {
+    note.textContent = "这次没有整理成功，原话还在，可以稍后重试。";
+  }
+  btn.disabled = false; btn.textContent = "重新梳理";
 }
 
 function loadDaily() { renderWeekBar(); renderDailyCards(); renderDailyForm(); initJournalTools(); }
@@ -6547,6 +7082,7 @@ function renderJournalHistory() {
           <div class="jn-block-head">${kind === "morning" ? "🌅 晨间准备" : "🌙 晚间复盘"} ${ent.mood ? ent.mood : ""}</div>
           ${Object.keys(ent).filter(k => qmap[k] && ent[k]).map(k =>
             `<div class="jn-qa"><b>${qmap[k]}</b><br>${escapeHtml(ent[k])}</div>`).join("")}
+          ${ent.diary ? `<div class="jn-qa"><b>今日手记</b><br>${escapeHtml(ent.diary)}</div>` : ""}
         </div>`;
       });
       if (e.whys) {
@@ -6582,6 +7118,7 @@ function journalToMarkdown() {
       Object.keys(e[kind]).filter(k => qmap[k] && e[kind][k]).forEach(k => {
         md += `**${qmap[k]}**\n${e[kind][k]}\n\n`;
       });
+      if (e[kind].diary) md += `**今日手记**\n${e[kind].diary}\n\n`;
     });
     (e.whys || []).forEach(w => {
       md += `### 五问:${w.topic}\n\n`;
@@ -7530,6 +8067,7 @@ async function callAI(prompt, system, opts) {
   const body = { prompt, system: system || "", provider: cfg.provider, apiKey: cfg.apiKey };
   if (opts && opts.images && opts.images.length) body.images = opts.images;
   if (opts && opts.pdf) body.pdf = opts.pdf;
+  if (opts && opts.maxTokens) body.maxTokens = opts.maxTokens;
   const res = await fetch("/api/ai", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
@@ -7568,7 +8106,7 @@ function hasAIKey() { return !!localStorage.getItem("arinrin_ai_key"); }
 (function () {
   const SKIP_PREFIX = ["arinrin_aihot_cache", "arinrin_affirm_"]; // 纯缓存,不值得备份
 
-  function exportAll() {
+  async function exportAll() {
     const data = {};
     let n = 0;
     for (let i = 0; i < localStorage.length; i++) {
@@ -7592,7 +8130,7 @@ function hasAIKey() { return !!localStorage.getItem("arinrin_ai_key"); }
 
   function importAll(file) {
     const reader = new FileReader();
-    reader.onload = function () {
+    reader.onload = async function () {
       let payload;
       try { payload = JSON.parse(reader.result); } catch (e) { alert("这个文件不是有效的备份(JSON 解析失败)。"); return; }
       if (!payload || payload.kind !== "arinrin-backup" || !payload.data) {

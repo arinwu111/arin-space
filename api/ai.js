@@ -87,6 +87,7 @@ export default async function handler(req, res) {
   //   pdf:    { data:"..." }
   const images = Array.isArray(body && body.images) ? body.images.slice(0, 4) : [];
   const pdf = (body && body.pdf && body.pdf.data) ? body.pdf : null;
+  const maxTokens = Math.max(500, Math.min(5000, Number(body && body.maxTokens) || 2000));
 
   const p = PROVIDERS[providerName];
   if (!p) return res.status(400).json({ error: "不支持的 provider:" + providerName });
@@ -133,7 +134,7 @@ export default async function handler(req, res) {
       payload = {
         systemInstruction: { parts: [{ text: system }] },
         contents: [{ role: "user", parts: parts }],
-        generationConfig: { temperature: 0.7, maxOutputTokens: 2000 },
+        generationConfig: { temperature: 0.7, maxOutputTokens: maxTokens },
       };
     } else if (p.style === "claude") {
       headers["x-api-key"] = key;
@@ -145,7 +146,7 @@ export default async function handler(req, res) {
         if (pdf) content.push({ type: "document", source: { type: "base64", media_type: "application/pdf", data: pdf.data } });
         content.push({ type: "text", text: prompt });
       }
-      payload = { model: model, max_tokens: 2000, system: system, messages: [{ role: "user", content: content }] };
+      payload = { model: model, max_tokens: maxTokens, system: system, messages: [{ role: "user", content: content }] };
     } else {
       headers["Authorization"] = "Bearer " + key;
       let userContent = prompt;
@@ -156,7 +157,7 @@ export default async function handler(req, res) {
         }));
         userContent.push({ type: "text", text: prompt });
       }
-      payload = { model: model, messages: [{ role: "system", content: system }, { role: "user", content: userContent }], temperature: 0.7, max_tokens: 2000 };
+      payload = { model: model, messages: [{ role: "system", content: system }, { role: "user", content: userContent }], temperature: 0.7, max_tokens: maxTokens };
     }
 
     const r = await fetch(url, { method: "POST", headers, body: JSON.stringify(payload) });
