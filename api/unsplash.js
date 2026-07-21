@@ -14,7 +14,8 @@ export const config = { maxDuration: 30 };
 
 // —— 简易限流:同一 IP 一段时间内限次数,顺带保护 Unsplash 自己的调用配额(demo key 每小时 50 次)——
 async function rateLimited(req, res, bucket, limit, windowSec) {
-  const url = process.env.UPSTASH_REDIS_REST_URL, token = process.env.UPSTASH_REDIS_REST_TOKEN;
+  const url = process.env.UPSTASH_REDIS_REST_URL || process.env.KV_REST_API_URL;
+  const token = process.env.UPSTASH_REDIS_REST_TOKEN || process.env.KV_REST_API_TOKEN;
   if (!url || !token) return false;
   try {
     const ip = ((req.headers["x-forwarded-for"] || req.socket?.remoteAddress || "unknown") + "").split(",")[0].trim();

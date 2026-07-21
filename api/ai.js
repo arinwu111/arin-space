@@ -45,12 +45,15 @@ export const config = { maxDuration: 60 };
 // —— 简易限流(基于 Upstash Redis,和 health.js 共用同一个数据库,同一 IP 同一时间窗内限次数)——
 // 没配 Upstash 环境变量时自动放行,不影响正常使用;限流服务本身出错也放行,不能因为它挂了误伤正常用户
 async function redisCmd(cmd) {
-  const url = process.env.UPSTASH_REDIS_REST_URL, token = process.env.UPSTASH_REDIS_REST_TOKEN;
+  const url = process.env.UPSTASH_REDIS_REST_URL || process.env.KV_REST_API_URL;
+  const token = process.env.UPSTASH_REDIS_REST_TOKEN || process.env.KV_REST_API_TOKEN;
   const r = await fetch(url, { method: "POST", headers: { Authorization: "Bearer " + token, "Content-Type": "application/json" }, body: JSON.stringify(cmd) });
   return (await r.json()).result;
 }
 async function rateLimited(req, res, bucket, limit, windowSec) {
-  if (!process.env.UPSTASH_REDIS_REST_URL || !process.env.UPSTASH_REDIS_REST_TOKEN) return false;
+  const hasUrl = process.env.UPSTASH_REDIS_REST_URL || process.env.KV_REST_API_URL;
+  const hasToken = process.env.UPSTASH_REDIS_REST_TOKEN || process.env.KV_REST_API_TOKEN;
+  if (!hasUrl || !hasToken) return false;
   try {
     const ip = ((req.headers["x-forwarded-for"] || req.socket?.remoteAddress || "unknown") + "").split(",")[0].trim();
     const key = "rl:" + bucket + ":" + ip;

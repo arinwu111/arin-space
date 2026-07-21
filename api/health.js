@@ -3,8 +3,8 @@
 //
 // 需要的环境变量(Vercel → Settings → Environment Variables):
 //   HEALTH_TOKEN               = 你自己编的一串随机字符(快捷指令和浏览器都要用它)
-//   UPSTASH_REDIS_REST_URL     = Upstash 集成自动添加
-//   UPSTASH_REDIS_REST_TOKEN   = Upstash 集成自动添加
+//   UPSTASH_REDIS_REST_URL / UPSTASH_REDIS_REST_TOKEN（Upstash 直连）
+//   或 KV_REST_API_URL / KV_REST_API_TOKEN（Vercel Marketplace）
 //
 // 快捷指令 POST(纯文本行,一行一条):
 //   POST /api/health?token=XXX&metric=steps      body: 2026-07-19,8234
@@ -16,8 +16,8 @@
 const KEEP_DAYS = 120;
 
 async function redis(cmd) {
-  const url = process.env.UPSTASH_REDIS_REST_URL;
-  const token = process.env.UPSTASH_REDIS_REST_TOKEN;
+  const url = process.env.UPSTASH_REDIS_REST_URL || process.env.KV_REST_API_URL;
+  const token = process.env.UPSTASH_REDIS_REST_TOKEN || process.env.KV_REST_API_TOKEN;
   if (!url || !token) throw new Error("Upstash 未配置");
   const r = await fetch(url, {
     method: "POST",

@@ -1,8 +1,8 @@
 // Vercel Serverless Function —— 信箱留言与审核
 //
 // 需要的环境变量：
-//   UPSTASH_REDIS_REST_URL
-//   UPSTASH_REDIS_REST_TOKEN
+//   UPSTASH_REDIS_REST_URL / UPSTASH_REDIS_REST_TOKEN（Upstash 直连）
+//   或 KV_REST_API_URL / KV_REST_API_TOKEN（Vercel Marketplace）
 //   MAILBOX_ADMIN_TOKEN       站长开箱审核时使用的口令
 
 const MESSAGE_HASH = "arinrin:mailbox:messages";
@@ -14,8 +14,8 @@ const MAX_ADMIN = 100;
 export const config = { maxDuration: 30 };
 
 async function redis(command) {
-  const url = process.env.UPSTASH_REDIS_REST_URL;
-  const token = process.env.UPSTASH_REDIS_REST_TOKEN;
+  const url = process.env.UPSTASH_REDIS_REST_URL || process.env.KV_REST_API_URL;
+  const token = process.env.UPSTASH_REDIS_REST_TOKEN || process.env.KV_REST_API_TOKEN;
   if (!url || !token) throw new Error("留言存储尚未配置");
   const response = await fetch(url, {
     method: "POST",
