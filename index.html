@@ -368,6 +368,30 @@
     border-radius: 6px; color: rgba(255,226,164,0.82); font-size: 10px; transform: rotate(-3deg);
   }
   .mailbox-state-preview span:last-child { color: var(--text-sub); font-size: 10px; line-height: 1.55; }
+  .message-wall.has-messages {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    align-content: start; place-items: stretch; gap: 12px; padding: 14px; overflow-y: auto;
+  }
+  .message-note {
+    min-height: 128px; padding: 15px; border-radius: 4px 4px 14px 4px;
+    background: linear-gradient(145deg, rgba(255,241,185,.2), rgba(255,255,255,.08));
+    border: 1px solid rgba(255,236,174,.2); box-shadow: 0 9px 24px rgba(6,10,24,.13);
+    display: flex; flex-direction: column; gap: 10px; transform: rotate(-.35deg);
+  }
+  .message-note:nth-child(even) { transform: rotate(.4deg); }
+  .message-note-text { font-size: 13px; line-height: 1.75; white-space: pre-wrap; overflow-wrap: anywhere; }
+  .message-note-meta { margin-top: auto; font-size: 10px; color: var(--text-sub); display: flex; justify-content: space-between; gap: 8px; }
+  .mailbox-admin-panel { margin-top: 18px; }
+  .mailbox-admin-list { display: grid; gap: 10px; }
+  .mailbox-admin-item {
+    padding: 13px; border: 1px solid rgba(255,255,255,.12); border-radius: 12px;
+    background: rgba(255,255,255,.045); display: grid; gap: 9px;
+  }
+  .mailbox-admin-copy { font-size: 12px; line-height: 1.65; white-space: pre-wrap; overflow-wrap: anywhere; }
+  .mailbox-admin-meta { color: var(--text-sub); font-size: 10px; }
+  .mailbox-admin-actions { display: flex; flex-wrap: wrap; gap: 7px; }
+  .mailbox-admin-actions button { padding: 5px 11px; }
+  .mailbox-honeypot { position: absolute !important; left: -10000px !important; width: 1px !important; height: 1px !important; overflow: hidden !important; }
 
   .journal-shell { position: relative; }
   .journal-empty {
@@ -2236,6 +2260,10 @@
           <label for="mailbox-message">想写点什么</label>
           <textarea id="mailbox-message" maxlength="280" placeholder="写给这个小世界的一张便签…"></textarea>
         </div>
+        <div class="mailbox-honeypot" aria-hidden="true">
+          <label for="mailbox-website">网站</label>
+          <input id="mailbox-website" tabindex="-1" autocomplete="off">
+        </div>
         <div class="home-form-foot">
           <span class="home-char-count" id="mailbox-char-count">0 / 280</span>
           <button class="home-form-button primary" id="mailbox-submit" type="button">投进信箱</button>
@@ -2243,6 +2271,13 @@
         <div class="home-prototype-note" id="mailbox-form-note" aria-live="polite"></div>
       </section>
     </div>
+    <section class="home-public-card mailbox-admin-panel" id="mailbox-admin-panel" hidden aria-labelledby="mailbox-admin-title">
+      <div class="home-public-card-head">
+        <span id="mailbox-admin-title">待确认的便签</span>
+        <small id="mailbox-admin-count">0 条</small>
+      </div>
+      <div class="mailbox-admin-list" id="mailbox-admin-list"></div>
+    </section>
   </div>
 </div>
 
@@ -3400,6 +3435,7 @@ function openPanel(key) {
   if (key === "mystic") loadMystic();
   if (key === "ai") loadAIDaily();
   if (key === "fitness") loadHealth();
+  if (key === "mailbox") loadMailboxMessages();
   if (key === "aesthetic") { initStudyTabs(); initRead(); renderBgFavGallery(); initSpeak(); initLogbook(); }
   if (key === "explore") { loadDaily(); loadCalendar(); initWhys(); renderWhys(); initSlow(); initAlign(); initThemeExperiment(); }
 }
@@ -3414,27 +3450,158 @@ document.querySelectorAll("[data-close]").forEach(btn => {
   btn.addEventListener("click", closePanels);
 });
 
-/* ===== 信箱与日志:前端交互占位,不把公开内容伪装成本地数据 ===== */
+/* ===== 信箱与日志 ===== */
 document.getElementById("mailbox-btn").addEventListener("click", () => openPanel("mailbox"));
 document.getElementById("noticeboard-btn").addEventListener("click", () => openPanel("journal"));
 
 const mailboxMessage = document.getElementById("mailbox-message");
 const mailboxCharCount = document.getElementById("mailbox-char-count");
 const mailboxFormNote = document.getElementById("mailbox-form-note");
+const mailboxSubmit = document.getElementById("mailbox-submit");
+const mailboxWall = document.getElementById("message-wall");
+const mailboxAdminPanel = document.getElementById("mailbox-admin-panel");
+const mailboxAdminList = document.getElementById("mailbox-admin-list");
+const MAILBOX_TOKEN_KEY = "arinrin_mailbox_admin_token";
+
+function mailboxDate(value) {
+  const date = new Date(value);
+  if (isNaN(date.getTime())) return "";
+  return date.toLocaleDateString("zh-CN", { month: "numeric", day: "numeric" });
+}
+
+function renderMailboxWall(messages) {
+  if (!messages || !messages.length) {
+    mailboxWall.classList.remove("has-messages");
+    mailboxWall.innerHTML = '<div class="home-empty"><div class="home-empty-mark">◇</div><div class="home-empty-title">墙上还什么都没有</div><div class="home-empty-copy">第一个来的人，写点什么？</div></div>';
+    return;
+  }
+  mailboxWall.classList.add("has-messages");
+  mailboxWall.innerHTML = messages.map(item =>
+    '<article class="message-note">' +
+      '<div class="message-note-text">' + escapeHtml(item.message || "") + '</div>' +
+      '<div class="message-note-meta"><span>' + escapeHtml(item.nickname || "一位路过的人") + '</span><time>' + escapeHtml(mailboxDate(item.approvedAt || item.createdAt)) + '</time></div>' +
+    '</article>'
+  ).join("");
+}
+
+async function mailboxRequest(options) {
+  const response = await fetch("/api/messages", options || {});
+  const data = await response.json().catch(() => ({}));
+  if (!response.ok) {
+    const error = new Error(data.error || "信箱暂时没有回应");
+    error.status = response.status;
+    throw error;
+  }
+  return data;
+}
+
+async function loadMailboxMessages() {
+  mailboxWall.classList.remove("has-messages");
+  mailboxWall.innerHTML = '<div class="home-empty"><div class="home-empty-mark">⋯</div><div class="home-empty-title">正在打开留言墙</div></div>';
+  try {
+    const data = await mailboxRequest();
+    renderMailboxWall(data.messages || []);
+  } catch (error) {
+    mailboxWall.innerHTML = '<div class="home-empty"><div class="home-empty-mark">◇</div><div class="home-empty-title">留言墙暂时打不开</div><div class="home-empty-copy">' + escapeHtml(error.message) + '</div></div>';
+  }
+}
+
+function renderMailboxAdmin(data) {
+  const pending = data.pending || [];
+  const approved = data.approved || [];
+  document.getElementById("mailbox-admin-count").textContent = pending.length + " 条待确认";
+  const rows = [];
+  pending.forEach(item => rows.push(
+    '<article class="mailbox-admin-item">' +
+      '<div class="mailbox-admin-copy">' + escapeHtml(item.message || "") + '</div>' +
+      '<div class="mailbox-admin-meta">' + escapeHtml(item.nickname || "一位路过的人") + ' · ' + escapeHtml(new Date(item.createdAt).toLocaleString("zh-CN")) + '</div>' +
+      '<div class="mailbox-admin-actions">' +
+        '<button class="home-form-button primary" data-mailbox-action="approve" data-mailbox-id="' + escapeHtml(item.id) + '">贴上墙</button>' +
+        '<button class="home-form-button" data-mailbox-action="reject" data-mailbox-id="' + escapeHtml(item.id) + '">丢弃</button>' +
+      '</div>' +
+    '</article>'
+  ));
+  approved.forEach(item => rows.push(
+    '<article class="mailbox-admin-item">' +
+      '<div class="mailbox-admin-copy">' + escapeHtml(item.message || "") + '</div>' +
+      '<div class="mailbox-admin-meta">已上墙 · ' + escapeHtml(item.nickname || "一位路过的人") + '</div>' +
+      '<div class="mailbox-admin-actions"><button class="home-form-button" data-mailbox-action="delete" data-mailbox-id="' + escapeHtml(item.id) + '">从墙上移除</button></div>' +
+    '</article>'
+  ));
+  mailboxAdminList.innerHTML = rows.length ? rows.join("") : '<div class="home-empty-copy">信箱里暂时没有便签。</div>';
+}
+
+async function loadMailboxAdmin() {
+  const token = sessionStorage.getItem(MAILBOX_TOKEN_KEY) || "";
+  if (!token) return;
+  mailboxAdminPanel.hidden = false;
+  mailboxAdminList.innerHTML = '<div class="home-empty-copy">正在开箱…</div>';
+  try {
+    const data = await mailboxRequest({ headers: { Authorization: "Bearer " + token } });
+    renderMailboxAdmin(data);
+  } catch (error) {
+    if (error.status === 401) sessionStorage.removeItem(MAILBOX_TOKEN_KEY);
+    mailboxAdminList.innerHTML = '<div class="home-empty-copy">' + escapeHtml(error.message) + '</div>';
+  }
+}
+
 mailboxMessage.addEventListener("input", () => {
   mailboxCharCount.textContent = mailboxMessage.value.length + " / 280";
   mailboxFormNote.textContent = "";
 });
-document.getElementById("mailbox-submit").addEventListener("click", () => {
+mailboxSubmit.addEventListener("click", async () => {
   if (!mailboxMessage.value.trim()) {
     mailboxFormNote.textContent = "先写下一张便签吧。";
     mailboxMessage.focus();
     return;
   }
-  mailboxFormNote.textContent = "投递功能 · 待接入";
+  mailboxSubmit.disabled = true;
+  mailboxSubmit.textContent = "投递中…";
+  mailboxFormNote.textContent = "";
+  try {
+    await mailboxRequest({
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        nickname: document.getElementById("mailbox-nickname").value,
+        message: mailboxMessage.value,
+        website: document.getElementById("mailbox-website").value,
+      }),
+    });
+    document.getElementById("mailbox-nickname").value = "";
+    mailboxMessage.value = "";
+    mailboxCharCount.textContent = "0 / 280";
+    mailboxFormNote.textContent = "收到啦。确认后，这张便签会出现在留言墙。";
+  } catch (error) {
+    mailboxFormNote.textContent = error.message;
+  } finally {
+    mailboxSubmit.disabled = false;
+    mailboxSubmit.textContent = "投进信箱";
+  }
 });
 document.getElementById("mailbox-admin-open").addEventListener("click", () => {
-  mailboxFormNote.textContent = "开箱功能 · 待接入";
+  let token = sessionStorage.getItem(MAILBOX_TOKEN_KEY) || "";
+  if (!token) token = window.prompt("请输入信箱管理员口令") || "";
+  if (!token) return;
+  sessionStorage.setItem(MAILBOX_TOKEN_KEY, token.trim());
+  loadMailboxAdmin();
+});
+mailboxAdminList.addEventListener("click", async event => {
+  const button = event.target.closest("[data-mailbox-action]");
+  if (!button) return;
+  const token = sessionStorage.getItem(MAILBOX_TOKEN_KEY) || "";
+  button.disabled = true;
+  try {
+    await mailboxRequest({
+      method: "POST",
+      headers: { "Content-Type": "application/json", Authorization: "Bearer " + token },
+      body: JSON.stringify({ action: button.dataset.mailboxAction, id: button.dataset.mailboxId }),
+    });
+    await Promise.all([loadMailboxAdmin(), loadMailboxMessages()]);
+  } catch (error) {
+    mailboxFormNote.textContent = error.message;
+    button.disabled = false;
+  }
 });
 
 const journalEditor = document.getElementById("journal-editor");
