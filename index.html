@@ -423,12 +423,38 @@
   .mailbox-admin-actions button { padding: 5px 11px; }
   .mailbox-honeypot { position: absolute !important; left: -10000px !important; width: 1px !important; height: 1px !important; overflow: hidden !important; }
 
-  .journal-shell { position: relative; }
-  .journal-empty {
-    min-height: 300px; display: grid; place-items: center;
-    border-left: 1px solid rgba(255,232,174,0.22); margin-left: 58px;
+  .journal-shell { position: relative; overflow: hidden; }
+  .journal-timeline {
+    position: relative; display: grid; gap: 18px; padding: 8px 8px 8px 68px;
   }
-  .journal-empty .home-empty { transform: translateX(-29px); }
+  .journal-timeline::before {
+    content: ""; position: absolute; left: 31px; top: 15px; bottom: 15px; width: 1px;
+    background: linear-gradient(to bottom, transparent, rgba(255,225,160,.42) 8%, rgba(255,225,160,.24) 92%, transparent);
+  }
+  .journal-entry {
+    position: relative; padding: 21px 23px 20px; border: 1px solid rgba(255,237,198,.2);
+    border-radius: 7px 19px 19px 19px;
+    background: linear-gradient(145deg, rgba(255,248,225,.14), rgba(255,255,255,.055));
+    box-shadow: 0 14px 34px rgba(5,9,25,.12); transition: transform .25s, background .25s;
+  }
+  .journal-entry:hover { transform: translateY(-2px); background: linear-gradient(145deg, rgba(255,248,225,.18), rgba(255,255,255,.075)); }
+  .journal-entry::before {
+    content: ""; position: absolute; left: -43px; top: 27px; width: 9px; height: 9px;
+    border: 2px solid rgba(255,226,164,.72); border-radius: 50%; background: rgba(41,39,63,.92);
+    box-shadow: 0 0 0 6px rgba(255,226,164,.07);
+  }
+  .journal-entry-date {
+    margin-bottom: 8px; color: rgba(255,226,164,.78); font-size: 10px; letter-spacing: .14em;
+  }
+  .journal-entry-title {
+    margin: 0 0 10px; color: var(--text-main); font-size: 19px; font-weight: 500; letter-spacing: .06em;
+    font-family: "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+  }
+  .journal-entry-copy { color: rgba(255,255,255,.79); font-size: 13.5px; line-height: 1.95; white-space: pre-wrap; overflow-wrap: anywhere; }
+  .journal-entry-actions { display: none; justify-content: flex-end; flex-wrap: wrap; gap: 7px; margin-top: 15px; }
+  .journal-admin-on .journal-entry-actions { display: flex; }
+  .journal-entry-actions button { padding: 5px 11px; font-size: 10px; }
+  .journal-empty { min-height: 280px; display: grid; place-items: center; }
   .journal-editor {
     display: none; margin-bottom: 18px; padding: 18px;
     border: 1px solid rgba(255,255,255,0.18); border-radius: 16px;
@@ -436,6 +462,7 @@
   }
   .journal-editor.on { display: block; animation: panelIn .25s ease; }
   .journal-editor-top { display: grid; grid-template-columns: 170px 1fr; gap: 14px; }
+  .journal-editor-main { display: grid; grid-template-columns: minmax(150px,.42fr) minmax(0,1fr); gap: 12px; }
   .journal-editor-actions { display: flex; justify-content: flex-end; gap: 9px; }
   .journal-public-note { font-size: 10px; color: var(--text-sub); line-height: 1.65; }
 
@@ -443,9 +470,11 @@
     .mailbox-layout { grid-template-columns: 1fr; }
     .message-wall { min-height: 230px; }
     .home-panel-topline { align-items: flex-start; }
-    .journal-editor-top { grid-template-columns: 1fr; gap: 0; }
-    .journal-empty { margin-left: 26px; }
-    .journal-empty .home-empty { transform: translateX(-13px); }
+    .journal-editor-top, .journal-editor-main { grid-template-columns: 1fr; gap: 0; }
+    .journal-timeline { padding-left: 38px; padding-right: 0; }
+    .journal-timeline::before { left: 12px; }
+    .journal-entry { padding: 18px; }
+    .journal-entry::before { left: -31px; }
   }
 
   /* AI 每日动态 */
@@ -2380,9 +2409,9 @@
     <button class="panel-close" data-close aria-label="关闭">✕</button>
   <div class="panel-inner">
     <div class="panel-head"><div class="p-icon">◫</div><h2>日志</h2></div>
-    <p class="panel-intro">这个小世界慢慢留下来的记录。</p>
+    <p class="panel-intro">这个小世界慢慢留下来的记录。从第一盏灯开始，沿着时间往前走。</p>
     <div class="home-panel-topline">
-      <button class="home-panel-action" id="journal-write-open" type="button">写日志</button>
+      <button class="home-panel-action" id="journal-write-open" type="button">管理日志</button>
     </div>
     <section class="journal-editor" id="journal-editor" aria-label="写日志">
       <div class="journal-editor-top">
@@ -2390,9 +2419,16 @@
           <label for="journal-date">展示日期</label>
           <input type="date" id="journal-date">
         </div>
-        <div class="home-form-field">
-          <label for="journal-content">日志内容</label>
-          <textarea id="journal-content" maxlength="2000" placeholder="今天想在这个小世界留下什么…"></textarea>
+        <div class="journal-editor-main">
+          <div class="home-form-field">
+            <label for="journal-title">标题</label>
+            <input type="text" id="journal-title" maxlength="60" placeholder="给今天取个名字">
+          </div>
+          <div class="home-form-field">
+            <label for="journal-content">日志内容 · 100 字以内</label>
+            <textarea id="journal-content" maxlength="100" placeholder="今天想在这个小世界留下什么…"></textarea>
+            <div class="home-char-count" id="journal-char-count" style="margin-top:6px;text-align:right;">0 / 100</div>
+          </div>
         </div>
       </div>
       <div class="home-form-foot">
@@ -2407,7 +2443,7 @@
     <section class="home-public-card journal-shell" aria-labelledby="journal-list-title">
       <div class="home-public-card-head">
         <span id="journal-list-title">全部日志</span>
-        <small>慢慢翻看</small>
+        <small id="journal-count">慢慢翻看</small>
       </div>
       <div class="journal-empty" id="journal-list">
         <div class="home-empty">
@@ -3872,6 +3908,7 @@ function openPanel(key) {
   if (key === "ai") loadAIDaily();
   if (key === "fitness") loadHealth();
   if (key === "mailbox") loadMailboxMessages();
+  if (key === "journal") loadJournalEntries();
   if (key === "aesthetic") { initStudyTabs(); initRead(); renderBgFavGallery(); initSpeak(); initLogbook(); }
   if (key === "explore") { loadDaily(); loadCalendar(); initWhys(); renderWhys(); initSlow(); initAlign(); initThemeExperiment(); }
 }
@@ -4043,24 +4080,180 @@ mailboxAdminList.addEventListener("click", async event => {
 
 const journalEditor = document.getElementById("journal-editor");
 const journalDate = document.getElementById("journal-date");
+const journalTitle = document.getElementById("journal-title");
 const journalContent = document.getElementById("journal-content");
+const journalCharCount = document.getElementById("journal-char-count");
 const journalFormNote = document.getElementById("journal-form-note");
-document.getElementById("journal-write-open").addEventListener("click", () => {
+const journalList = document.getElementById("journal-list");
+const journalManageButton = document.getElementById("journal-write-open");
+let journalEntries = [];
+let journalEditingId = "";
+let journalAdmin = false;
+
+function journalDisplayDate(value) {
+  const parts = String(value || "").split("-").map(Number);
+  if (parts.length !== 3 || parts.some(Number.isNaN)) return value || "";
+  const date = new Date(parts[0], parts[1] - 1, parts[2]);
+  const weekday = ["星期日", "星期一", "星期二", "星期三", "星期四", "星期五", "星期六"][date.getDay()];
+  return parts[0] + " 年 " + parts[1] + " 月 " + parts[2] + " 日 · " + weekday;
+}
+
+async function journalRequest(options) {
+  const response = await fetch("/api/journal", options || {});
+  const data = await response.json().catch(() => ({}));
+  if (!response.ok) {
+    const error = new Error(data.error || "日志暂时没有回应");
+    error.status = response.status;
+    throw error;
+  }
+  return data;
+}
+
+function renderJournalEntries() {
+  document.getElementById("journal-count").textContent = journalEntries.length ? journalEntries.length + " 篇" : "慢慢翻看";
+  journalList.className = journalEntries.length ? "journal-timeline" + (journalAdmin ? " journal-admin-on" : "") : "journal-empty";
+  if (!journalEntries.length) {
+    journalList.innerHTML = '<div class="home-empty"><div class="home-empty-mark">○</div><div class="home-empty-title">这里还没有日志</div><div class="home-empty-copy">等主人写下第一篇。</div></div>';
+    return;
+  }
+  journalList.innerHTML = journalEntries.map(entry =>
+    '<article class="journal-entry">' +
+      '<time class="journal-entry-date" datetime="' + escapeHtml(entry.date || "") + '">' + escapeHtml(journalDisplayDate(entry.date)) + '</time>' +
+      '<h3 class="journal-entry-title">' + escapeHtml(entry.title || "未命名") + '</h3>' +
+      '<div class="journal-entry-copy">' + escapeHtml(entry.content || "") + '</div>' +
+      '<div class="journal-entry-actions">' +
+        '<button class="home-form-button" type="button" data-journal-edit="' + escapeHtml(entry.id) + '">编辑</button>' +
+        '<button class="home-form-button" type="button" data-journal-delete="' + escapeHtml(entry.id) + '">删除</button>' +
+      '</div>' +
+    '</article>'
+  ).join("");
+}
+
+async function loadJournalEntries() {
+  journalList.className = "journal-empty";
+  journalList.innerHTML = '<div class="home-empty"><div class="home-empty-mark">⋯</div><div class="home-empty-title">正在翻开日志</div></div>';
+  const token = sessionStorage.getItem(MAILBOX_TOKEN_KEY) || "";
+  try {
+    const data = await journalRequest(token ? { headers: { Authorization: "Bearer " + token } } : undefined);
+    journalEntries = data.entries || [];
+    journalAdmin = Boolean(data.admin);
+    journalManageButton.textContent = journalAdmin ? "写一篇" : "管理日志";
+    renderJournalEntries();
+  } catch (error) {
+    if (error.status === 401) {
+      sessionStorage.removeItem(MAILBOX_TOKEN_KEY);
+      journalAdmin = false;
+      journalManageButton.textContent = "管理日志";
+      try {
+        const data = await journalRequest();
+        journalEntries = data.entries || [];
+        renderJournalEntries();
+        return;
+      } catch (_) {}
+    }
+    journalList.innerHTML = '<div class="home-empty"><div class="home-empty-mark">◇</div><div class="home-empty-title">日志暂时翻不开</div><div class="home-empty-copy">' + escapeHtml(error.message) + '</div></div>';
+  }
+}
+
+function openJournalEditor(entry) {
+  journalEditingId = entry ? entry.id : "";
+  journalDate.value = entry ? entry.date : localDateKey();
+  journalTitle.value = entry ? entry.title : "";
+  journalContent.value = entry ? entry.content : "";
+  journalCharCount.textContent = journalContent.value.length + " / 100";
   journalEditor.classList.add("on");
-  if (!journalDate.value) journalDate.value = new Date().toISOString().slice(0, 10);
-  journalFormNote.textContent = "发布功能 · 待接入";
-  setTimeout(() => journalDate.focus(), 0);
+  document.getElementById("journal-publish").textContent = entry ? "保存修改" : "发布日志";
+  journalFormNote.textContent = entry ? "修改后，所有访客都会看到新的内容。" : "发布后，所有访客都可以读到。";
+  setTimeout(() => (entry ? journalTitle : journalDate).focus(), 0);
+}
+
+journalContent.addEventListener("input", () => {
+  journalCharCount.textContent = journalContent.value.length + " / 100";
+  journalFormNote.textContent = "";
+});
+
+journalManageButton.addEventListener("click", async () => {
+  if (!journalAdmin) {
+    let token = sessionStorage.getItem(MAILBOX_TOKEN_KEY) || "";
+    if (!token) token = window.prompt("请输入管理员口令") || "";
+    if (!token) return;
+    token = token.trim();
+    try {
+      const data = await journalRequest({ headers: { Authorization: "Bearer " + token } });
+      sessionStorage.setItem(MAILBOX_TOKEN_KEY, token);
+      journalEntries = data.entries || [];
+      journalAdmin = true;
+      journalManageButton.textContent = "写一篇";
+      renderJournalEntries();
+    } catch (error) {
+      window.alert(error.message);
+      return;
+    }
+  }
+  openJournalEditor(null);
 });
 document.getElementById("journal-write-cancel").addEventListener("click", () => {
   journalEditor.classList.remove("on");
+  journalEditingId = "";
   journalFormNote.textContent = "";
 });
-document.getElementById("journal-publish").addEventListener("click", () => {
-  if (!journalDate.value || !journalContent.value.trim()) {
-    journalFormNote.textContent = "选一个展示日期,再写下日志内容。";
+document.getElementById("journal-publish").addEventListener("click", async event => {
+  if (!journalDate.value || !journalTitle.value.trim() || !journalContent.value.trim()) {
+    journalFormNote.textContent = "日期、标题和内容都要写下。";
     return;
   }
-  journalFormNote.textContent = "发布功能 · 待接入";
+  const token = sessionStorage.getItem(MAILBOX_TOKEN_KEY) || "";
+  const button = event.currentTarget;
+  button.disabled = true;
+  button.textContent = journalEditingId ? "保存中…" : "发布中…";
+  journalFormNote.textContent = "";
+  try {
+    const data = await journalRequest({
+      method: "POST",
+      headers: { "Content-Type": "application/json", Authorization: "Bearer " + token },
+      body: JSON.stringify({
+        action: "upsert",
+        id: journalEditingId,
+        date: journalDate.value,
+        title: journalTitle.value,
+        content: journalContent.value,
+      }),
+    });
+    journalEntries = data.entries || [];
+    journalEditor.classList.remove("on");
+    journalEditingId = "";
+    renderJournalEntries();
+  } catch (error) {
+    journalFormNote.textContent = error.message;
+  } finally {
+    button.disabled = false;
+    button.textContent = journalEditingId ? "保存修改" : "发布日志";
+  }
+});
+journalList.addEventListener("click", async event => {
+  const editButton = event.target.closest("[data-journal-edit]");
+  if (editButton && journalAdmin) {
+    const entry = journalEntries.find(item => item.id === editButton.dataset.journalEdit);
+    if (entry) openJournalEditor(entry);
+    return;
+  }
+  const deleteButton = event.target.closest("[data-journal-delete]");
+  if (!deleteButton || !journalAdmin) return;
+  const entry = journalEntries.find(item => item.id === deleteButton.dataset.journalDelete);
+  if (!entry || !window.confirm("确定删除《" + entry.title + "》吗？")) return;
+  deleteButton.disabled = true;
+  try {
+    const data = await journalRequest({
+      method: "POST",
+      headers: { "Content-Type": "application/json", Authorization: "Bearer " + (sessionStorage.getItem(MAILBOX_TOKEN_KEY) || "") },
+      body: JSON.stringify({ action: "delete", id: entry.id }),
+    });
+    journalEntries = data.entries || [];
+    renderJournalEntries();
+  } catch (error) {
+    journalFormNote.textContent = error.message;
+    deleteButton.disabled = false;
+  }
 });
 
 /* ===== 玄学:今日一卦(小六壬,按日期起卦) ===== */
