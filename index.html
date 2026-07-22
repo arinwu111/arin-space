@@ -147,6 +147,24 @@
   .transcribe-primary { width: auto; margin-top: 12px; }
   .transcribe-primary[disabled] { opacity: .55; cursor: not-allowed; }
   .transcribe-service-link { color: var(--text-main); text-decoration-color: rgba(255,255,255,.45); text-underline-offset: 3px; }
+  .transcribe-progress-card {
+    display: none; margin-top: 12px; padding: 13px 14px; border-radius: 12px;
+    border: 1px solid rgba(255,255,255,.12); background: rgba(255,255,255,.05);
+  }
+  .transcribe-progress-card.on { display: block; }
+  .transcribe-progress-card.error { border-color: rgba(255,168,150,.28); }
+  .transcribe-progress-title { font-size: 12px; line-height: 1.65; color: var(--text-main); }
+  .transcribe-progress-detail { margin-top: 3px; font-size: 10.5px; line-height: 1.6; color: var(--text-sub); overflow-wrap: anywhere; }
+  .transcribe-progress-steps { display: grid; grid-template-columns: repeat(4, minmax(0,1fr)); gap: 5px; margin-top: 11px; }
+  .transcribe-progress-steps.video { grid-template-columns: repeat(5, minmax(0,1fr)); }
+  .transcribe-progress-step { position: relative; padding-top: 7px; border-top: 2px solid rgba(255,255,255,.1); font-size: 9.5px; color: rgba(255,255,255,.42); }
+  .transcribe-progress-step.done { border-color: rgba(164,225,192,.62); color: rgba(205,241,220,.82); }
+  .transcribe-progress-step.active { border-color: rgba(255,226,164,.78); color: rgba(255,235,193,.94); }
+  .transcribe-progress-step.active::before {
+    content: ""; position: absolute; top: -2px; left: 0; height: 2px; width: 42%;
+    border-radius: 999px; background: rgba(255,245,218,.95); animation: transcribePulse 1.4s ease-in-out infinite alternate;
+  }
+  @keyframes transcribePulse { from { opacity: .35; width: 24%; } to { opacity: 1; width: 76%; } }
   .library-file-badges { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 9px; }
   .library-badge { padding: 2px 8px; border-radius: 20px; font-size: 10.5px; color: var(--text-sub); background: rgba(255,255,255,.08); border: 1px solid rgba(255,255,255,.1); }
   .library-badge.ready { color: #bcebcf; background: rgba(105,205,151,.12); }
@@ -1962,8 +1980,8 @@
     <section class="health-view" id="study-view-podcast" data-study-view="podcast" hidden>
       <div class="card" style="margin-bottom:18px;">
         <div class="library-heading"><strong><span class="library-number">1</span>生成播客知识稿</strong></div>
-        <p class="price-note" style="margin:0;">粘贴苹果播客或小宇宙的单集链接。系统会识别 RSS、调用听悟转写，再按播客笔记风格整理成一份 MD。</p>
-        <div class="transcribe-flow" aria-label="处理流程"><span>识别节目</span><i>→</i><span>听悟转写</span><i>→</i><span>AI 梳理</span><i>→</i><span>保存 MD</span></div>
+        <p class="price-note" style="margin:0;">粘贴苹果播客或小宇宙的单集链接。系统会识别准确的单集音频、调用听悟转写，再按播客笔记风格整理成一份 MD。</p>
+        <div class="transcribe-flow" aria-label="处理流程"><span>识别单集</span><i>→</i><span>听悟转写</span><i>→</i><span>AI 梳理</span><i>→</i><span>保存 MD</span></div>
         <div class="library-url-row">
           <input id="podcast-link" type="url" placeholder="https://podcasts.apple.com/… 或 https://www.xiaoyuzhoufm.com/episode/…">
           <button class="zen-mode-btn" id="podcast-resolve" type="button">识别链接</button>
@@ -1971,6 +1989,7 @@
         <div id="podcast-resolve-note" class="price-note library-progress" style="margin-top:8px;"></div>
         <div id="podcast-rss-result" class="rss-result"></div>
         <button class="zen-mode-btn transcribe-primary" id="podcast-transcribe" type="button" disabled>开始转写并整理</button>
+        <div id="podcast-progress" class="transcribe-progress-card" aria-live="polite"></div>
         <div class="price-note" style="margin-top:8px;">完成后只把整理好的 MD 保存到你绑定的文件夹；完整逐字稿作为处理中间文件，不放进书房。</div>
       </div>
 
@@ -1996,7 +2015,6 @@
         <input id="podcast-search" type="search" placeholder="搜索标题、节目、标签或正文">
       </div>
       <div id="podcast-list"></div>
-      <div id="podcast-progress" class="price-note library-progress" style="margin-top:12px;"></div>
       <div class="price-note" style="margin-top:4px;">本地文稿不会上传到本站服务器；生成新文稿时，素材只会发送给你主动使用的听悟与 AI 服务。推荐使用 Chrome 或 Edge。</div>
     </section>
 
@@ -2024,6 +2042,7 @@
         </div>
         <div id="video-selection-note" class="price-note library-progress" style="margin-top:8px;">选择一个本地视频开始。</div>
         <button class="zen-mode-btn transcribe-primary" id="video-transcribe" type="button" disabled>开始转写并整理</button>
+        <div id="video-progress" class="transcribe-progress-card" aria-live="polite"></div>
         <div class="price-note" style="margin-top:8px;">完成后只保存整理好的 MD；完整转写不在书房展示。需要单独处理时，可前往 <a class="transcribe-service-link" href="https://tingwu.aliyun.com/home" target="_blank" rel="noopener">通义听悟 ↗</a>。</div>
       </div>
 
@@ -2049,7 +2068,6 @@
         <input id="video-search" type="search" placeholder="搜索视频标题、知识点或操作步骤">
       </div>
       <div id="video-list"></div>
-      <div id="video-progress" class="price-note library-progress" style="margin-top:12px;"></div>
       <div class="price-note" style="margin-top:4px;">绑定的文件夹与其中的文稿只在你的浏览器里读取，不会开放给其他访客。</div>
     </section>
 
@@ -3414,7 +3432,7 @@ async function resolvePodcastLink() {
     const data = await response.json();
     if (!response.ok || data.error) throw new Error(data.error || "RSS 解析失败");
     note.textContent = "已识别节目与 RSS。";
-    if (data.rss) renderResolvedRss(data, data);
+    if (data.rss || data.audioUrl) renderResolvedRss(data, data);
     else if (Array.isArray(data.candidates) && data.candidates.length) {
       const exact = data.exact ? data.candidates[0] : null;
       if (exact) renderResolvedRss(data, exact);
@@ -3445,7 +3463,8 @@ function renderResolvedRss(context, item) {
   const result = document.getElementById("podcast-rss-result");
   result.classList.add("on");
   resolvedPodcastSource = {
-    rssUrl: item.rss,
+    rssUrl: item.rss || "",
+    audioUrl: item.audioUrl || context.audioUrl || "",
     podcast: item.podcast || context.podcast || "播客",
     episodeTitle: context.episode || "",
     sourceUrl: document.getElementById("podcast-link").value.trim(),
@@ -3453,20 +3472,24 @@ function renderResolvedRss(context, item) {
     durationMs: Number(context.durationMs || 0)
   };
   document.getElementById("podcast-transcribe").disabled = false;
+  const sourceLine = item.rss
+    ? `<div class="rss-address">${escapeHtml(item.rss)}</div>`
+    : `<div class="podcast-meta" style="margin-top:7px;">已准确找到这期节目的公开音频。</div>`;
+  const copyAction = item.rss
+    ? `<div class="podcast-actions"><button class="zen-mode-btn" id="podcast-rss-copy" type="button">复制 RSS · 备用</button></div>`
+    : "";
   result.innerHTML = `<div class="podcast-card-title">${escapeHtml(item.podcast || context.podcast || "已找到节目")}</div>
     <div class="podcast-meta">${context.episode ? "单集 · " + escapeHtml(context.episode) : "节目 RSS"}${item.author ? " · " + escapeHtml(item.author) : ""}</div>
-    <div class="rss-address">${escapeHtml(item.rss)}</div>
-    <div class="podcast-actions">
-      <button class="zen-mode-btn" id="podcast-rss-copy" type="button">复制 RSS · 备用</button>
-    </div>`;
-  document.getElementById("podcast-rss-copy").addEventListener("click", async event => {
-    try {
-      await navigator.clipboard.writeText(item.rss);
-      event.currentTarget.textContent = "已复制 ✓";
-    } catch (_) {
-      window.prompt("复制这个 RSS：", item.rss);
-    }
-  });
+    ${sourceLine}${copyAction}`;
+  const copy = document.getElementById("podcast-rss-copy");
+  if (copy) copy.addEventListener("click", async event => {
+      try {
+        await navigator.clipboard.writeText(item.rss);
+        event.currentTarget.textContent = "已复制 ✓";
+      } catch (_) {
+        window.prompt("复制这个 RSS：", item.rss);
+      }
+    });
 }
 
 function initVideoPicker() {
@@ -3565,16 +3588,73 @@ async function writableLibraryDirectory(kind) {
 
 function wait(ms) { return new Promise(resolve => setTimeout(resolve, ms)); }
 
+function podcastProgress(stage, message, detail) {
+  const progress = document.getElementById("podcast-progress");
+  const stages = [
+    { key: "prepare", label: "提交任务" },
+    { key: "transcribe", label: "听悟转写" },
+    { key: "organize", label: "AI 梳理" },
+    { key: "save", label: "保存 MD" }
+  ];
+  const active = stages.findIndex(item => item.key === stage);
+  const completed = stage === "done";
+  progress.className = "transcribe-progress-card on" + (stage === "error" ? " error" : "");
+  progress.innerHTML = `<div class="transcribe-progress-title">${escapeHtml(message || "正在处理…")}</div>` +
+    (detail ? `<div class="transcribe-progress-detail">${escapeHtml(detail)}</div>` : "") +
+    `<div class="transcribe-progress-steps">${stages.map((item, index) => {
+      const state = completed || (active >= 0 && index < active) ? " done" : (index === active ? " active" : "");
+      return `<span class="transcribe-progress-step${state}">${item.label}</span>`;
+    }).join("")}</div>`;
+}
+
+function videoProgress(stage, message, detail) {
+  const progress = document.getElementById("video-progress");
+  const stages = [
+    { key: "source", label: "读取素材" },
+    { key: "submit", label: "提交任务" },
+    { key: "transcribe", label: "听悟转写" },
+    { key: "organize", label: "AI 梳理" },
+    { key: "save", label: "保存 MD" }
+  ];
+  const active = stages.findIndex(item => item.key === stage);
+  const completed = stage === "done";
+  progress.className = "transcribe-progress-card on" + (stage === "error" ? " error" : "");
+  progress.innerHTML = `<div class="transcribe-progress-title">${escapeHtml(message || "正在处理…")}</div>` +
+    (detail ? `<div class="transcribe-progress-detail">${escapeHtml(detail)}</div>` : "") +
+    `<div class="transcribe-progress-steps video">${stages.map((item, index) => {
+      const state = completed || (active >= 0 && index < active) ? " done" : (index === active ? " active" : "");
+      return `<span class="transcribe-progress-step${state}">${item.label}</span>`;
+    }).join("")}</div>`;
+}
+
+function elapsedLabel(startedAt, taskId) {
+  const seconds = Math.max(0, Math.floor((Date.now() - startedAt) / 1000));
+  const minutes = Math.floor(seconds / 60);
+  return `任务 ${taskId} 已建立 · 已等待 ${minutes ? minutes + " 分 " : ""}${String(seconds % 60).padStart(2, "0")} 秒 · 请保持页面打开`;
+}
+
 async function waitForTranscription(taskId, objectKey, progress, label) {
-  for (let attempt = 0; attempt < 900; attempt++) {
-    if (attempt) await wait(8000);
-    progress.textContent = `${label}正在转写${"·".repeat((attempt % 3) + 1)}`;
-    const query = new URLSearchParams({ taskId });
-    if (objectKey) query.set("objectKey", objectKey);
-    const data = await transcribeRequest("/api/transcribe?" + query.toString(), { method: "GET" });
-    if (data.status === "COMPLETED" && data.transcript) return data;
+  const startedAt = Date.now();
+  const renderWaiting = () => {
+    const dots = ".".repeat((Math.floor((Date.now() - startedAt) / 1000) % 3) + 1);
+    if (progress.id === "podcast-progress") podcastProgress("transcribe", `${label}正在听悟中排队或转写${dots}`, elapsedLabel(startedAt, taskId));
+    else if (progress.id === "video-progress") videoProgress("transcribe", `${label}正在听悟中排队或转写${dots}`, elapsedLabel(startedAt, taskId));
+    else progress.textContent = `${label}正在转写${dots}`;
+  };
+  const ticker = setInterval(renderWaiting, 1000);
+  try {
+    for (let attempt = 0; attempt < 360; attempt++) {
+      if (attempt) await wait(30000);
+      renderWaiting();
+      const query = new URLSearchParams({ taskId });
+      if (objectKey) query.set("objectKey", objectKey);
+      const data = await transcribeRequest("/api/transcribe?" + query.toString(), { method: "GET" });
+      if (data.status === "COMPLETED" && data.transcript) return data;
+    }
+  } finally {
+    clearInterval(ticker);
   }
-  throw new Error("转写时间较长，请稍后重新尝试。");
+  throw new Error("听悟在 3 小时内仍未返回结果，请稍后重新提交或检查阿里云任务状态。");
 }
 
 function existingLibraryItem(kind, base) {
@@ -3607,12 +3687,15 @@ async function createLocalKnowledgeNote(kind, base, transcript, directory, butto
 async function startPodcastTranscription(event) {
   const button = event.currentTarget;
   const progress = document.getElementById("podcast-progress");
-  if (!resolvedPodcastSource) { progress.textContent = "请先识别播客链接。"; return; }
+  if (!resolvedPodcastSource) { podcastProgress("error", "请先识别播客链接。"); return; }
+  const oldText = button.textContent;
   button.disabled = true;
+  button.textContent = "处理中…";
   try {
+    podcastProgress("prepare", "正在检查保存文件夹与 AI 设置…", "准备完成后会把任务提交给通义听悟");
     if (!hasAIKey()) throw new Error("请先在右下角「⚙️ AI」填写用于整理知识稿的 API Key。");
     const directory = await writableLibraryDirectory("podcast");
-    progress.textContent = "正在读取播客单集音频…";
+    podcastProgress("prepare", "正在提交这期播客…", "请保持当前页面打开");
     const task = await transcribeRequest("/api/transcribe", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -3620,10 +3703,14 @@ async function startPodcastTranscription(event) {
         action: "start",
         kind: "podcast",
         rssUrl: resolvedPodcastSource.rssUrl,
+        sourceUrl: resolvedPodcastSource.audioUrl,
         episodeTitle: resolvedPodcastSource.episodeTitle,
-        title: resolvedPodcastSource.episodeTitle || resolvedPodcastSource.podcast
+        title: resolvedPodcastSource.episodeTitle || resolvedPodcastSource.podcast,
+        publishedAt: resolvedPodcastSource.publishedAt,
+        durationMs: resolvedPodcastSource.durationMs
       })
     });
+    podcastProgress("transcribe", "任务已提交，等待听悟返回转写结果…", "长音频可能需要数分钟到更久，请保持页面打开");
     const result = await waitForTranscription(task.taskId, "", progress, "播客");
     const episode = task.title || resolvedPodcastSource.episodeTitle || "未命名单集";
     const base = safeLocalLibraryBase(`${resolvedPodcastSource.podcast} - ${episode}`, "播客知识稿");
@@ -3635,28 +3722,45 @@ async function startPodcastTranscription(event) {
       publishedAt: task.publishedAt || resolvedPodcastSource.publishedAt
     });
   } catch (error) {
-    progress.textContent = error.message || "播客转写没有完成。";
+    podcastProgress("error", error.message || "播客转写没有完成。", "没有生成或覆盖本地 MD");
   } finally {
     button.disabled = false;
+    button.textContent = oldText;
   }
 }
 
 async function uploadVideoForTranscription(file, progress) {
-  progress.textContent = `正在准备上传「${file.name}」…`;
+  videoProgress("source", `正在准备「${file.name}」…`, `文件大小 ${(file.size / 1024 / 1024).toFixed(1)} MB`);
   const signed = await transcribeRequest("/api/transcribe", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ action: "upload", filename: file.name, size: file.size, type: file.type })
   });
-  progress.textContent = `正在临时上传「${file.name}」…`;
-  const uploaded = await fetch(signed.uploadUrl, { method: "PUT", body: file });
-  if (!uploaded.ok) throw new Error(`「${file.name}」上传失败，请检查 OSS 跨域设置。`);
+  await new Promise((resolve, reject) => {
+    const request = new XMLHttpRequest();
+    request.open("PUT", signed.uploadUrl, true);
+    request.upload.addEventListener("progress", event => {
+      if (!event.lengthComputable) {
+        videoProgress("source", `正在临时上传「${file.name}」…`, "上传完成后才会开始听悟转写");
+        return;
+      }
+      const percent = Math.min(100, Math.round(event.loaded / event.total * 100));
+      videoProgress("source", `正在上传「${file.name}」 · ${percent}%`, `${(event.loaded / 1024 / 1024).toFixed(1)} / ${(event.total / 1024 / 1024).toFixed(1)} MB`);
+    });
+    request.addEventListener("load", () => {
+      if (request.status >= 200 && request.status < 300) resolve();
+      else reject(new Error(`「${file.name}」上传失败（${request.status || "无响应"}），请检查 OSS 跨域设置。`));
+    });
+    request.addEventListener("error", () => reject(new Error(`「${file.name}」上传失败，请检查网络或 OSS 跨域设置。`)));
+    request.addEventListener("abort", () => reject(new Error(`「${file.name}」上传已中止。`)));
+    request.send(file);
+  });
   return signed;
 }
 
 async function transcribeOneVideo(source, title, directory, button, progress) {
   title = safeLocalLibraryBase(title, "视频教程");
-  progress.textContent = `正在创建「${title}」的转写任务…`;
+  videoProgress("submit", `正在提交「${title}」的听悟任务…`, "素材已经准备完成");
   const task = await transcribeRequest("/api/transcribe", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
@@ -3672,8 +3776,11 @@ async function transcribeOneVideo(source, title, directory, button, progress) {
 async function startVideoTranscription(event) {
   const button = event.currentTarget;
   const progress = document.getElementById("video-progress");
+  const oldText = button.textContent;
   button.disabled = true;
+  button.textContent = "处理中…";
   try {
+    videoProgress("source", "正在检查视频、保存文件夹与 AI 设置…", "准备完成后会开始处理素材");
     if (!hasAIKey()) throw new Error("请先在右下角「⚙️ AI」填写用于整理教程笔记的 API Key。");
     const directory = await writableLibraryDirectory("video");
     if (videoSourceMode === "web") {
@@ -3685,14 +3792,15 @@ async function startVideoTranscription(event) {
       const files = selectedVideoFiles.slice();
       if (!files.length) throw new Error("请先选择视频。");
       for (let i = 0; i < files.length; i++) {
-        progress.textContent = `正在处理第 ${i + 1} / ${files.length} 个视频…`;
+        videoProgress("source", `正在处理第 ${i + 1} / ${files.length} 个视频…`, files[i].name);
         const signed = await uploadVideoForTranscription(files[i], progress);
         await transcribeOneVideo(signed, files[i].name, directory, button, progress);
       }
     }
   } catch (error) {
-    progress.textContent = error.message || "视频转写没有完成。";
+    videoProgress("error", error.message || "视频转写没有完成。", "没有生成或覆盖本地 MD");
   } finally {
+    button.textContent = oldText;
     updateVideoTranscribeButton();
   }
 }
@@ -4034,13 +4142,19 @@ async function generateLibraryNote(kind, item, button, keepDisabled) {
   const cfg = LIBRARY_TYPES[kind];
   const progress = document.getElementById(kind + "-progress");
   const chunks = transcriptChunks(item.txt.content, 8500);
-  if (chunks.length > 1 && !confirm(`这份原文较长，将分成 ${chunks.length} 段调用你配置的 AI。继续吗？`)) return;
+  if (chunks.length > 1 && !confirm(`这份原文较长，将分成 ${chunks.length} 段调用你配置的 AI。继续吗？`)) {
+    if (kind === "podcast") podcastProgress("error", "已取消 AI 梳理。", "听悟转写已经完成，但没有写入本地 MD");
+    else if (kind === "video") videoProgress("error", "已取消 AI 梳理。", "听悟转写已经完成，但没有写入本地 MD");
+    return;
+  }
   button.disabled = true;
   const oldText = button.textContent;
   try {
     const parts = [];
     for (let i = 0; i < chunks.length; i++) {
-      progress.textContent = `正在整理第 ${i + 1} / ${chunks.length} 段…请保持页面打开。`;
+      if (kind === "podcast") podcastProgress("organize", `AI 正在梳理第 ${i + 1} / ${chunks.length} 段…`, "转写已经完成；正在提取观点、金句与行动项，请保持页面打开");
+      else if (kind === "video") videoProgress("organize", `AI 正在整理第 ${i + 1} / ${chunks.length} 段…`, "转写已经完成；正在保留知识点、操作步骤与时间线，请保持页面打开");
+      else progress.textContent = `正在整理第 ${i + 1} / ${chunks.length} 段…请保持页面打开。`;
       const prompt = kind === "podcast"
         ? `这是播客《${item.base}》原文的第 ${i + 1}/${chunks.length} 段。提取本段的关键数据、可核对的金句、核心观点、行动项和可分享的谈资。忠于原文，保留说话人和时间戳；没有的类别不要硬凑。使用简体中文 Markdown，不写客套话。\n\n${chunks[i]}`
         : `这是教程视频《${item.base}》转写的第 ${i + 1}/${chunks.length} 段。请尽量完整保留知识点和操作步骤：写清步骤顺序、界面/菜单/命令/参数、预期结果、注意事项、报错与排查；保留原有时间戳。仅靠声音无法确认的按钮、代码或画面，明确标记“需要回看画面”，绝不猜测。使用简体中文 Markdown，不做压缩式摘要。\n\n${chunks[i]}`;
@@ -4048,28 +4162,39 @@ async function generateLibraryNote(kind, item, button, keepDisabled) {
     }
     let markdown;
     if (kind === "podcast") {
-      progress.textContent = "正在合并播客知识稿…";
+      podcastProgress("organize", "正在合并播客知识稿…", "分段梳理已经完成，正在去重并生成最终结构");
       const material = await reduceLibraryNotes(parts, "合并以下播客分段提炼，去掉重复但不得丢失独特事实、数据、金句与观点。仍按关键数据、金句、核心观点、行动项、谈资卡片、全文摘要组织。输出简体中文 Markdown。");
       markdown = cleanGeneratedMarkdown(await callAI(`请把以下材料整理成《${item.base}》的最终播客知识稿。结构依次为：关键数据、金句、核心观点、行动项、谈资卡片、全文摘要。摘要按话题时间线展开；忠于原文，不虚构说话人或数据。\n\n${material}`, "你是播客知识库编辑。省略客套话，只输出简体中文 Markdown。", { maxTokens: 4200 }));
       markdown = `${libraryFrontmatter(kind, item)}\n# ${item.base}\n\n${markdown}`;
     } else {
-      progress.textContent = "正在生成教程导航…";
+      videoProgress("organize", "正在生成教程导航…", "分段笔记已经完成，正在整理学习目标、时间线与复现路径");
       const indexMaterial = await reduceLibraryNotes(parts, "把以下教程分段笔记压缩为导航材料。保留章节顺序、关键操作、时间戳、风险点与需要回看画面之处。");
       const overview = cleanGeneratedMarkdown(await callAI(`根据材料为《${item.base}》生成教程学习导航，只包含：学习目标、开始前准备、章节时间线、最短复现路径、完成检查清单。没有依据的内容不要补。\n\n${indexMaterial}`, "你是教程课程编辑。使用简体中文 Markdown。", { maxTokens: 2800 }));
       markdown = `${libraryFrontmatter(kind, item)}\n# ${item.base}\n\n${overview}\n\n---\n\n## 分段详细笔记\n\n` + parts.map((part, i) => `### 第 ${i + 1} 段\n\n${part}`).join("\n\n");
     }
     const targetName = kind === "video" ? `${item.base}_学习笔记.md` : `${item.base}.md`;
-    if (item.md && !confirm(`已经有 ${item.md.name}。要用新生成的内容覆盖它吗？`)) { progress.textContent = "已取消覆盖，原文件保持不变。"; return; }
+    if (item.md && !confirm(`已经有 ${item.md.name}。要用新生成的内容覆盖它吗？`)) {
+      if (kind === "podcast") podcastProgress("error", "已取消覆盖，原文件保持不变。");
+      else if (kind === "video") videoProgress("error", "已取消覆盖，原文件保持不变。");
+      else progress.textContent = "已取消覆盖，原文件保持不变。";
+      return;
+    }
+    if (kind === "podcast") podcastProgress("save", "正在把知识稿写入本地文件夹…", targetName);
+    else if (kind === "video") videoProgress("save", "正在把教程笔记写入本地文件夹…", targetName);
     const parent = item.txt.parent;
     const target = await parent.getFileHandle(item.md ? item.md.name : targetName, { create: true });
     const writer = await target.createWritable();
     await writer.write(markdown);
     await writer.close();
-    progress.textContent = `已保存到本地：${item.md ? item.md.name : targetName}`;
+    if (kind === "podcast") podcastProgress("done", "播客知识稿已完成 ✓", `已保存到本地：${item.md ? item.md.name : targetName}`);
+    else if (kind === "video") videoProgress("done", "教程笔记已完成 ✓", `已保存到本地：${item.md ? item.md.name : targetName}`);
+    else progress.textContent = `已保存到本地：${item.md ? item.md.name : targetName}`;
     const root = await podcastSettingGet(cfg.setting);
     if (root) await loadLibraryFolder(kind, root, false);
   } catch (e) {
-    progress.textContent = e.message || `${cfg.noteLabel}生成失败，请稍后重试。`;
+    if (kind === "podcast") podcastProgress("error", e.message || `${cfg.noteLabel}生成失败，请稍后重试。`, "没有覆盖现有本地文稿");
+    else if (kind === "video") videoProgress("error", e.message || `${cfg.noteLabel}生成失败，请稍后重试。`, "没有覆盖现有本地文稿");
+    else progress.textContent = e.message || `${cfg.noteLabel}生成失败，请稍后重试。`;
   } finally {
     if (!keepDisabled) button.disabled = false;
     button.textContent = oldText;

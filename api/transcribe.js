@@ -23,9 +23,24 @@ const TEMP_PREFIX = "tingwu-temp/";
 const MAX_VIDEO_BYTES = 6 * 1024 * 1024 * 1024;
 const SUPPORTED_VIDEO = new Set(["mp4", "mov", "mkv", "webm", "m4v", "avi", "mpeg", "mpg", "3gp", "ogg"]);
 
+const ENV_ALIASES = {
+  ALIYUN_ACCESS_KEY_ID: ["ALIYUN_ACCESS_KEY_ID", "ALIBABA_CLOUD_ACCESS_KEY_ID"],
+  ALIYUN_ACCESS_KEY_SECRET: ["ALIYUN_ACCESS_KEY_SECRET", "ALIBABA_CLOUD_ACCESS_KEY_SECRET"],
+};
+
+const ENV_ERRORS = {
+  OWNER_TOKEN: "Vercel 尚未配置 OWNER_TOKEN",
+  ALIYUN_ACCESS_KEY_ID: "Vercel 的阿里云 AccessKey ID 尚未配置",
+  ALIYUN_ACCESS_KEY_SECRET: "Vercel 的阿里云 AccessKey Secret 尚未配置",
+  ALIYUN_OSS_BUCKET: "Vercel 尚未配置 ALIYUN_OSS_BUCKET",
+  ALIYUN_OSS_REGION: "Vercel 尚未配置 ALIYUN_OSS_REGION",
+  TINGWU_APP_KEY: "Vercel 尚未配置 TINGWU_APP_KEY",
+};
+
 function env(name) {
-  const value = String(process.env[name] || "").trim();
-  if (!value) throw new HttpError(503, "转写服务暂时不可用");
+  const names = ENV_ALIASES[name] || [name];
+  const value = names.map(key => String(process.env[key] || "").trim()).find(Boolean) || "";
+  if (!value) throw new HttpError(503, ENV_ERRORS[name] || `Vercel 缺少 ${name}`);
   return value;
 }
 
@@ -48,11 +63,13 @@ function bodyOf(req) {
 }
 
 function ossClient() {
+  let region = env("ALIYUN_OSS_REGION");
+  if (/^cn-[a-z0-9-]+$/i.test(region)) region = `oss-${region}`;
   return new OSS({
     accessKeyId: env("ALIYUN_ACCESS_KEY_ID"),
     accessKeySecret: env("ALIYUN_ACCESS_KEY_SECRET"),
     bucket: env("ALIYUN_OSS_BUCKET"),
-    region: env("ALIYUN_OSS_REGION"),
+    region,
     authorizationV4: true,
     secure: true,
   });
@@ -180,9 +197,19 @@ async function createTask(body) {
   let episode = null;
   if (kind === "podcast") {
     const rssUrl = String(body.rssUrl || "").trim();
-    if (!rssUrl) throw new HttpError(400, "缺少播客 RSS 地址");
-    episode = await resolvePodcastAudio(rssUrl, body.episodeTitle);
-    sourceUrl = episode.audioUrl;
+    if (sourceUrl) {
+      if (sourceUrl.length > 5000) throw new HttpError(400, "播客音频地址过长");
+      await assertPublicHttpUrl(sourceUrl);
+      episode = {
+        title: cleanName(body.episodeTitle, title),
+        publishedAt: String(body.publishedAt || "").slice(0, 80),
+        duration: Number(body.durationMs || 0),
+      };
+    } else {
+      if (!rssUrl) throw new HttpError(400, "缺少播客 RSS 或音频地址");
+      episode = await resolvePodcastAudio(rssUrl, body.episodeTitle);
+      sourceUrl = episode.audioUrl;
+    }
     title = cleanName(episode.title || title, title);
   } else {
     if (!sourceUrl || sourceUrl.length > 5000) throw new HttpError(400, "缺少视频地址");

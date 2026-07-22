@@ -21,10 +21,6 @@ function decodeHtml(value) {
   });
 }
 
-function decodeJsonString(value) {
-  try { return JSON.parse('"' + value + '"'); } catch (_) { return value.replace(/\\u([0-9a-f]{4})/gi, (_, h) => String.fromCharCode(parseInt(h, 16))); }
-}
-
 async function appleJson(url) {
   const response = await fetch(url, { headers: { Accept: "application/json", "User-Agent": "arinrin-space/1.0" } });
   if (!response.ok) throw new Error("苹果播客查询暂时不可用");
@@ -69,36 +65,42 @@ function metaContent(html, property) {
   return decodeHtml((a || b || [])[1] || "");
 }
 
-function xiaoyuzhouNames(html) {
-  const pageTitle = metaContent(html, "og:title") || decodeHtml((html.match(/<title[^>]*>([\s\S]*?)<\/title>/i) || [])[1] || "");
-  const podcastJson = html.match(/"podcast"\s*:\s*\{[\s\S]{0,1800}?"title"\s*:\s*"((?:\\.|[^"\\])*)"/i);
-  let podcast = podcastJson ? decodeJsonString(podcastJson[1]) : "";
-  let episode = pageTitle.replace(/\s*[|｜]\s*小宇宙.*$/i, "").trim();
-  if (!podcast) {
-    const dash = episode.match(/^(.*?)[\s　]*[-—–｜|][\s　]*([^\-—–｜|]+)$/);
-    if (dash) { episode = dash[1].trim(); podcast = dash[2].trim(); }
+function isoDurationMs(value) {
+  const match = String(value || "").match(/^PT(?:(\d+)H)?(?:(\d+)M)?(?:(\d+(?:\.\d+)?)S)?$/i);
+  if (!match) return 0;
+  return Math.round((Number(match[1] || 0) * 3600 + Number(match[2] || 0) * 60 + Number(match[3] || 0)) * 1000);
+}
+
+export function xiaoyuzhouEpisode(html) {
+  const scripts = Array.from(String(html || "").matchAll(/<script[^>]+type=["']application\/ld\+json["'][^>]*>([\s\S]*?)<\/script>/gi));
+  let schema = null;
+  for (const match of scripts) {
+    try {
+      let parsed;
+      try { parsed = JSON.parse(match[1].trim()); }
+      catch (_) { parsed = JSON.parse(decodeHtml(match[1]).trim()); }
+      const candidates = Array.isArray(parsed) ? parsed : [parsed];
+      schema = candidates.find(item => item && item["@type"] === "PodcastEpisode") || schema;
+    } catch (_) {}
   }
-  return { podcast: text(podcast), episode: text(episode) };
-}
-
-function comparable(value) {
-  return String(value || "").toLowerCase().replace(/[\s·・\-—–_|｜:：,，.。'"“”‘’]/g, "");
-}
-
-async function searchPodcasts(term) {
-  const data = await appleJson(`https://itunes.apple.com/search?term=${encodeURIComponent(term)}&media=podcast&country=CN&limit=8`);
-  const wanted = comparable(term);
-  return (data.results || [])
-    .filter(item => item.feedUrl)
-    .map(item => {
-      const result = podcastResult(item);
-      const name = comparable(result.podcast);
-      const score = name === wanted ? 3 : (name.includes(wanted) || wanted.includes(name) ? 2 : 1);
-      return { ...result, score };
-    })
-    .sort((a, b) => b.score - a.score)
-    .slice(0, 5)
-    .map(({ score, ...item }) => item);
+  const episode = text((schema && schema.name) || metaContent(html, "og:title"));
+  const podcast = text(schema && schema.partOfSeries && schema.partOfSeries.name);
+  const audioUrl = text(
+    (schema && schema.associatedMedia && (schema.associatedMedia.contentUrl || schema.associatedMedia.url)) ||
+    metaContent(html, "og:audio"),
+    2000
+  );
+  if (!episode || !podcast) throw new Error("没有从小宇宙页面识别出准确的节目与单集");
+  if (!audioUrl) throw new Error("这期小宇宙单集没有公开音频，可以改用苹果播客链接");
+  return {
+    source: "xiaoyuzhou",
+    exact: true,
+    podcast,
+    episode,
+    audioUrl,
+    publishedAt: text(schema && schema.datePublished, 40),
+    durationMs: isoDurationMs(schema && schema.timeRequired),
+  };
 }
 
 async function resolveXiaoyuzhou(url) {
@@ -110,11 +112,7 @@ async function resolveXiaoyuzhou(url) {
       headers: { "User-Agent": "Mozilla/5.0 (compatible; arinrin.space podcast resolver)", Accept: "text/html" },
     });
     if (!response.ok) throw new Error("小宇宙页面暂时无法读取");
-    const names = xiaoyuzhouNames(await readTextLimited(response, 1_500_000));
-    if (!names.podcast) throw new Error("没有识别出节目名称，可以改用苹果播客链接");
-    const candidates = await searchPodcasts(names.podcast);
-    if (!candidates.length) throw new Error("没有在苹果播客中找到这个节目的公开 RSS");
-    return { source: "xiaoyuzhou", exact: candidates.length === 1 || comparable(candidates[0].podcast) === comparable(names.podcast), episode: names.episode, podcast: names.podcast, candidates };
+    return xiaoyuzhouEpisode(await readTextLimited(response, 1_500_000));
   } finally {
     clearTimeout(timer);
   }
