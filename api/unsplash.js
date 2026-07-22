@@ -7,35 +7,17 @@
 // 返回:{ url, author, authorLink, unsplashLink }
 //   unsplashLink = 这张照片自己的页面(不是 unsplash.com 首页)
 
+import { applyCors, rateLimited } from "../lib/api-security.js";
+
 const APP_NAME = "arinrin_space";
 const UTM = `utm_source=${APP_NAME}&utm_medium=referral`;
 
 export const config = { maxDuration: 30 };
 
-// —— 简易限流:同一 IP 一段时间内限次数,顺带保护 Unsplash 自己的调用配额(demo key 每小时 50 次)——
-async function rateLimited(req, res, bucket, limit, windowSec) {
-  const url = process.env.UPSTASH_REDIS_REST_URL || process.env.KV_REST_API_URL;
-  const token = process.env.UPSTASH_REDIS_REST_TOKEN || process.env.KV_REST_API_TOKEN;
-  if (!url || !token) return false;
-  try {
-    const ip = ((req.headers["x-forwarded-for"] || req.socket?.remoteAddress || "unknown") + "").split(",")[0].trim();
-    const key = "rl:" + bucket + ":" + ip;
-    const r1 = await fetch(url, { method: "POST", headers: { Authorization: "Bearer " + token, "Content-Type": "application/json" }, body: JSON.stringify(["INCR", key]) });
-    const count = (await r1.json()).result;
-    if (count === 1) {
-      fetch(url, { method: "POST", headers: { Authorization: "Bearer " + token, "Content-Type": "application/json" }, body: JSON.stringify(["EXPIRE", key, windowSec]) }).catch(() => {});
-    }
-    if (count > limit) {
-      res.setHeader("Retry-After", String(windowSec));
-      res.status(429).json({ error: "请求太频繁,请稍后再试。" });
-      return true;
-    }
-    return false;
-  } catch (e) { return false; }
-}
-
 export default async function handler(req, res) {
-  res.setHeader("Access-Control-Allow-Origin", "*");
+  if (!applyCors(req, res, ["GET", "OPTIONS"])) return res.status(403).json({ error: "不允许从这个网站调用" });
+  if (req.method === "OPTIONS") return res.status(204).end();
+  if (req.method !== "GET") return res.status(405).json({ error: "只支持 GET" });
   if (await rateLimited(req, res, "unsplash", 40, 600)) return; // 10 分钟内 40 次
 
   const key =

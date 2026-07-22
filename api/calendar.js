@@ -10,28 +10,10 @@
 //   3) 10 秒超时,最大 2MB,防止被拖住或塞爆内存
 //   4) 响应必须看起来像日历,否则丢弃
 
+import { applyCors, fetchPublicUrl, rateLimited, readTextLimited, sendHttpError } from "../lib/api-security.js";
+
 const MAX_BYTES = 2 * 1024 * 1024;   // 2MB 上限
 const TIMEOUT_MS = 10000;            // 10 秒超时
-
-// 拒绝内网 / 本机 / 云元数据地址
-function isBlockedHost(hostname) {
-  const h = hostname.toLowerCase();
-  if (h === "localhost" || h.endsWith(".localhost") || h.endsWith(".local")) return true;
-  if (h === "metadata.google.internal") return true;
-  // IPv6 本机
-  if (h === "::1" || h === "[::1]") return true;
-  // IPv4 字面量:检查私有段
-  const m = h.match(/^(\d{1,3})\.(\d{1,3})\.(\d{1,3})\.(\d{1,3})$/);
-  if (m) {
-    const a = +m[1], b = +m[2];
-    if (a === 127 || a === 0 || a === 10) return true;              // 本机 / 私有
-    if (a === 172 && b >= 16 && b <= 31) return true;               // 私有
-    if (a === 192 && b === 168) return true;                        // 私有
-    if (a === 169 && b === 254) return true;                        // 链路本地(含云元数据)
-    if (a >= 224) return true;                                      // 组播 / 保留
-  }
-  return false;
-}
 
 function unfold(text) {
   return text.replace(/\r\n[ \t]/g, "").replace(/\n[ \t]/g, "");
@@ -53,14 +35,15 @@ function sameDay(a, b) {
 }
 
 export default async function handler(req, res) {
-  res.setHeader("Access-Control-Allow-Origin", "*");
-  res.setHeader("Access-Control-Allow-Methods", "POST, OPTIONS");
-  res.setHeader("Access-Control-Allow-Headers", "Content-Type");
-  if (req.method === "OPTIONS") return res.status(200).end();
+  if (!applyCors(req, res, ["POST", "OPTIONS"])) return res.status(403).json({ error: "不允许从这个网站调用" });
+  res.setHeader("Cache-Control", "no-store");
+  if (req.method === "OPTIONS") return res.status(204).end();
   if (req.method !== "POST") return res.status(405).json({ error: "只支持 POST" });
+  if (await rateLimited(req, res, "calendar", 30, 600)) return;
 
   let body = req.body;
   if (typeof body === "string") { try { body = JSON.parse(body); } catch (e) { body = {}; } }
+  if (JSON.stringify(body || {}).length > 5000) return res.status(413).json({ error: "请求内容过大" });
   let raw_url = body && body.url;
   const days = body && body.days;
   if (!raw_url) return res.status(400).json({ error: "缺少日历链接" });
@@ -68,39 +51,18 @@ export default async function handler(req, res) {
   raw_url = String(raw_url).trim().replace(/^webcal:\/\//i, "https://");
   if (raw_url.length > 2000) return res.status(400).json({ error: "链接过长" });
 
-  // —— 安全校验 ——
-  let target;
-  try { target = new URL(raw_url); } catch (e) {
-    return res.status(400).json({ error: "链接格式不正确" });
-  }
-  if (target.protocol !== "http:" && target.protocol !== "https:") {
-    return res.status(400).json({ error: "只支持 http/https 链接" });
-  }
-  if (isBlockedHost(target.hostname)) {
-    return res.status(400).json({ error: "不允许访问该地址" });
-  }
-
-  const range = Math.min(parseInt(days, 10) || 1, 31);
+  const range = Math.max(1, Math.min(parseInt(days, 10) || 1, 31));
+  const ctrl = new AbortController();
+  const timer = setTimeout(() => ctrl.abort(), TIMEOUT_MS);
 
   try {
-    const ctrl = new AbortController();
-    const timer = setTimeout(() => ctrl.abort(), TIMEOUT_MS);
-    const r = await fetch(target.toString(), {
+    const { response: r } = await fetchPublicUrl(raw_url, {
       headers: { "User-Agent": "Mozilla/5.0", Accept: "text/calendar,*/*" },
-      redirect: "follow",
       signal: ctrl.signal,
     });
-    clearTimeout(timer);
 
     if (!r.ok) return res.status(502).json({ error: "无法读取该日历链接(状态 " + r.status + ")" });
-
-    // 大小上限:先看声明的长度,再按实际读入截断
-    const declared = parseInt(r.headers.get("content-length") || "0", 10);
-    if (declared && declared > MAX_BYTES) {
-      return res.status(413).json({ error: "日历文件过大" });
-    }
-    let text = await r.text();
-    if (text.length > MAX_BYTES) text = text.slice(0, MAX_BYTES);
+    const text = await readTextLimited(r, MAX_BYTES);
 
     const raw = unfold(text);
     if (!raw.includes("BEGIN:VCALENDAR")) {
@@ -147,7 +109,8 @@ export default async function handler(req, res) {
         const freq = (rrule.match(/FREQ=(\w+)/) || [])[1];
         const interval = parseInt((rrule.match(/INTERVAL=(\d+)/) || [])[1] || "1", 10);
         const untilRaw = (rrule.match(/UNTIL=([\dTZ]+)/) || [])[1];
-        const until = untilRaw ? parseDT(untilRaw).date : null;
+        const untilParsed = untilRaw ? parseDT(untilRaw) : null;
+        const until = untilParsed ? untilParsed.date : null;
         let cur = new Date(dt.date);
         let guard = 0;
         while (cur < end && guard++ < 500) {
@@ -165,10 +128,10 @@ export default async function handler(req, res) {
     }
 
     events.sort((a, b) => new Date(a.start) - new Date(b.start));
-    res.setHeader("Cache-Control", "no-store");
     return res.status(200).json({ events: events.slice(0, 60) });
   } catch (e) {
-    const msg = (e && e.name === "AbortError") ? "读取超时" : "读取日历失败";
-    return res.status(502).json({ error: msg });
+    return sendHttpError(res, e, "读取日历失败");
+  } finally {
+    clearTimeout(timer);
   }
 }

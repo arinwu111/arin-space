@@ -8,6 +8,8 @@
 //   /api/quotes?symbols=AAPL,NVDA,0700.HK,600519.SS   → 批量行情
 //   /api/quotes?search=英伟达                          → 搜索股票代码
 
+import { applyCors, rateLimited } from "../lib/api-security.js";
+
 const YH_HEADERS = {
   "User-Agent":
     "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36",
@@ -47,18 +49,21 @@ async function fetchOne(symbol) {
 }
 
 export default async function handler(req, res) {
-  res.setHeader("Access-Control-Allow-Origin", "*");
-  res.setHeader("Access-Control-Allow-Methods", "GET, OPTIONS");
-  if (req.method === "OPTIONS") return res.status(200).end();
+  if (!applyCors(req, res, ["GET", "OPTIONS"])) return res.status(403).json({ error: "不允许从这个网站调用" });
+  if (req.method === "OPTIONS") return res.status(204).end();
+  if (req.method !== "GET") return res.status(405).json({ error: "只支持 GET" });
+  if (await rateLimited(req, res, "quotes", 100, 600)) return;
 
   const { symbols, search } = req.query;
 
   try {
     // ===== 搜索模式 =====
     if (search) {
+      const query = String(search).trim().slice(0, 80);
+      if (!query) return res.status(400).json({ error: "搜索内容不能为空" });
       const url =
         "https://query1.finance.yahoo.com/v1/finance/search?quotesCount=10&newsCount=0&q=" +
-        encodeURIComponent(search);
+        encodeURIComponent(query);
       const r = await fetch(url, { headers: YH_HEADERS });
       const data = await r.json();
       const quotes = (data.quotes || [])
@@ -75,7 +80,8 @@ export default async function handler(req, res) {
 
     // ===== 批量行情模式(并发逐个查 chart) =====
     if (symbols) {
-      const list = symbols.split(",").map((s) => s.trim()).filter(Boolean).slice(0, 40);
+      const list = String(symbols).split(",").map((s) => s.trim()).filter((s) => /^[A-Za-z0-9.^=_-]{1,32}$/.test(s)).slice(0, 40);
+      if (!list.length) return res.status(400).json({ error: "没有有效的股票代码" });
       const settled = await Promise.all(list.map((s) => fetchOne(s)));
       const quotes = settled.filter(Boolean);
       res.setHeader("Cache-Control", "s-maxage=15");

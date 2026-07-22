@@ -124,15 +124,35 @@
   .library-step { padding: 12px 13px; border-radius: 11px; background: rgba(255,255,255,.055); border: 1px solid rgba(255,255,255,.1); }
   .library-step b { display: block; font-size: 13px; margin-bottom: 4px; }
   .library-step span { display: block; color: var(--text-sub); font-size: 11.5px; line-height: 1.65; }
+  .library-heading { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 8px; }
+  .library-heading strong { font-size: 15px; font-weight: 600; }
+  .library-number { display: inline-grid; place-items: center; width: 22px; height: 22px; margin-right: 7px; border-radius: 50%; background: rgba(255,255,255,.12); font-size: 11px; }
+  .library-url-row { display: grid; grid-template-columns: 1fr auto; gap: 8px; margin-top: 13px; }
+  .library-url-row input { width: 100%; min-width: 0; background: rgba(255,255,255,.07); border: 1px solid rgba(255,255,255,.14); border-radius: 10px; padding: 10px 12px; color: var(--text-main); font: inherit; font-size: 13px; outline: none; }
+  .rss-result { display: none; margin-top: 13px; padding: 13px 14px; border-radius: 11px; background: rgba(255,255,255,.055); border: 1px solid rgba(255,255,255,.1); }
+  .rss-result.on { display: block; }
+  .rss-address { margin-top: 7px; padding: 8px 10px; border-radius: 8px; background: rgba(0,0,0,.18); color: var(--text-sub); font: 11px/1.6 ui-monospace, SFMono-Regular, Menlo, monospace; overflow-wrap: anywhere; }
+  .video-source-row { display: flex; align-items: center; gap: 10px; padding: 11px 0; border-top: 1px solid rgba(255,255,255,.09); }
+  .video-source-row:first-child { border-top: 0; }
+  .video-source-main { min-width: 0; flex: 1; }
+  .video-source-name { font-size: 13px; line-height: 1.55; overflow-wrap: anywhere; }
+  .video-source-meta { color: var(--text-sub); font-size: 10.5px; margin-top: 2px; }
+  .video-source-row button { width: auto; flex: 0 0 auto; padding: 7px 10px; font-size: 11px; }
+  .transcribe-flow { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; margin: 13px 0; color: var(--text-sub); font-size: 11px; }
+  .transcribe-flow span { padding: 5px 8px; border: 1px solid rgba(255,255,255,.1); border-radius: 999px; background: rgba(255,255,255,.04); }
+  .transcribe-flow i { opacity: .5; font-style: normal; }
+  .transcribe-source-tabs { display: flex; gap: 7px; margin: 13px 0 9px; }
+  .transcribe-source-tabs button { width: auto; padding: 7px 12px; font-size: 11px; }
+  .transcribe-source-panel[hidden] { display: none; }
+  .transcribe-primary { width: auto; margin-top: 12px; }
+  .transcribe-primary[disabled] { opacity: .55; cursor: not-allowed; }
+  .transcribe-service-link { color: var(--text-main); text-decoration-color: rgba(255,255,255,.45); text-underline-offset: 3px; }
   .library-file-badges { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 9px; }
   .library-badge { padding: 2px 8px; border-radius: 20px; font-size: 10.5px; color: var(--text-sub); background: rgba(255,255,255,.08); border: 1px solid rgba(255,255,255,.1); }
   .library-badge.ready { color: #bcebcf; background: rgba(105,205,151,.12); }
   .transcript-plain { white-space: pre-wrap; overflow-wrap: anywhere; color: var(--text-main); font-size: 13px; line-height: 1.9; }
-  .video-local-player { display: none; margin-top: 14px; }
-  .video-local-player.on { display: block; }
-  .video-local-player video { display: block; width: 100%; max-height: 420px; border-radius: 12px; background: #050505; }
   .library-progress { min-height: 1.6em; }
-  @media (max-width: 620px) { .library-workflow { grid-template-columns: 1fr; } }
+  @media (max-width: 620px) { .library-workflow, .library-url-row { grid-template-columns: 1fr; } }
   /* 论文解读 */
   .paper-source-grid { display: grid; grid-template-columns: 1fr auto; gap: 8px; margin-top: 10px; }
   .paper-input, .paper-textarea {
@@ -1932,19 +1952,28 @@
     <!-- 播客文稿 -->
     <section class="health-view" id="study-view-podcast" data-study-view="podcast" hidden>
       <div class="card" style="margin-bottom:18px;">
-        <div class="section-sub" style="margin-top:0;display:flex;align-items:center;justify-content:space-between;">
-          <span>🎙️ 播客文稿</span>
-          <span class="refresh-btn" id="podcast-bind-folder">绑定文稿文件夹</span>
+        <div class="library-heading"><strong><span class="library-number">1</span>生成播客知识稿</strong></div>
+        <p class="price-note" style="margin:0;">粘贴苹果播客或小宇宙的单集链接。系统会识别 RSS、调用听悟转写，再按播客笔记风格整理成一份 MD。</p>
+        <div class="transcribe-flow" aria-label="处理流程"><span>识别节目</span><i>→</i><span>听悟转写</span><i>→</i><span>AI 梳理</span><i>→</i><span>保存 MD</span></div>
+        <div class="library-url-row">
+          <input id="podcast-link" type="url" placeholder="https://podcasts.apple.com/… 或 https://www.xiaoyuzhoufm.com/episode/…">
+          <button class="zen-mode-btn" id="podcast-resolve" type="button">识别链接</button>
         </div>
-        <p class="price-note" style="margin:0;">原始转写保存为 TXT，整理后的知识稿保存为 MD；文件名相近时会自动放在同一张卡片里。</p>
-        <div class="library-workflow">
-          <div class="library-step"><b>还没有文稿</b><span>使用你自己的通义听悟账号完成转写，不会消耗本站额度。</span></div>
-          <div class="library-step"><b>已经完成转写</b><span>把 TXT / MD 带回来，本站在你的浏览器中读取和整理。</span></div>
+        <div id="podcast-resolve-note" class="price-note library-progress" style="margin-top:8px;"></div>
+        <div id="podcast-rss-result" class="rss-result"></div>
+        <button class="zen-mode-btn transcribe-primary" id="podcast-transcribe" type="button" disabled>开始转写并整理</button>
+        <div class="price-note" style="margin-top:8px;">完成后只把整理好的 MD 保存到你绑定的文件夹；完整逐字稿作为处理中间文件，不放进书房。</div>
+      </div>
+
+      <div class="card" style="margin-bottom:18px;">
+        <div class="library-heading">
+          <strong><span class="library-number">2</span>播客知识库</strong>
+          <span class="refresh-btn" id="podcast-bind-folder">绑定保存文件夹</span>
         </div>
+        <p class="price-note" style="margin:0;">读取保存在你电脑里的 MD 知识稿。文件仍在本地，网页只负责整理和阅读。</p>
         <div class="podcast-actions">
-          <a class="zen-mode-btn" href="https://tingwu.aliyun.com/home" target="_blank" rel="noopener" style="text-decoration:none;text-align:center;">前往通义听悟 ↗</a>
-          <label class="zen-mode-btn" style="cursor:pointer;text-align:center;">导入 TXT / MD
-            <input id="podcast-import" type="file" accept=".txt,.md,text/plain,text/markdown" multiple style="display:none;">
+          <label class="zen-mode-btn" style="cursor:pointer;text-align:center;">导入已有 MD
+            <input id="podcast-import" type="file" accept=".md,text/markdown" multiple style="display:none;">
           </label>
         </div>
         <div id="podcast-folder-state" class="price-note" style="margin-top:10px;"></div>
@@ -1959,33 +1988,46 @@
       </div>
       <div id="podcast-list"></div>
       <div id="podcast-progress" class="price-note library-progress" style="margin-top:12px;"></div>
-      <div class="price-note" style="margin-top:4px;">本地文稿不会上传到本站服务器。生成知识稿时，选中的文字会经本站服务转发给你配置的 AI；推荐使用 Chrome 或 Edge。</div>
+      <div class="price-note" style="margin-top:4px;">本地文稿不会上传到本站服务器；生成新文稿时，素材只会发送给你主动使用的听悟与 AI 服务。推荐使用 Chrome 或 Edge。</div>
     </section>
 
     <!-- 视频学习 -->
     <section class="health-view" id="study-view-video" data-study-view="video" hidden>
       <div class="card" style="margin-bottom:18px;">
-        <div class="section-sub" style="margin-top:0;display:flex;align-items:center;justify-content:space-between;">
-          <span>🎬 视频学习</span>
-          <span class="refresh-btn" id="video-bind-folder">绑定文稿文件夹</span>
+        <div class="library-heading">
+          <strong><span class="library-number">1</span>生成教程笔记</strong>
         </div>
-        <p class="price-note" style="margin:0;">视频只在当前浏览器播放；TXT 保留完整转写，MD 保留教程的知识点、操作步骤与回看时间。</p>
-        <div class="library-workflow">
-          <div class="library-step"><b>边看边学</b><span>选择本地视频只用于播放，不会自动上传，也不会发送给本站。</span></div>
-          <div class="library-step"><b>需要转写</b><span>前往通义听悟使用自己的账号，完成后把 TXT 带回来生成学习笔记。</span></div>
+        <p class="price-note" style="margin:0;">选择本地视频，或粘贴可访问的视频链接。系统完成转写后，会保留知识点、操作步骤、时间线与需要回看的画面，生成教程型 MD。</p>
+        <div class="transcribe-flow" aria-label="处理流程"><span>读取视频</span><i>→</i><span>听悟转写</span><i>→</i><span>教程整理</span><i>→</i><span>保存 MD</span></div>
+        <div class="transcribe-source-tabs" role="tablist">
+          <button class="zen-mode-btn active" id="video-source-local" type="button">本地视频</button>
+          <button class="zen-mode-btn" id="video-source-web" type="button">网页链接</button>
         </div>
+        <div class="transcribe-source-panel" id="video-local-panel">
+          <label class="zen-mode-btn" style="cursor:pointer;text-align:center;display:inline-block;width:auto;">选择视频
+            <input id="video-file-input" type="file" accept="video/*,.mp4,.mov,.mkv,.webm,.m4v,.avi,.mpeg,.3gp,.ogg" multiple style="display:none;">
+          </label>
+          <div id="video-selection-list" style="margin-top:12px;"></div>
+        </div>
+        <div class="transcribe-source-panel" id="video-web-panel" hidden>
+          <input id="video-web-url" type="url" placeholder="粘贴可公开访问的视频地址">
+          <div class="price-note" style="margin-top:7px;">第一阶段支持视频文件直链；需要登录、鉴权或页面解析的网站将在后续逐站适配。</div>
+        </div>
+        <div id="video-selection-note" class="price-note library-progress" style="margin-top:8px;">选择一个本地视频开始。</div>
+        <button class="zen-mode-btn transcribe-primary" id="video-transcribe" type="button" disabled>开始转写并整理</button>
+        <div class="price-note" style="margin-top:8px;">完成后只保存整理好的 MD；完整转写不在书房展示。需要单独处理时，可前往 <a class="transcribe-service-link" href="https://tingwu.aliyun.com/home" target="_blank" rel="noopener">通义听悟 ↗</a>。</div>
+      </div>
+
+      <div class="card" style="margin-bottom:18px;">
+        <div class="library-heading">
+          <strong><span class="library-number">2</span>视频学习库</strong>
+          <span class="refresh-btn" id="video-bind-folder">绑定保存文件夹</span>
+        </div>
+        <p class="price-note" style="margin:0;">读取保存在你电脑里的 MD 教程笔记，按标题、知识点和操作步骤搜索。</p>
         <div class="podcast-actions">
-          <label class="zen-mode-btn" style="cursor:pointer;text-align:center;">选择本地视频
-            <input id="video-local-file" type="file" accept="video/*,.mp4,.mov,.mkv,.webm" style="display:none;">
+          <label class="zen-mode-btn" style="cursor:pointer;text-align:center;">导入已有 MD
+            <input id="video-import" type="file" accept=".md,text/markdown" multiple style="display:none;">
           </label>
-          <a class="zen-mode-btn" href="https://tingwu.aliyun.com/home" target="_blank" rel="noopener" style="text-decoration:none;text-align:center;">前往通义听悟 ↗</a>
-          <label class="zen-mode-btn" style="cursor:pointer;text-align:center;">导入 TXT / MD
-            <input id="video-import" type="file" accept=".txt,.md,text/plain,text/markdown" multiple style="display:none;">
-          </label>
-        </div>
-        <div id="video-local-player" class="video-local-player">
-          <video id="video-player" controls preload="metadata"></video>
-          <div id="video-file-state" class="price-note" style="margin-top:8px;"></div>
         </div>
         <div id="video-folder-state" class="price-note" style="margin-top:10px;"></div>
         <div class="podcast-actions" id="video-folder-actions" style="display:none;">
@@ -1999,7 +2041,7 @@
       </div>
       <div id="video-list"></div>
       <div id="video-progress" class="price-note library-progress" style="margin-top:12px;"></div>
-      <div class="price-note" style="margin-top:4px;">本地视频和文稿不会上传到本站服务器；只有你主动前往转写服务或调用自己的 AI 时，相关内容才会发送给对应服务。</div>
+      <div class="price-note" style="margin-top:4px;">绑定的文件夹与其中的文稿只在你的浏览器里读取，不会开放给其他访客。</div>
     </section>
 
     <!-- 论文解读 -->
@@ -3289,7 +3331,9 @@ const LIBRARY_TYPES = {
 const libraryInited = { podcast: false, video: false };
 const libraryOpen = { podcast: null, video: null };
 const libraryCache = { podcast: [], video: [] };
-let selectedVideoUrl = "";
+let podcastResolverInited = false;
+let videoPickerInited = false;
+let selectedVideoFiles = [];
 
 function podcastDB() {
   return new Promise((resolve, reject) => {
@@ -3332,8 +3376,121 @@ async function podcastSettingDelete(key) {
   });
 }
 
-function initPodcasts() { initLocalLibrary("podcast"); }
-function initVideos() { initLocalLibrary("video"); }
+function initPodcastResolver() {
+  if (podcastResolverInited) return;
+  podcastResolverInited = true;
+  const input = document.getElementById("podcast-link");
+  document.getElementById("podcast-resolve").addEventListener("click", resolvePodcastLink);
+  input.addEventListener("keydown", event => { if (event.key === "Enter") resolvePodcastLink(); });
+}
+
+async function resolvePodcastLink() {
+  const input = document.getElementById("podcast-link");
+  const button = document.getElementById("podcast-resolve");
+  const note = document.getElementById("podcast-resolve-note");
+  const result = document.getElementById("podcast-rss-result");
+  const url = input.value.trim();
+  if (!url) { note.textContent = "请先粘贴苹果播客或小宇宙的单集链接。"; return; }
+  button.disabled = true; button.textContent = "正在查找…";
+  note.textContent = "正在识别节目并查询公开 RSS…";
+  result.classList.remove("on"); result.innerHTML = "";
+  try {
+    const response = await fetch("/api/podcast-rss?url=" + encodeURIComponent(url));
+    const data = await response.json();
+    if (!response.ok || data.error) throw new Error(data.error || "RSS 解析失败");
+    note.textContent = "已识别节目与 RSS。";
+    if (data.rss) renderResolvedRss(data, data);
+    else if (Array.isArray(data.candidates) && data.candidates.length) {
+      const exact = data.exact ? data.candidates[0] : null;
+      if (exact) renderResolvedRss(data, exact);
+      else renderRssCandidates(data);
+    } else throw new Error("没有找到可用的 RSS");
+  } catch (error) {
+    note.textContent = error.message || "RSS 解析失败。";
+  } finally {
+    button.disabled = false; button.textContent = "识别链接";
+  }
+}
+
+function renderRssCandidates(data) {
+  const result = document.getElementById("podcast-rss-result");
+  result.classList.add("on");
+  result.innerHTML = `<div class="podcast-card-title">找到几个可能的节目</div>
+    <div class="podcast-meta">小宇宙显示为「${escapeHtml(data.podcast || "未识别节目名")}」，请选择正确的一项。</div>` +
+    data.candidates.map((item, index) => `<div class="video-source-row">
+      <div class="video-source-main"><div class="video-source-name">${escapeHtml(item.podcast)}</div><div class="video-source-meta">${escapeHtml(item.author || "")}</div></div>
+      <button class="zen-mode-btn" data-rss-candidate="${index}" type="button">选这个</button>
+    </div>`).join("");
+  result.querySelectorAll("[data-rss-candidate]").forEach(button => button.addEventListener("click", () => {
+    renderResolvedRss(data, data.candidates[Number(button.dataset.rssCandidate)]);
+  }));
+}
+
+function renderResolvedRss(context, item) {
+  const result = document.getElementById("podcast-rss-result");
+  result.classList.add("on");
+  result.innerHTML = `<div class="podcast-card-title">${escapeHtml(item.podcast || context.podcast || "已找到节目")}</div>
+    <div class="podcast-meta">${context.episode ? "单集 · " + escapeHtml(context.episode) : "节目 RSS"}${item.author ? " · " + escapeHtml(item.author) : ""}</div>
+    <div class="rss-address">${escapeHtml(item.rss)}</div>
+    <div class="podcast-actions">
+      <button class="zen-mode-btn" id="podcast-rss-copy" type="button">复制 RSS · 备用</button>
+    </div>`;
+  document.getElementById("podcast-rss-copy").addEventListener("click", async event => {
+    try {
+      await navigator.clipboard.writeText(item.rss);
+      event.currentTarget.textContent = "已复制 ✓";
+    } catch (_) {
+      window.prompt("复制这个 RSS：", item.rss);
+    }
+  });
+}
+
+function initVideoPicker() {
+  if (videoPickerInited) return;
+  videoPickerInited = true;
+  const localTab = document.getElementById("video-source-local");
+  const webTab = document.getElementById("video-source-web");
+  const localPanel = document.getElementById("video-local-panel");
+  const webPanel = document.getElementById("video-web-panel");
+  const switchSource = source => {
+    const local = source === "local";
+    localPanel.hidden = !local;
+    webPanel.hidden = local;
+    localTab.classList.toggle("active", local);
+    webTab.classList.toggle("active", !local);
+    document.getElementById("video-selection-note").textContent = local
+      ? (selectedVideoFiles.length ? `已选择 ${selectedVideoFiles.length} 个视频；文件仍留在当前浏览器，没有上传。` : "选择一个本地视频开始。")
+      : "粘贴可访问的视频地址开始。";
+  };
+  localTab.addEventListener("click", () => switchSource("local"));
+  webTab.addEventListener("click", () => switchSource("web"));
+  document.getElementById("video-file-input").addEventListener("change", event => {
+    selectedVideoFiles = Array.from(event.target.files || []);
+    renderSelectedVideos();
+  });
+}
+
+function renderSelectedVideos() {
+  const el = document.getElementById("video-selection-list");
+  const note = document.getElementById("video-selection-note");
+  if (!selectedVideoFiles.length) {
+    el.innerHTML = "";
+    note.textContent = "选择一个本地视频开始。";
+    return;
+  }
+  el.innerHTML = selectedVideoFiles.map((file, index) => `<div class="video-source-row">
+    <div class="video-source-main"><div class="video-source-name">${escapeHtml(file.name)}</div><div class="video-source-meta">${(file.size / 1024 / 1024).toFixed(1)} MB · 尚未上传</div></div>
+    <button class="zen-mode-btn" data-remove-video="${index}" type="button">移除</button>
+  </div>`).join("");
+  el.querySelectorAll("[data-remove-video]").forEach(button => button.addEventListener("click", () => {
+    selectedVideoFiles.splice(Number(button.dataset.removeVideo), 1);
+    renderSelectedVideos();
+  }));
+  note.textContent = `已选择 ${selectedVideoFiles.length} 个视频；文件仍留在当前浏览器，没有上传。`;
+}
+
+function initPodcasts() { initPodcastResolver(); initLocalLibrary("podcast"); }
+function initVideos() { initVideoPicker(); initLocalLibrary("video"); }
 
 function initLocalLibrary(kind) {
   const cfg = LIBRARY_TYPES[kind];
@@ -3370,7 +3527,6 @@ function initLocalLibrary(kind) {
     });
     document.getElementById(kind + "-search").addEventListener("input", () => renderLibraryList(kind));
     document.getElementById(kind + "-import").addEventListener("change", event => importLibraryFiles(kind, event.target));
-    if (kind === "video") document.getElementById("video-local-file").addEventListener("change", previewLocalVideo);
   }
   restoreLibraryFolder(kind);
 }
@@ -3404,7 +3560,7 @@ async function loadLibraryFolder(kind, handle, mayRequestPermission) {
   try {
     const files = await readLibraryDirectory(handle, "");
     libraryCache[kind] = groupLibraryFiles(files);
-    state.textContent = `已绑定「${handle.name}」 · ${libraryCache[kind].length} 组文稿 · ${files.length} 个 TXT / MD 文件`;
+    state.textContent = `已绑定「${handle.name}」 · ${files.length} 份 MD 文稿`;
     renderLibraryList(kind);
   } catch (e) {
     state.textContent = "读取中断了，请重新授权或选择文件夹。";
@@ -3416,7 +3572,7 @@ async function readLibraryDirectory(directory, prefix) {
   for await (const [name, handle] of directory.entries()) {
     if (handle.kind === "directory") {
       files.push(...await readLibraryDirectory(handle, prefix + name + "/"));
-    } else if (/\.(md|txt)$/i.test(name)) {
+    } else if (/\.md$/i.test(name)) {
       const file = await handle.getFile();
       files.push({ name, path: prefix + name, content: await file.text(), modified: file.lastModified || 0, ext: name.split(".").pop().toLowerCase(), parent: directory });
     }
@@ -3520,14 +3676,14 @@ function renderLibraryList(kind) {
   const el = document.getElementById(kind + "-list");
   if (!el) return;
   const query = document.getElementById(kind + "-search").value.trim().toLowerCase();
-  const list = libraryCache[kind].filter(x => !query || (x.id + "\n" + (x.txt?.content || "") + "\n" + (x.md?.content || "")).toLowerCase().includes(query));
+  const list = libraryCache[kind].filter(x => x.md && (!query || (x.id + "\n" + x.md.content).toLowerCase().includes(query)));
   if (!list.length) {
-    el.innerHTML = `<div class="price-note">${libraryCache[kind].length ? "没有找到相关文稿。" : "绑定文件夹后，其中的 TXT 原文与 MD " + cfg.noteLabel + "会出现在这里。"}</div>`;
+    el.innerHTML = `<div class="price-note">${libraryCache[kind].length ? "没有找到相关文稿。" : "绑定文件夹后，其中的 MD " + cfg.noteLabel + "会出现在这里。"}</div>`;
     return;
   }
   el.innerHTML = list.map((x, index) => {
     const open = libraryOpen[kind] && libraryOpen[kind].id === x.id ? libraryOpen[kind].view : "";
-    const previewFile = x.md || x.txt;
+    const previewFile = x.md;
     const excerpt = podcastPlainText(previewFile.content).slice(0, 160);
     const title = x.md ? markdownDisplayTitle(x.md) : x.base;
     const shown = open === "md" ? x.md : open === "txt" ? x.txt : null;
@@ -3535,12 +3691,10 @@ function renderLibraryList(kind) {
       <div class="podcast-card-title">${escapeHtml(title)}
         <div class="podcast-meta">${escapeHtml(x.folder + x.base)}${x.modified ? " · " + new Date(x.modified).toLocaleDateString("zh-CN") : ""}</div>
       </div>
-      <div class="library-file-badges"><span class="library-badge ${x.txt ? "ready" : ""}">TXT ${x.txt ? "原文" : "待补"}</span><span class="library-badge ${x.md ? "ready" : ""}">MD ${x.md ? cfg.noteLabel : "待生成"}</span></div>
+      <div class="library-file-badges"><span class="library-badge ready">MD ${cfg.noteLabel}</span></div>
       ${shown ? `<div class="podcast-reader">${shown.ext === "md" ? renderPodcastMarkdown(shown.content) : `<div class="transcript-plain">${escapeHtml(shown.content)}</div>`}</div>` : `<div class="podcast-preview">${escapeHtml(excerpt)}${podcastPlainText(previewFile.content).length > 160 ? "…" : ""}</div>`}
       <div class="podcast-actions">
-        ${x.txt ? `<button class="zen-mode-btn" data-library-index="${index}" data-library-view="txt">${open === "txt" ? "收起原文" : "读 TXT 原文"}</button>` : ""}
-        ${x.md ? `<button class="zen-mode-btn" data-library-index="${index}" data-library-view="md">${open === "md" ? "收起" + cfg.noteLabel : "读 MD " + cfg.noteLabel}</button>` : ""}
-        ${x.txt ? `<button class="zen-mode-btn" data-library-generate="${index}" style="background:rgba(255,255,255,.13);">${x.md ? "重新生成" : "AI 生成"}${cfg.noteLabel}</button>` : ""}
+        <button class="zen-mode-btn" data-library-index="${index}" data-library-view="md">${open === "md" ? "收起" + cfg.noteLabel : "阅读" + cfg.noteLabel}</button>
       </div>
     </article>`;
   }).join("");
@@ -3555,7 +3709,7 @@ function renderLibraryList(kind) {
 }
 
 async function importLibraryFiles(kind, input) {
-  const files = Array.from(input.files || []).filter(file => /\.(txt|md)$/i.test(file.name));
+  const files = Array.from(input.files || []).filter(file => /\.md$/i.test(file.name));
   input.value = "";
   if (!files.length) return;
   const cfg = LIBRARY_TYPES[kind];
@@ -3590,24 +3744,6 @@ async function availableLocalName(directory, original) {
   while (true) {
     try { await directory.getFileHandle(candidate); candidate = `${stem} (${n++})${ext}`; }
     catch (e) { if (e && e.name === "NotFoundError") return candidate; throw e; }
-  }
-}
-
-function previewLocalVideo(event) {
-  const file = event.target.files && event.target.files[0];
-  if (!file) return;
-  if (selectedVideoUrl) URL.revokeObjectURL(selectedVideoUrl);
-  selectedVideoUrl = URL.createObjectURL(file);
-  const player = document.getElementById("video-player");
-  player.src = selectedVideoUrl;
-  document.getElementById("video-local-player").classList.add("on");
-  document.getElementById("video-file-state").textContent = `${file.name} · ${(file.size / 1024 / 1024).toFixed(1)} MB · 只在当前浏览器播放`;
-  const match = libraryBaseName(file.name).toLowerCase();
-  const found = libraryCache.video.find(item => item.id.endsWith(match));
-  if (found) {
-    libraryOpen.video = { id: found.id, view: found.md ? "md" : "txt" };
-    document.getElementById("video-search").value = found.base;
-    renderLibraryList("video");
   }
 }
 
