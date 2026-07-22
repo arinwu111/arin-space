@@ -4517,6 +4517,7 @@ const BAZI_SECTIONS = [
   { k: "crypto",    label: "币圈投资", on: false }
 ];
 const BAZI_HORIZONS = {
+  day:   { label: "今日运势", scope: "仅看今天(以流日为核心,结合流年、流月与当前大运)" },
   month: { label: "近一个月", scope: "未来一个月内(以流月为主、流日为辅)" },
   half:  { label: "近半年",   scope: "未来半年内(逐个流月点到,标出更顺与更需谨慎的月份)" },
   year:  { label: "近一年",   scope: "未来一年内(以流年为纲、流月为目,跨年时说明两个流年的差别)" }
@@ -4533,15 +4534,50 @@ function baziPicked() {
   const secs = Array.from(document.querySelectorAll("[data-bz-sec].active"))
     .map(b => BAZI_SECTIONS.find(x => x.k === b.dataset.bzSec)).filter(Boolean);
   const horBtn = document.querySelector("[data-bz-hor].active");
-  const hor = BAZI_HORIZONS[horBtn ? horBtn.dataset.bzHor : "half"];
-  return { secs, hor };
+  const horKey = horBtn && BAZI_HORIZONS[horBtn.dataset.bzHor] ? horBtn.dataset.bzHor : "half";
+  const hor = BAZI_HORIZONS[horKey];
+  return { secs, hor, horKey };
+}
+
+function baziTodayContext(birthZodiac) {
+  const now = new Date();
+  const dateText = now.getFullYear() + "年" + (now.getMonth() + 1) + "月" + now.getDate() + "日";
+  if (typeof Lunar === "undefined") return "今日公历:" + dateText + "；命主生肖:" + (birthZodiac || "未知");
+  try {
+    const l = Lunar.fromDate(now);
+    const safe = (fn, fallback) => { try { const value = fn(); return value == null ? fallback : value; } catch (_) { return fallback; } };
+    const yi = safe(() => l.getDayYi(), []);
+    const ji = safe(() => l.getDayJi(), []);
+    return [
+      "今日公历:" + dateText,
+      "今日农历:" + l.getMonthInChinese() + "月" + l.getDayInChinese(),
+      "今日干支:" + l.getYearInGanZhi() + "年 " + l.getMonthInGanZhi() + "月 " + l.getDayInGanZhi() + "日",
+      "命主生肖:" + (birthZodiac || "未知"),
+      "当前生肖年:" + safe(() => l.getYearShengXiao(), "未知"),
+      "今日所冲生肖:" + safe(() => l.getDayChongShengXiao(), "未知"),
+      "今日冲煞:" + safe(() => l.getDayChongDesc(), "未知") + "，煞" + safe(() => l.getDaySha(), "未知"),
+      "今日宜:" + (Array.isArray(yi) ? yi.slice(0, 8).join("、") : yi),
+      "今日忌:" + (Array.isArray(ji) ? ji.slice(0, 8).join("、") : ji)
+    ].join("；");
+  } catch (_) {
+    return "今日公历:" + dateText + "；命主生肖:" + (birthZodiac || "未知");
+  }
 }
 
 function buildBaziPrompt() {
   if (!baziCtx) return "";
-  const { secs, hor } = baziPicked();
+  const { secs, hor, horKey } = baziPicked();
   const secList = (secs.length ? secs : BAZI_SECTIONS.filter(x => x.on))
     .map((x, i) => (i + 1) + ". " + x.label).join("  ");
+  const todayBlock = horKey === "day" ? `
+【今日专用信息】
+${baziTodayContext(baziCtx.birthZodiac)}
+
+【今日分析方法】以命盘四柱和日主为基础,结合当前大运、流年、流月与今日流日,分析天干地支之间的生克、合冲刑害。生肖只作为辅助关系使用:结合命主生肖、当前生肖年与今日所冲生肖,不要用单一生肖运势套话。黄历宜忌也只作旁证,不能替代完整命盘分析。重点说明今天的节奏、适合推进或暂缓的方向、情绪与沟通提醒,不要断言一定发生某件事。
+` : "";
+  const sectionGuide = horKey === "day"
+    ? "【请分板块输出,每块2-3句】先写今日整体基调,再按所选板块给出具体倾向与一个可执行的小建议"
+    : "【请分板块输出,每块4-6句,给出这段期限内的具体倾向和可执行的建议】";
   return `你是一位精通八字命理的顾问,请基于以下命盘做一份解读。语言现代、亲和、不故弄玄虚,开头声明"仅供自我觉察参考,不构成人生/医疗/投资/法律决策依据"。
 
 【命盘】
@@ -4556,8 +4592,9 @@ ${baziCtx.dayun}
 【当下】${baziCtx.liu}
 
 【解读范围】只看${hor.label}:${hor.scope}。结合当前大运与流年流月来谈,不要泛泛而谈一生格局。
+${todayBlock}
 
-【请分板块输出,每块4-6句,给出这段期限内的具体倾向和可执行的建议】
+${sectionGuide}
 ${secList}
 
 最后用一句话收尾,落在行动上。`;
@@ -4567,7 +4604,7 @@ async function runBaziReading() {
   const note = document.getElementById("bz-read-note");
   const out = document.getElementById("bz-read-out");
   const btn = document.getElementById("bz-read-btn");
-  const { secs } = baziPicked();
+  const { secs, horKey } = baziPicked();
   if (!secs.length) { note.textContent = "至少选一个板块。"; return; }
   if (!hasAIKey()) {
     note.innerHTML = "请先完成右下角的 AI 设置，或复制提示词使用其他 AI。";
@@ -4581,7 +4618,7 @@ async function runBaziReading() {
       "你是一位现代的八字命理顾问:懂传统排盘,但用今天的语言说话,坦诚说明这是概率性的参考。不用 markdown 标题符号,用「一、二、三」或板块名加冒号分段。");
     out.innerHTML = '<div class="align-verdict" style="margin-top:14px;">' + escapeHtml(reading) + "</div>" +
       '<div class="polaris-set" style="margin-top:8px;"><span class="refresh-btn" id="bz-read-again">换个板块/期限再看一次</span></div>';
-    saveBaziState({ reading: reading });
+    saveBaziState({ reading: reading, readingHor: horKey, readingDate: localDateKey() });
     const again = document.getElementById("bz-read-again");
     if (again) again.addEventListener("click", () => { out.innerHTML = ""; saveBaziState({ reading: "" }); });
   } catch (e) {
@@ -4632,7 +4669,8 @@ function calcBazi() {
     // 神煞 / 方位 / 命理杂项
     const shen = [];
     const addShen = (label, fn) => { const v = safe(fn, ""); if (v) shen.push(`${label}:${v}`); };
-    addShen("生肖", ()=>lunar.getYearShengXiao());
+    const birthZodiac = safe(()=>lunar.getYearShengXiao(), "未知");
+    addShen("生肖", ()=>birthZodiac);
     addShen("星座", ()=>solar.getXingZuo()+"座");
     addShen("冲", ()=>lunar.getDayChongDesc());
     addShen("喜神方位", ()=>lunar.getDayPositionXiDesc());
@@ -4687,7 +4725,8 @@ function calcBazi() {
       nayin: "纳音:" + cols.map(c => c.ny).filter(v => v !== "—").join(" "),
       shen: shen.join(" · "),
       dayun: dayunText ? "大运:" + dayunText : "",
-      liu: liuText
+      liu: liuText,
+      birthZodiac: birthZodiac
     };
 
     resultEl.innerHTML = `
@@ -4707,6 +4746,7 @@ function calcBazi() {
       </div>
       <div class="bz-opt-label">看多久</div>
       <div class="bz-opts" id="bz-horizon">
+        <button class="theme-period bz-chip" data-bz-hor="day">今日运势</button>
         <button class="theme-period bz-chip" data-bz-hor="month">近一个月</button>
         <button class="theme-period bz-chip active" data-bz-hor="half">近半年</button>
         <button class="theme-period bz-chip" data-bz-hor="year">近一年</button>
@@ -4747,12 +4787,16 @@ function calcBazi() {
         b.classList.toggle("active", b.dataset.bzHor === savedSel.hor));
     }
     // 恢复上次已经生成过的解读(不用重新调用 AI)
-    if (savedSel.reading) {
+    const readingIsCurrent = savedSel.reading &&
+      (savedSel.readingHor !== "day" || savedSel.readingDate === localDateKey());
+    if (readingIsCurrent) {
       document.getElementById("bz-read-out").innerHTML =
         '<div class="align-verdict" style="margin-top:14px;">' + escapeHtml(savedSel.reading) + "</div>" +
         '<div class="polaris-set" style="margin-top:8px;"><span class="refresh-btn" id="bz-read-again">换个板块/期限再看一次</span></div>';
       const again = document.getElementById("bz-read-again");
       if (again) again.addEventListener("click", () => { document.getElementById("bz-read-out").innerHTML = ""; saveBaziState({ reading: "" }); });
+    } else if (savedSel.reading && savedSel.readingHor === "day") {
+      saveBaziState({ reading: "", readingDate: "" });
     }
 
     document.getElementById("bz-read-btn").addEventListener("click", runBaziReading);
