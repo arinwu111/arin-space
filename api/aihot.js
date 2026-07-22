@@ -30,7 +30,9 @@ async function rateLimited(req, res, bucket, limit, windowSec) {
   } catch (e) { return false; }
 }
 
-async function handler(req, res) {
+export const config = { maxDuration: 30 };
+
+export default async function handler(req, res) {
   if (await rateLimited(req, res, "aihot", 60, 600)) return; // 10 分钟内 60 次(服务端本身也有缓存,门槛可以松一点)
 
   const type = (req.query.type || "daily").toString();
@@ -82,6 +84,3 @@ async function handler(req, res) {
     res.status(502).json({ error: "fetch failed: " + (e && e.message) });
   }
 }
-
-handler.config = { maxDuration: 30 };
-module.exports = handler;

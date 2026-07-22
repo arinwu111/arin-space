@@ -1,0 +1,8 @@
+{
+  "private": true,
+  "type": "module",
+  "dependencies": {
+    "@alicloud/tingwu20230930": "^2.0.24",
+    "ali-oss": "^6.23.0"
+  }
+}
