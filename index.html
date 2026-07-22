@@ -1326,7 +1326,7 @@
     position: absolute; left: 0; bottom: 24px;
     width: 302px; height: auto;
     transform-origin: 50% 100%;
-    opacity: 0.9;
+    opacity: 0.98;
     transition: transform 0.45s cubic-bezier(.2,.8,.2,1), opacity 0.35s, filter 0.45s;
   }
   .cabin-visual img {
@@ -1341,13 +1341,13 @@
     position: absolute; left: 22px; bottom: 2px;
     display: inline-flex; align-items: center; gap: 8px;
     white-space: nowrap;
-    font-size: 11px; color: rgba(255,255,255,0.68); letter-spacing: 0.16em;
-    opacity: 0.78; transform: translateX(0);
+    font-size: 12px; font-weight: 600; color: rgba(255,255,255,0.9); letter-spacing: 0.14em;
+    opacity: 1; transform: translateX(0);
     transition: opacity 0.35s, transform 0.45s cubic-bezier(.2,.8,.2,1), color 0.35s;
     text-shadow: 0 1px 8px rgba(6,10,24,0.46);
   }
   .cabin .cabin-label::before {
-    content: ""; width: 27px; height: 1px; flex: 0 0 auto;
+    content: ""; width: 29px; height: 1.5px; flex: 0 0 auto;
     background: linear-gradient(90deg, rgba(255,222,142,0.2), rgba(255,232,174,0.92));
     box-shadow: -4px 0 7px rgba(255,210,115,0.5);
   }
@@ -1370,7 +1370,7 @@
   .cabin.is-night .cabin-visual .cabin-night { opacity: 1; }
   /* 白天背景亮,小屋不用 screen 混合,否则会被冲淡 */
   .cabin.is-day .cabin-visual img { mix-blend-mode: normal; filter: drop-shadow(0 2px 10px rgba(40,60,90,0.22)); }
-  .cabin.is-day .cabin-label { color: rgba(40,52,72,0.75); text-shadow: 0 1px 6px rgba(255,255,255,0.5); }
+  .cabin.is-day .cabin-label { color: rgba(34,46,68,0.9); text-shadow: 0 1px 6px rgba(255,255,255,0.55); }
   .cabin.is-day .cabin-label::before {
     background: linear-gradient(90deg, rgba(90,110,150,0.15), rgba(70,90,130,0.8));
     box-shadow: none;
@@ -1378,8 +1378,8 @@
 
   /* 信箱叠在小屋右侧的月亮与星线旁:透明线描,与小屋融成同一幅画 */
   .mailbox {
-    --mail-line: rgba(255,255,255,0.84);
-    --mail-line-soft: rgba(205,218,255,0.34);
+    --mail-line: rgba(255,255,255,0.98);
+    --mail-line-soft: rgba(220,230,255,0.58);
     --mail-warm: rgba(255,239,126,0.96);
     --mail-warm-soft: rgba(255,210,70,0.72);
     position: absolute; left: 183px; bottom: 15px; z-index: 2;
@@ -1393,19 +1393,19 @@
     position: absolute; left: 50%; bottom: 10px;
     width: 62px; height: 74px;
     transform: translateX(-50%); transform-origin: 50% 100%;
-    opacity: 0.9; mix-blend-mode: screen;
-    filter: drop-shadow(0 0 6px rgba(205,218,255,0.2));
+    opacity: 1; mix-blend-mode: screen;
+    filter: drop-shadow(0 0 6px rgba(205,218,255,0.34));
     transition: transform 0.45s cubic-bezier(.2,.8,.2,1), opacity 0.35s, filter 0.45s;
   }
   .mailbox-visual svg { width: 100%; height: 100%; display: block; overflow: visible; }
   .mailbox-line {
-    fill: none; stroke: var(--mail-line); stroke-linecap: round; stroke-linejoin: round;
+    fill: none; stroke: var(--mail-line); stroke-width: 1.6px; stroke-linecap: round; stroke-linejoin: round;
   }
   .mailbox-line-faint {
-    fill: none; stroke: var(--mail-line-soft); stroke-linecap: round; stroke-linejoin: round;
+    fill: none; stroke: var(--mail-line-soft); stroke-width: 1.05px; stroke-linecap: round; stroke-linejoin: round;
   }
   .mailbox-warm-line {
-    fill: none; stroke: var(--mail-warm); stroke-linecap: round; stroke-linejoin: round;
+    fill: none; stroke: var(--mail-warm); stroke-width: 1.25px; stroke-linecap: round; stroke-linejoin: round;
     filter: drop-shadow(0 0 1.6px var(--mail-warm-soft));
   }
   .mailbox-warm-dot {
@@ -1419,13 +1419,13 @@
     position: absolute; left: 50%; bottom: -13px;
     display: inline-flex; align-items: center; gap: 6px;
     transform: translateX(-50%); white-space: nowrap;
-    font-size: 11px; color: rgba(255,255,255,0.68); letter-spacing: 0.16em;
-    opacity: 0.78;
+    font-size: 12px; font-weight: 600; color: rgba(255,255,255,0.92); letter-spacing: 0.14em;
+    opacity: 1;
     text-shadow: 0 1px 8px rgba(6,10,24,0.46);
     transition: opacity 0.35s, color 0.35s, transform 0.45s cubic-bezier(.2,.8,.2,1);
   }
   .mailbox-label::before {
-    content: ""; width: 13px; height: 1px; flex: 0 0 auto;
+    content: ""; width: 15px; height: 1.5px; flex: 0 0 auto;
     background: linear-gradient(90deg, rgba(255,222,142,0.2), rgba(255,232,174,0.92));
     box-shadow: -3px 0 6px rgba(255,210,115,0.42);
   }
@@ -1447,7 +1447,7 @@
     border: 1px solid rgba(255,255,255,0.7); border-radius: 12px;
   }
   .mailbox.is-day .mailbox-visual { mix-blend-mode: normal; filter: drop-shadow(0 1px 3px rgba(40,80,100,0.24)); }
-  .mailbox.is-day .mailbox-label { color: rgba(40,52,72,0.75); text-shadow: 0 1px 6px rgba(255,255,255,0.5); }
+  .mailbox.is-day .mailbox-label { color: rgba(34,46,68,0.9); text-shadow: 0 1px 6px rgba(255,255,255,0.55); }
   .mailbox.is-day .mailbox-label::before {
     background: linear-gradient(90deg, rgba(90,110,150,0.15), rgba(70,90,130,0.8));
     box-shadow: none;
@@ -1455,8 +1455,8 @@
 
   /* 公告牌:沿着星线放在信箱右侧,共用小屋的透明线描与单层微光 */
   .noticeboard {
-    --board-line: rgba(255,255,255,0.84);
-    --board-line-soft: rgba(205,218,255,0.34);
+    --board-line: rgba(255,255,255,0.98);
+    --board-line-soft: rgba(220,230,255,0.58);
     --board-warm: rgba(255,239,126,0.96);
     --board-warm-soft: rgba(255,210,70,0.72);
     position: absolute; left: 242px; bottom: 15px; z-index: 2;
@@ -1470,16 +1470,16 @@
     position: absolute; left: 50%; bottom: 10px;
     width: 58px; height: 74px;
     transform: translateX(-50%); transform-origin: 50% 100%;
-    opacity: 0.9; mix-blend-mode: screen;
-    filter: drop-shadow(0 0 6px rgba(205,218,255,0.2));
+    opacity: 1; mix-blend-mode: screen;
+    filter: drop-shadow(0 0 6px rgba(205,218,255,0.34));
     transition: transform 0.45s cubic-bezier(.2,.8,.2,1), opacity 0.35s, filter 0.45s;
   }
   .noticeboard-visual svg { width: 100%; height: 100%; display: block; overflow: visible; }
   .noticeboard-line {
-    fill: none; stroke: var(--board-line); stroke-linecap: round; stroke-linejoin: round;
+    fill: none; stroke: var(--board-line); stroke-width: 1.6px; stroke-linecap: round; stroke-linejoin: round;
   }
   .noticeboard-line-faint {
-    fill: none; stroke: var(--board-line-soft); stroke-linecap: round; stroke-linejoin: round;
+    fill: none; stroke: var(--board-line-soft); stroke-width: 1.05px; stroke-linecap: round; stroke-linejoin: round;
   }
   .noticeboard-warm-dot {
     fill: var(--board-warm); filter: drop-shadow(0 0 2.4px var(--board-warm-soft));
@@ -1488,13 +1488,13 @@
     position: absolute; left: 50%; bottom: -13px;
     display: inline-flex; align-items: center; gap: 6px;
     transform: translateX(-50%); white-space: nowrap;
-    font-size: 11px; color: rgba(255,255,255,0.68); letter-spacing: 0.16em;
-    opacity: 0.78;
+    font-size: 12px; font-weight: 600; color: rgba(255,255,255,0.92); letter-spacing: 0.14em;
+    opacity: 1;
     text-shadow: 0 1px 8px rgba(6,10,24,0.46);
     transition: opacity 0.35s, color 0.35s, transform 0.45s cubic-bezier(.2,.8,.2,1);
   }
   .noticeboard-label::before {
-    content: ""; width: 13px; height: 1px; flex: 0 0 auto;
+    content: ""; width: 15px; height: 1.5px; flex: 0 0 auto;
     background: linear-gradient(90deg, rgba(255,222,142,0.2), rgba(255,232,174,0.92));
     box-shadow: -3px 0 6px rgba(255,210,115,0.42);
   }
@@ -1514,7 +1514,7 @@
     border: 1px solid rgba(255,255,255,0.7); border-radius: 12px;
   }
   .noticeboard.is-day .noticeboard-visual { mix-blend-mode: normal; filter: drop-shadow(0 1px 3px rgba(40,80,100,0.24)); }
-  .noticeboard.is-day .noticeboard-label { color: rgba(40,52,72,0.75); text-shadow: 0 1px 6px rgba(255,255,255,0.5); }
+  .noticeboard.is-day .noticeboard-label { color: rgba(34,46,68,0.9); text-shadow: 0 1px 6px rgba(255,255,255,0.55); }
   .noticeboard.is-day .noticeboard-label::before {
     background: linear-gradient(90deg, rgba(90,110,150,0.15), rgba(70,90,130,0.8));
     box-shadow: none;
@@ -1524,14 +1524,14 @@
     .home-corner { left: 8px; bottom: 6px; width: 216px; height: 104px; }
     .cabin { width: 216px; height: 104px; flex-basis: 216px; }
     .cabin-visual { width: 208px; bottom: 18px; }
-    .cabin .cabin-label { left: 14px; font-size: 10px; }
+    .cabin .cabin-label { left: 14px; font-size: 11px; }
     .mailbox { left: 126px; bottom: 10px; width: 50px; height: 62px; }
     .mailbox-visual { width: 47px; height: 57px; bottom: 7px; }
-    .mailbox-label { bottom: -8px; font-size: 10px; gap: 5px; }
+    .mailbox-label { bottom: -8px; font-size: 11px; gap: 5px; }
     .mailbox-label::before { width: 9px; }
     .noticeboard { left: 169px; bottom: 10px; width: 46px; height: 62px; }
     .noticeboard-visual { width: 43px; height: 57px; bottom: 7px; }
-    .noticeboard-label { bottom: -8px; font-size: 10px; gap: 5px; }
+    .noticeboard-label { bottom: -8px; font-size: 11px; gap: 5px; }
     .noticeboard-label::before { width: 9px; }
   }
 
