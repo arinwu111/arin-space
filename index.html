@@ -2559,9 +2559,9 @@
             <input type="text" id="journal-title" maxlength="60" placeholder="给今天取个名字">
           </div>
           <div class="home-form-field">
-            <label for="journal-content">日志内容 · 100 字以内</label>
-            <textarea id="journal-content" maxlength="100" placeholder="今天想在这个小世界留下什么…"></textarea>
-            <div class="home-char-count" id="journal-char-count" style="margin-top:6px;text-align:right;">0 / 100</div>
+            <label for="journal-content">日志内容</label>
+            <textarea id="journal-content" maxlength="800" placeholder="记下今天为这个小世界添上的变化…"></textarea>
+            <div class="home-char-count" id="journal-char-count" style="margin-top:6px;text-align:right;">0 / 800</div>
           </div>
         </div>
       </div>
@@ -4874,6 +4874,7 @@ const journalCharCount = document.getElementById("journal-char-count");
 const journalFormNote = document.getElementById("journal-form-note");
 const journalList = document.getElementById("journal-list");
 const journalManageButton = document.getElementById("journal-write-open");
+const JOURNAL_CONTENT_LIMIT = 800;
 let journalEntries = [];
 let journalEditingId = "";
 let journalAdmin = false;
@@ -4948,7 +4949,7 @@ function openJournalEditor(entry) {
   journalDate.value = entry ? entry.date : localDateKey();
   journalTitle.value = entry ? entry.title : "";
   journalContent.value = entry ? entry.content : "";
-  journalCharCount.textContent = journalContent.value.length + " / 100";
+  journalCharCount.textContent = journalContent.value.length + " / " + JOURNAL_CONTENT_LIMIT;
   journalEditor.classList.add("on");
   document.getElementById("journal-publish").textContent = entry ? "保存修改" : "发布日志";
   journalFormNote.textContent = entry ? "修改后，所有访客都会看到新的内容。" : "发布后，所有访客都可以读到。";
@@ -4956,7 +4957,7 @@ function openJournalEditor(entry) {
 }
 
 journalContent.addEventListener("input", () => {
-  journalCharCount.textContent = journalContent.value.length + " / 100";
+  journalCharCount.textContent = journalContent.value.length + " / " + JOURNAL_CONTENT_LIMIT;
   journalFormNote.textContent = "";
 });
 

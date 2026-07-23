@@ -3,6 +3,7 @@
 
 const JOURNAL_KEY = "arinrin:journal:entries";
 const MAX_ENTRIES = 100;
+const MAX_CONTENT_LENGTH = 800;
 
 const STARTER_ENTRIES = [
   {
@@ -152,7 +153,7 @@ export default async function handler(req, res) {
     const id = cleanText(body.id, 80, false) || newId();
     const date = cleanText(body.date, 10, false);
     const title = cleanText(body.title, 60, false);
-    const content = cleanText(body.content, 100, true);
+    const content = cleanText(body.content, MAX_CONTENT_LENGTH, true);
     if (!/^\d{4}-\d{2}-\d{2}$/.test(date)) return res.status(400).json({ error: "请选择正确的日期" });
     if (!title) return res.status(400).json({ error: "请写下日志标题" });
     if (!content) return res.status(400).json({ error: "请写下日志内容" });
