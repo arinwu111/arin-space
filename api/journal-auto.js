@@ -10,9 +10,13 @@ const MAX_CHANGE_DETAILS = 14000;
 export const config = { maxDuration: 60 };
 
 function authorized(req) {
-  const secret = process.env.CRON_SECRET || "";
   const supplied = String(req.headers.authorization || "");
-  return Boolean(secret && supplied === "Bearer " + secret);
+  const cronSecret = process.env.CRON_SECRET || "";
+  const adminSecret = process.env.MAILBOX_ADMIN_TOKEN || "";
+  return Boolean(
+    (cronSecret && supplied === "Bearer " + cronSecret) ||
+    (adminSecret && supplied === "Bearer " + adminSecret)
+  );
 }
 
 function windowForDate(date) {

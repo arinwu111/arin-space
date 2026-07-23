@@ -4911,6 +4911,7 @@ function renderJournalEntries() {
       '<h3 class="journal-entry-title">' + escapeHtml(entry.title || "未命名") + '</h3>' +
       '<div class="journal-entry-copy">' + escapeHtml(entry.content || "") + '</div>' +
       '<div class="journal-entry-actions">' +
+        '<button class="home-form-button" type="button" data-journal-rewrite="' + escapeHtml(entry.id) + '">按 Git 重写</button>' +
         '<button class="home-form-button" type="button" data-journal-edit="' + escapeHtml(entry.id) + '">编辑</button>' +
         '<button class="home-form-button" type="button" data-journal-delete="' + escapeHtml(entry.id) + '">删除</button>' +
       '</div>' +
@@ -5020,6 +5021,28 @@ document.getElementById("journal-publish").addEventListener("click", async event
   }
 });
 journalList.addEventListener("click", async event => {
+  const rewriteButton = event.target.closest("[data-journal-rewrite]");
+  if (rewriteButton && journalAdmin) {
+    const entry = journalEntries.find(item => item.id === rewriteButton.dataset.journalRewrite);
+    if (!entry || !window.confirm("根据 " + entry.date + " 的 Git 变化重新写这篇日志吗？原内容会被覆盖。")) return;
+    const token = sessionStorage.getItem(MAILBOX_TOKEN_KEY) || "";
+    rewriteButton.disabled = true;
+    rewriteButton.textContent = "重写中…";
+    try {
+      const response = await fetch(
+        "/api/journal-auto?date=" + encodeURIComponent(entry.date) + "&force=1",
+        { headers: { Authorization: "Bearer " + token } }
+      );
+      const data = await response.json().catch(() => ({}));
+      if (!response.ok) throw new Error(data.error || "暂时无法重写这篇日志");
+      await loadJournalEntries();
+    } catch (error) {
+      window.alert(error.message);
+      rewriteButton.disabled = false;
+      rewriteButton.textContent = "按 Git 重写";
+    }
+    return;
+  }
   const editButton = event.target.closest("[data-journal-edit]");
   if (editButton && journalAdmin) {
     const entry = journalEntries.find(item => item.id === editButton.dataset.journalEdit);
