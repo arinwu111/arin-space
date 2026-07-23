@@ -8814,7 +8814,7 @@ function setSpaceMusicTrack(track) {
 }
 window.setSpaceMusicTrack = setSpaceMusicTrack;
 
-/* 小屋音乐:六个时段各一首,与背景图共用同一套 SLOTS(黎明/上午/正午/下午/黄昏/夜晚)。
+/* 小屋音乐:与背景图共用同一套 SLOTS(黎明/上午/正午/下午/黄昏/夜晚),黄昏与夜晚共用夜晚曲目。
    把 Suno/Udio 生成的曲子导出为 mp3,按 /music/<时段>.mp3 放进仓库的 music 文件夹即可自动生效,
    例如 /music/dawn.mp3、/music/night.mp3。没放文件 / 加载失败 → 播放器保持"待接入",不会报错。 */
 const MUSIC_ORDER = SLOTS.map(s => s.key);
@@ -8824,7 +8824,8 @@ const musicProbeCache = {};
 
 function musicTrackFor(slotKey) {
   const slot = SLOTS.find(s => s.key === slotKey) || SLOTS[0];
-  return { key: slot.key, url: `/music/${slot.key}.mp3`, name: `小屋音乐 · ${slot.name}`, by: "AI 生成音乐", slot: slot.name };
+  const audioKey = slot.key === "dusk" ? "night" : slot.key;
+  return { key: slot.key, url: `/music/${audioKey}.mp3`, name: `小屋音乐 · ${slot.name}`, by: "AI 生成音乐", slot: slot.name };
 }
 
 function probeAudio(url) {
