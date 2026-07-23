@@ -89,6 +89,25 @@ function distributedPatchSummary(file, maxLines = 80) {
   ].filter(Boolean).join("\n");
 }
 
+function detectChangeThemes(files) {
+  const joined = files.map(file => [file.filename, file.patch].join("\n")).join("\n").toLowerCase();
+  const themes = [];
+  const add = (pattern, label) => {
+    if (pattern.test(joined) && !themes.includes(label)) themes.push(label);
+  };
+  add(/podcast|rss|播客|小宇宙|apple podcast/, "播客获取、转写或阅读体验");
+  add(/video|tutorial|transcrib|tingwu|oss|视频|教程|听悟|转写/, "视频教程与转写整理体验");
+  add(/journal|日志|cron/, "网站日志与自动记录");
+  add(/message|mailbox|信箱|留言/, "信箱与留言阅读体验");
+  add(/security|rate.?limit|owner.?token|admin.?token|sanitize|安全|权限|口令|限流/, "访问权限与隐私保护");
+  add(/aihot|快讯|日报|精选|往期/, "AI 资讯阅读");
+  add(/meditat|zen|冥想|呼吸|白噪音/, "冥想小屋");
+  add(/paper|article|study|论文|书房/, "书房与资料阅读");
+  add(/morning|evening|daily|晨间|晚间|复盘|日记/, "晨间准备与晚间复盘");
+  add(/invest|stock|quote|投资|行情|自选股/, "投资与行情");
+  return themes;
+}
+
 async function changesForDay(window) {
   const repository = process.env.JOURNAL_GITHUB_REPO || DEFAULT_REPOSITORY;
   const listURL = new URL("https://api.github.com/repos/" + repository + "/commits");
@@ -122,6 +141,7 @@ async function changesForDay(window) {
     count: commits.length,
     messages,
     files: files.map(file => file.filename),
+    themes: detectChangeThemes(files),
     details: fileSummary.slice(0, MAX_CHANGE_DETAILS),
   };
 }
@@ -135,12 +155,10 @@ function fallbackEntry(changes) {
   if (/daily|morning|evening|explore|slow|theme|晨间|晚间|慢想/.test(joined)) themes.push("记录生活与整理思绪的路径");
   if (/aihot|api\/ai|\bai\b|快讯|日报/.test(joined)) themes.push("与 AI 相处的小工具");
   if (/invest|quote|stock|投资|行情/.test(joined)) themes.push("观察市场的窗口");
-  const items = themes.length ? themes : ["一些不起眼的细节"];
+  const subject = themes.length ? themes.join("、") : "一些不起眼的细节";
   return {
     title: "小世界又长大一点",
-    content: "今天继续整理这个小世界：\n" +
-      items.map(item => "· " + item).join("\n") +
-      "\n变化一处接着一处，这里也在慢慢长成我想住进去的样子。",
+    content: "今天继续整理这个小世界，主要照看了" + subject + "。做的多是一些细小调整，但它们让这里用起来更顺手，也留下了慢慢变好的痕迹。",
   };
 }
 
@@ -165,17 +183,19 @@ async function generateEntry(req, date, changes) {
 日期：${date}
 提交说明：${changes.messages.join("；").slice(0, 2400) || "未填写"}
 变更文件：${changes.files.join("、").slice(0, 2000)}
+从完整差异中识别出的主要方向：${(changes.themes || []).join("、") || "请根据差异判断"}
 当天累计代码差异：
 ${changes.details}
 
 要求：
-1. 先通读全部差异，找出当天每一项有意义的新增、优化和修复；不要只抓最显眼的一两项。重复修改同一功能时合并描述，但不同功能不可遗漏。
-2. 正文使用简体中文，采用“温柔开场 + 分项记录 + 一句收束”的结构。分项使用“· ”开头，每项一行，具体写清改进了什么以及它给使用体验带来的变化。
-3. 保持个人搭建小世界的温情口吻，可以有生活感，但事实优先；不要写成生硬的产品公告，也不要用空泛比喻替代具体变化。
-4. 只写能从差异中确认的事情，不夸大。不出现 commit、API、代码、部署、接口、数据库等技术词，可将技术加固自然表达为“把门锁得更稳”“让资料保存得更安心”等用户能理解的话。
-5. 正文以完整覆盖为先，通常 250—650 个汉字，最多 ${MAX_JOURNAL_CONTENT} 字。当天变化少时可以更短，变化多时逐项写全。
-6. 给出一个温柔、简短、能概括当天变化的标题。
-7. 只返回合法 JSON，换行必须正确转义：{"title":"...","content":"..."}。`;
+1. 先通读全部差异，找出当天几个主要改进方向。重复修改同一功能时合并描述，尤其不要遗漏“主要方向”中有明确差异支撑的内容。
+2. 正文使用简体中文，只写一个自然连贯的小段落，共 2—3 句话；不要分点、不要编号，也不要逐项罗列功能清单。
+3. 第一部分自然带过当天做了哪些主要改进，以及使用体验发生了什么变化；相关方向可以合并在一句话里。最后一句写这一天的感受或这些变化对小世界的意义。
+4. 保持个人搭建网站的温情口吻，但事实优先。直接使用“播客、视频、信箱、日志”等清楚的名称，不要用门窗、砖块、花园等比喻代替具体内容。
+5. 只写能从差异中确认的事情，不夸大，不出现 commit、API、代码、部署、接口、数据库等技术词。技术性调整可表达为“使用更稳定”“访问更安全”，但不要写得神秘。
+6. 正文通常 120—260 个汉字，最多 350 字；变化很多时概括主要方向，不写流水账。
+7. 给出一个温柔、简短、能概括当天变化的标题。
+8. 只返回合法 JSON：{"title":"...","content":"..."}。`;
 
   try {
     const response = await fetch(siteBase(req) + "/api/ai", {
