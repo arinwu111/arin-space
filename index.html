@@ -8805,7 +8805,11 @@ function toggleSpaceMusic() {
 
 function setSpaceMusicTrack(track) {
   if (!track || !track.url) return;
-  spaceMusicAudio.src = track.url;
+  // 黄昏与夜晚可能共用同一文件；只更新时段文案，不重新加载或打断播放。
+  const currentUrl = spaceMusicAudio.getAttribute("src");
+  if (!currentUrl || new URL(currentUrl, location.href).href !== new URL(track.url, location.href).href) {
+    spaceMusicAudio.src = track.url;
+  }
   document.getElementById("zen-music-name").textContent = track.name || "小屋音乐";
   document.getElementById("zen-music-by").textContent = track.by || "AI 生成音乐";
   document.getElementById("zen-music-status").textContent = track.slot || "已就绪";
@@ -8819,6 +8823,8 @@ window.setSpaceMusicTrack = setSpaceMusicTrack;
    例如 /music/dawn.mp3、/music/night.mp3。没放文件 / 加载失败 → 播放器保持"待接入",不会报错。 */
 const MUSIC_ORDER = SLOTS.map(s => s.key);
 let currentMusicSlotKey = null;
+let requestedMusicSlotKey = null;
+let musicLoadRequestId = 0;
 let musicManualOverride = false;
 const musicProbeCache = {};
 
@@ -8831,7 +8837,13 @@ function musicTrackFor(slotKey) {
 function probeAudio(url) {
   return new Promise(resolve => {
     const probe = new Audio();
-    const done = ok => { probe.oncanplay = probe.onerror = null; resolve(ok); };
+    const timeout = setTimeout(() => done(false), 10000);
+    const done = ok => {
+      clearTimeout(timeout);
+      probe.onloadedmetadata = probe.oncanplay = probe.onerror = null;
+      resolve(ok);
+    };
+    probe.onloadedmetadata = () => done(true);
     probe.oncanplay = () => done(true);
     probe.onerror = () => done(false);
     probe.preload = "metadata";
@@ -8843,18 +8855,29 @@ async function loadMusicForSlot(slotKey, opts) {
   opts = opts || {};
   if (!opts.force && slotKey === currentMusicSlotKey) return;
   const track = musicTrackFor(slotKey);
-  if (!(track.key in musicProbeCache)) musicProbeCache[track.key] = await probeAudio(track.url);
-  if (!musicProbeCache[track.key]) return; // 这个时段还没放曲子,播放器保持"待接入"
+  const requestId = ++musicLoadRequestId;
+  requestedMusicSlotKey = slotKey;
+  document.getElementById("zen-music-status").textContent = `${track.slot} · 加载中`;
+  // 按实际文件地址缓存 Promise；黄昏和夜晚共用 night.mp3 时只探测一次。
+  if (!(track.url in musicProbeCache)) musicProbeCache[track.url] = probeAudio(track.url);
+  const available = await musicProbeCache[track.url];
+  if (requestId !== musicLoadRequestId) return; // 连续切歌时忽略较慢的旧请求
+  if (!available) {
+    requestedMusicSlotKey = currentMusicSlotKey;
+    document.getElementById("zen-music-status").textContent = `${track.slot} · 暂不可用`;
+    return;
+  }
   if (!opts.force && slotKey === currentMusicSlotKey) return; // 探测期间时段可能已经切回原样
   const wasPlaying = hasSpaceMusicTrack() && !spaceMusicAudio.paused;
   currentMusicSlotKey = slotKey;
+  requestedMusicSlotKey = slotKey;
   setSpaceMusicTrack(track);
   if (wasPlaying) spaceMusicAudio.play().catch(() => {});
 }
 
 /* 手动点「下一首」= 按时段顺序预览六首曲子,不再跟随当前时段自动切换(刷新页面后恢复自动) */
 function nextMusicSlot() {
-  const from = currentMusicSlotKey || getSlot(new Date().getHours()).key;
+  const from = requestedMusicSlotKey || currentMusicSlotKey || getSlot(new Date().getHours()).key;
   const idx = MUSIC_ORDER.indexOf(from);
   const next = MUSIC_ORDER[(idx + 1 + MUSIC_ORDER.length) % MUSIC_ORDER.length];
   musicManualOverride = true;
