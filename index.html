@@ -2759,7 +2759,7 @@
 </div>
 
 <!-- 全局音频只保留一份:小屋与 Space 迷你播放器共同控制 -->
-<audio id="space-music-audio" preload="none"></audio>
+<audio id="space-music-audio" preload="none" loop></audio>
 <div class="space-music-mini" id="space-music-mini" aria-hidden="true">
   <button id="space-music-mini-play" type="button" aria-label="播放或暂停">▶</button>
   <div class="space-music-mini-meta">
@@ -4419,6 +4419,7 @@ async function applyBackground(force) {
   currentSlotKey = slot.key;
   document.getElementById("slot-line").textContent = slot.name + "好";
   applyCabinTheme(slot.key);
+  if (!musicManualOverride) loadMusicForSlot(slot.key);
 
   const paint = (css, isPhoto) => {
     const front = document.getElementById("bg-" + activeLayer);
@@ -8789,7 +8790,7 @@ function syncSpaceMusicUI() {
   const hasTrack = hasSpaceMusicTrack();
   const playing = hasTrack && !spaceMusicAudio.paused;
   zenMusicPlay.disabled = !hasTrack;
-  zenMusicNext.disabled = !hasTrack;
+  zenMusicNext.disabled = false; // 六个时段轮播预览,不需要先有当前曲目才能切
   zenMusicPlay.textContent = playing ? "Ⅱ" : "▶";
   spaceMusicMiniPlay.textContent = playing ? "Ⅱ" : "▶";
   const showMini = playing && spaceMusicPrefs.broadcast && !zen.classList.contains("on");
@@ -8802,7 +8803,6 @@ function toggleSpaceMusic() {
   else spaceMusicAudio.pause();
 }
 
-/* 后续 /api/music 返回曲目后只需调用这个入口,播放器结构不用重做 */
 function setSpaceMusicTrack(track) {
   if (!track || !track.url) return;
   spaceMusicAudio.src = track.url;
@@ -8813,6 +8813,52 @@ function setSpaceMusicTrack(track) {
   syncSpaceMusicUI();
 }
 window.setSpaceMusicTrack = setSpaceMusicTrack;
+
+/* 小屋音乐:六个时段各一首,与背景图共用同一套 SLOTS(黎明/上午/正午/下午/黄昏/夜晚)。
+   把 Suno/Udio 生成的曲子导出为 mp3,按 /music/<时段>.mp3 放进仓库的 music 文件夹即可自动生效,
+   例如 /music/dawn.mp3、/music/night.mp3。没放文件 / 加载失败 → 播放器保持"待接入",不会报错。 */
+const MUSIC_ORDER = SLOTS.map(s => s.key);
+let currentMusicSlotKey = null;
+let musicManualOverride = false;
+const musicProbeCache = {};
+
+function musicTrackFor(slotKey) {
+  const slot = SLOTS.find(s => s.key === slotKey) || SLOTS[0];
+  return { key: slot.key, url: `/music/${slot.key}.mp3`, name: `小屋音乐 · ${slot.name}`, by: "AI 生成音乐", slot: slot.name };
+}
+
+function probeAudio(url) {
+  return new Promise(resolve => {
+    const probe = new Audio();
+    const done = ok => { probe.oncanplay = probe.onerror = null; resolve(ok); };
+    probe.oncanplay = () => done(true);
+    probe.onerror = () => done(false);
+    probe.preload = "metadata";
+    probe.src = url;
+  });
+}
+
+async function loadMusicForSlot(slotKey, opts) {
+  opts = opts || {};
+  if (!opts.force && slotKey === currentMusicSlotKey) return;
+  const track = musicTrackFor(slotKey);
+  if (!(track.key in musicProbeCache)) musicProbeCache[track.key] = await probeAudio(track.url);
+  if (!musicProbeCache[track.key]) return; // 这个时段还没放曲子,播放器保持"待接入"
+  if (!opts.force && slotKey === currentMusicSlotKey) return; // 探测期间时段可能已经切回原样
+  const wasPlaying = hasSpaceMusicTrack() && !spaceMusicAudio.paused;
+  currentMusicSlotKey = slotKey;
+  setSpaceMusicTrack(track);
+  if (wasPlaying) spaceMusicAudio.play().catch(() => {});
+}
+
+/* 手动点「下一首」= 按时段顺序预览六首曲子,不再跟随当前时段自动切换(刷新页面后恢复自动) */
+function nextMusicSlot() {
+  const from = currentMusicSlotKey || getSlot(new Date().getHours()).key;
+  const idx = MUSIC_ORDER.indexOf(from);
+  const next = MUSIC_ORDER[(idx + 1 + MUSIC_ORDER.length) % MUSIC_ORDER.length];
+  musicManualOverride = true;
+  loadMusicForSlot(next, { force: true });
+}
 
 zenMusicBroadcast.addEventListener("change", () => {
   spaceMusicPrefs.broadcast = zenMusicBroadcast.checked;
@@ -8825,6 +8871,7 @@ zenMusicVolume.addEventListener("input", () => {
   syncSpaceMusicUI();
 });
 zenMusicPlay.addEventListener("click", toggleSpaceMusic);
+zenMusicNext.addEventListener("click", nextMusicSlot);
 spaceMusicMiniPlay.addEventListener("click", toggleSpaceMusic);
 document.getElementById("space-music-mini-close").addEventListener("click", () => {
   spaceMusicPrefs.broadcast = false;
