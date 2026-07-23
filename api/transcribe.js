@@ -1,6 +1,6 @@
 import { randomUUID, timingSafeEqual } from "node:crypto";
 import OSS from "ali-oss";
-import Tingwu, {
+import TingwuModule, {
   CreateTaskRequest,
   CreateTaskRequestInput,
   CreateTaskRequestParameters,
@@ -22,6 +22,7 @@ export const config = { maxDuration: 60 };
 const TEMP_PREFIX = "tingwu-temp/";
 const MAX_VIDEO_BYTES = 6 * 1024 * 1024 * 1024;
 const SUPPORTED_VIDEO = new Set(["mp4", "mov", "mkv", "webm", "m4v", "avi", "mpeg", "mpg", "3gp", "ogg"]);
+const TingwuClient = typeof TingwuModule === "function" ? TingwuModule : TingwuModule.default;
 
 const ENV_ALIASES = {
   ALIYUN_ACCESS_KEY_ID: ["ALIYUN_ACCESS_KEY_ID", "ALIBABA_CLOUD_ACCESS_KEY_ID"],
@@ -76,7 +77,8 @@ function ossClient() {
 }
 
 function tingwuClient() {
-  return new Tingwu({
+  if (typeof TingwuClient !== "function") throw new HttpError(503, "听悟 SDK 加载失败");
+  return new TingwuClient({
     accessKeyId: env("ALIYUN_ACCESS_KEY_ID"),
     accessKeySecret: env("ALIYUN_ACCESS_KEY_SECRET"),
     endpoint: "tingwu.cn-beijing.aliyuncs.com",
