@@ -3633,6 +3633,15 @@ function elapsedLabel(startedAt, taskId) {
   return `任务 ${taskId} 已建立 · 已等待 ${minutes ? minutes + " 分 " : ""}${String(seconds % 60).padStart(2, "0")} 秒 · 请保持页面打开`;
 }
 
+function ossUploadError(request, filename) {
+  const body = String(request.responseText || "");
+  const code = (body.match(/<Code>([^<]+)<\/Code>/i) || [])[1] || "";
+  const message = (body.match(/<Message>([^<]+)<\/Message>/i) || [])[1] || "";
+  if (code) return `「${filename}」上传失败：${code}${message ? " · " + message : ""}`;
+  if (request.status === 403) return `「${filename}」被 OSS 拒绝（403）。若重新部署后仍出现，请检查 CORS 是否允许当前域名、PUT 和 Content-Type。`;
+  return `「${filename}」上传失败（${request.status || "无响应"}）。`;
+}
+
 async function waitForTranscription(taskId, objectKey, progress, label) {
   const startedAt = Date.now();
   const renderWaiting = () => {
@@ -3739,6 +3748,7 @@ async function uploadVideoForTranscription(file, progress) {
   await new Promise((resolve, reject) => {
     const request = new XMLHttpRequest();
     request.open("PUT", signed.uploadUrl, true);
+    Object.entries(signed.uploadHeaders || {}).forEach(([name, value]) => request.setRequestHeader(name, value));
     request.upload.addEventListener("progress", event => {
       if (!event.lengthComputable) {
         videoProgress("source", `正在临时上传「${file.name}」…`, "上传完成后才会开始听悟转写");
@@ -3749,7 +3759,7 @@ async function uploadVideoForTranscription(file, progress) {
     });
     request.addEventListener("load", () => {
       if (request.status >= 200 && request.status < 300) resolve();
-      else reject(new Error(`「${file.name}」上传失败（${request.status || "无响应"}），请检查 OSS 跨域设置。`));
+      else reject(new Error(ossUploadError(request, file.name)));
     });
     request.addEventListener("error", () => reject(new Error(`「${file.name}」上传失败，请检查网络或 OSS 跨域设置。`)));
     request.addEventListener("abort", () => reject(new Error(`「${file.name}」上传已中止。`)));

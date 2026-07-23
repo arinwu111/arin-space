@@ -108,12 +108,14 @@ async function createUpload(body) {
   const size = Number(body.size || 0);
   if (!Number.isFinite(size) || size <= 0 || size > MAX_VIDEO_BYTES) throw new HttpError(400, "视频大小不正确或超过 6 GB");
   const ext = videoExtension(filename);
+  const requestedType = String(body.type || "").trim().toLowerCase();
+  const contentType = /^video\/[a-z0-9.+-]+$/.test(requestedType) ? requestedType : "application/octet-stream";
   const date = new Date().toISOString().slice(0, 10);
   const objectKey = `${TEMP_PREFIX}${date}/${randomUUID()}.${ext}`;
   const client = ossClient();
-  const uploadUrl = await client.signatureUrlV4("PUT", 15 * 60, { headers: {} }, objectKey);
+  const uploadUrl = await client.signatureUrlV4("PUT", 15 * 60, { headers: { "Content-Type": contentType } }, objectKey);
   const sourceUrl = await client.signatureUrlV4("GET", 6 * 60 * 60, { headers: {} }, objectKey);
-  return { uploadUrl, sourceUrl, objectKey, expiresIn: 900 };
+  return { uploadUrl, sourceUrl, objectKey, expiresIn: 900, uploadHeaders: { "Content-Type": contentType } };
 }
 
 function decodeXml(value) {
