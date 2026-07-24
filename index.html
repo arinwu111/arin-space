@@ -8693,7 +8693,7 @@ async function loadAIUseful(force) {
   try {
     const token = transcribeOwnerToken();
     feedEl.innerHTML = '<div class="ai-loading">AI 正在合并日报与精选，筛选真正与你有关的内容…</div>';
-    const response = await fetch("/api/ai-useful" + (force ? "?t=" + Date.now() : ""), {
+    const response = await fetch("/api/aihot?type=useful" + (force ? "&t=" + Date.now() : ""), {
       cache: "no-store",
       headers: { Authorization: "Bearer " + token },
     });
