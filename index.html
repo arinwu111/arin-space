@@ -2131,7 +2131,7 @@
       <button class="ai-tab" data-tab="flash">⚡ 快讯</button>
       <button class="ai-tab" data-tab="selected">精选</button>
       <button class="ai-tab" data-tab="dailies">往期</button>
-      <button class="ai-tab" id="ai-useful-main-tab" data-tab="useful" hidden>与你有关</button>
+      <button class="ai-tab" id="ai-useful-main-tab" data-tab="useful">与你有关</button>
     </div>
     <div class="ai-useful-tabs" id="ai-useful-tabs" role="tablist" aria-label="今日与你有关分类" hidden>
       <button class="ai-useful-tab active" type="button" data-useful-tab="tool">工具</button>
@@ -4920,8 +4920,6 @@ let journalAdmin = false;
 function syncJournalAdminControls() {
   journalManageButton.textContent = journalAdmin ? "写一篇" : "管理日志";
   journalAutoPullButton.hidden = !journalAdmin;
-  const usefulTab = document.getElementById("ai-useful-main-tab");
-  if (usefulTab) usefulTab.hidden = !journalAdmin;
   if (!journalAdmin) journalAutoNote.textContent = "";
 }
 
@@ -8584,10 +8582,6 @@ function expectedDailyDate() {
 }
 
 function initAITabs() {
-  const usefulMainTab = document.getElementById("ai-useful-main-tab");
-  if (usefulMainTab) {
-    usefulMainTab.hidden = !(journalAdmin || sessionStorage.getItem(MAILBOX_TOKEN_KEY));
-  }
   document.querySelectorAll("#ai-tabs .ai-tab").forEach(b => {
     if (b.dataset.bound) return;
     b.dataset.bound = "1";
@@ -8694,11 +8688,11 @@ function renderAIUseful() {
 
 async function loadAIUseful(force) {
   const feedEl = document.getElementById("ai-daily-feed");
-  const token = sessionStorage.getItem(MAILBOX_TOKEN_KEY) || "";
   document.getElementById("ai-useful-tabs").hidden = false;
   aiHeader("✦ 今日与你有关", "");
-  feedEl.innerHTML = '<div class="ai-loading">AI 正在合并日报与精选，筛选真正与你有关的内容…</div>';
   try {
+    const token = transcribeOwnerToken();
+    feedEl.innerHTML = '<div class="ai-loading">AI 正在合并日报与精选，筛选真正与你有关的内容…</div>';
     const response = await fetch("/api/ai-useful" + (force ? "?t=" + Date.now() : ""), {
       cache: "no-store",
       headers: { Authorization: "Bearer " + token },
@@ -8708,7 +8702,10 @@ async function loadAIUseful(force) {
       feedEl.innerHTML = '<div class="ai-loading">今日分析正在生成，稍后点刷新即可查看。</div>';
       return;
     }
-    if (!response.ok) throw new Error(data.error || "今日分析暂时没有回应");
+    if (!response.ok) {
+      if (response.status === 401) sessionStorage.removeItem(TRANSCRIBE_OWNER_TOKEN_KEY);
+      throw new Error(data.error || "今日分析暂时没有回应");
+    }
     aiUsefulData = data;
     renderAIUseful();
   } catch (error) {

@@ -41,8 +41,8 @@ function siteBase(req) {
   return (host.includes("localhost") ? "http" : "https") + "://" + host;
 }
 
-function isAdmin(req) {
-  const expected = process.env.MAILBOX_ADMIN_TOKEN || "";
+function isOwner(req) {
+  const expected = process.env.OWNER_TOKEN || "";
   const supplied = String(req.headers.authorization || "").replace(/^Bearer\s+/i, "").trim();
   if (!expected || expected.length !== supplied.length) return false;
   let different = 0;
@@ -204,7 +204,7 @@ ${JSON.stringify(candidates.map(({ score, ...item }) => item))}`;
 export default async function handler(req, res) {
   res.setHeader("Cache-Control", "no-store");
   if (req.method !== "GET") return res.status(405).json({ error: "只支持 GET" });
-  if (!isAdmin(req)) return res.status(401).json({ error: "这部分内容仅主人可见" });
+  if (!isOwner(req)) return res.status(401).json({ error: "这部分内容仅主人可见" });
 
   const date = expectedDailyDate();
   const cacheKey = CACHE_PREFIX + date;
