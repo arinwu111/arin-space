@@ -389,6 +389,8 @@
     display: flex; align-items: center; justify-content: space-between; gap: 16px;
     margin-bottom: 22px;
   }
+  .journal-toolbar { display: flex; justify-content: flex-end; gap: 8px; margin-left: auto; flex-wrap: wrap; }
+  .journal-auto-note { min-height: 18px; font-size: 11px; color: var(--text-sub); line-height: 1.6; }
   .home-panel-kicker { font-size: 12px; color: var(--text-sub); line-height: 1.7; }
   .home-panel-action, .home-form-button {
     border: 1px solid rgba(255,255,255,0.22); border-radius: 999px;
@@ -551,12 +553,33 @@
   .ai-news .an-summary { font-size: 13px; color: var(--text-sub); line-height: 1.7; }
   .ai-news .an-source { font-size: 12px; color: var(--text-sub); opacity: 0.75; margin-top: 8px; }
   .ai-loading { font-size: 14px; color: var(--text-sub); padding: 20px 0; }
-  .ai-tabs { display: flex; gap: 8px; margin-bottom: 14px; }
+  .ai-tabs { display: flex; gap: 8px; margin-bottom: 14px; flex-wrap: wrap; }
   .ai-tab {
     font-size: 13px; padding: 7px 18px; border-radius: 14px; cursor: pointer; font-family: inherit;
     background: rgba(255,255,255,0.06); border: 1px solid var(--glass-border); color: var(--text-sub);
   }
   .ai-tab.active { background: rgba(255,255,255,0.2); color: var(--text-main); }
+  .ai-useful-tabs {
+    display: flex; gap: 7px; margin: -2px 0 16px; overflow-x: auto;
+    padding-bottom: 2px; scrollbar-width: none;
+  }
+  .ai-useful-tabs[hidden] { display: none; }
+  .ai-useful-tabs::-webkit-scrollbar { display: none; }
+  .ai-useful-tab {
+    flex: 0 0 auto; border: 1px solid var(--glass-border); border-radius: 999px;
+    padding: 6px 13px; background: rgba(255,255,255,.045); color: var(--text-sub);
+    cursor: pointer; font: inherit; font-size: 12px;
+  }
+  .ai-useful-tab.active { background: rgba(255,255,255,.18); color: var(--text-main); border-color: rgba(255,255,255,.34); }
+  .ai-useful-intro {
+    margin-bottom: 14px; padding: 13px 15px; border: 1px solid rgba(255,255,255,.1);
+    border-radius: 12px; background: rgba(255,255,255,.035);
+    color: var(--text-sub); font-size: 12px; line-height: 1.75;
+  }
+  .ai-useful-reason {
+    margin-top: 9px; padding-top: 8px; border-top: 1px solid rgba(255,255,255,.08);
+    color: rgba(255,255,255,.72); font-size: 12px; line-height: 1.7;
+  }
   .an-reason { font-size: 12px; color: var(--text-sub); line-height: 1.7; margin-top: 6px;
     padding-left: 9px; border-left: 2px solid rgba(255,255,255,0.18); }
   .an-tag { font-size: 11px; color: var(--text-sub); margin-left: 8px; opacity: 0.8; }
@@ -2101,13 +2124,21 @@
   <button class="panel-close" data-close aria-label="关闭">✕</button>
   <div class="panel-inner">
     <div class="panel-head"><div class="p-icon">🤖</div><h2>AI</h2></div>
-    <p class="panel-intro">AI 日报、快讯与精选。内容来自
+    <p class="panel-intro">AI 日报、快讯，以及从今日要闻中筛出的相关内容。信息来自
       <a href="https://aihot.virxact.com/" target="_blank" rel="noopener" style="color:var(--text-main);text-decoration:underline;">AI HOT</a>。</p>
     <div class="ai-tabs" id="ai-tabs">
       <button class="ai-tab active" data-tab="daily">日报</button>
+      <button class="ai-tab" data-tab="useful">与你有关</button>
       <button class="ai-tab" data-tab="flash">⚡ 快讯</button>
       <button class="ai-tab" data-tab="selected">精选</button>
       <button class="ai-tab" data-tab="dailies">往期</button>
+    </div>
+    <div class="ai-useful-tabs" id="ai-useful-tabs" role="tablist" aria-label="今日与你有关分类" hidden>
+      <button class="ai-useful-tab active" type="button" data-useful-tab="tool">工具</button>
+      <button class="ai-useful-tab" type="button" data-useful-tab="invest">投资</button>
+      <button class="ai-useful-tab" type="button" data-useful-tab="product">产品</button>
+      <button class="ai-useful-tab" type="button" data-useful-tab="create">创作</button>
+      <button class="ai-useful-tab" type="button" data-useful-tab="career">职业</button>
     </div>
     <div id="ai-daily-date" class="section-sub" style="margin-top:0;display:flex;align-items:center;justify-content:space-between;gap:10px;"></div>
     <div id="ai-daily-feed"></div>
@@ -2545,7 +2576,11 @@
     <div class="panel-head"><div class="p-icon">◫</div><h2>日志</h2></div>
     <p class="panel-intro">这个小世界慢慢留下来的记录。从第一盏灯开始，沿着时间往前走。</p>
     <div class="home-panel-topline">
-      <button class="home-panel-action" id="journal-write-open" type="button">管理日志</button>
+      <span class="journal-auto-note" id="journal-auto-note" aria-live="polite"></span>
+      <div class="journal-toolbar">
+        <button class="home-panel-action" id="journal-auto-pull" type="button" hidden>拉取昨日更新</button>
+        <button class="home-panel-action" id="journal-write-open" type="button">管理日志</button>
+      </div>
     </div>
     <section class="journal-editor" id="journal-editor" aria-label="写日志">
       <div class="journal-editor-top">
@@ -4875,10 +4910,18 @@ const journalCharCount = document.getElementById("journal-char-count");
 const journalFormNote = document.getElementById("journal-form-note");
 const journalList = document.getElementById("journal-list");
 const journalManageButton = document.getElementById("journal-write-open");
+const journalAutoPullButton = document.getElementById("journal-auto-pull");
+const journalAutoNote = document.getElementById("journal-auto-note");
 const JOURNAL_CONTENT_LIMIT = 800;
 let journalEntries = [];
 let journalEditingId = "";
 let journalAdmin = false;
+
+function syncJournalAdminControls() {
+  journalManageButton.textContent = journalAdmin ? "写一篇" : "管理日志";
+  journalAutoPullButton.hidden = !journalAdmin;
+  if (!journalAdmin) journalAutoNote.textContent = "";
+}
 
 function journalDisplayDate(value) {
   const parts = String(value || "").split("-").map(Number);
@@ -4928,13 +4971,13 @@ async function loadJournalEntries() {
     const data = await journalRequest(token ? { headers: { Authorization: "Bearer " + token } } : undefined);
     journalEntries = data.entries || [];
     journalAdmin = Boolean(data.admin);
-    journalManageButton.textContent = journalAdmin ? "写一篇" : "管理日志";
+    syncJournalAdminControls();
     renderJournalEntries();
   } catch (error) {
     if (error.status === 401) {
       sessionStorage.removeItem(MAILBOX_TOKEN_KEY);
       journalAdmin = false;
-      journalManageButton.textContent = "管理日志";
+      syncJournalAdminControls();
       try {
         const data = await journalRequest();
         journalEntries = data.entries || [];
@@ -4974,7 +5017,7 @@ journalManageButton.addEventListener("click", async () => {
       sessionStorage.setItem(MAILBOX_TOKEN_KEY, token);
       journalEntries = data.entries || [];
       journalAdmin = true;
-      journalManageButton.textContent = "写一篇";
+      syncJournalAdminControls();
       renderJournalEntries();
     } catch (error) {
       window.alert(error.message);
@@ -4982,6 +5025,34 @@ journalManageButton.addEventListener("click", async () => {
     }
   }
   openJournalEditor(null);
+});
+journalAutoPullButton.addEventListener("click", async () => {
+  if (!journalAdmin) return;
+  const token = sessionStorage.getItem(MAILBOX_TOKEN_KEY) || "";
+  journalAutoPullButton.disabled = true;
+  journalAutoPullButton.textContent = "正在读取 Git…";
+  journalAutoNote.textContent = "正在检查昨天的网站变化。";
+  try {
+    const response = await fetch("/api/journal-auto?t=" + Date.now(), {
+      cache: "no-store",
+      headers: { Authorization: "Bearer " + token },
+    });
+    const data = await response.json().catch(() => ({}));
+    if (!response.ok) throw new Error(data.error || "暂时无法生成昨日日志");
+    if (data.skipped === "date-exists") {
+      journalAutoNote.textContent = data.date + " 的日志已经存在，可以在对应日志中点“按 Git 重写”。";
+    } else if (data.skipped === "no-changes") {
+      journalAutoNote.textContent = data.date + " 没有检测到可写入的网站变化。";
+    } else {
+      await loadJournalEntries();
+      journalAutoNote.textContent = "已根据 " + data.date + " 的 " + (data.commits || 0) + " 次变更生成日志。";
+    }
+  } catch (error) {
+    journalAutoNote.textContent = error.message;
+  } finally {
+    journalAutoPullButton.disabled = false;
+    journalAutoPullButton.textContent = "拉取昨日更新";
+  }
 });
 document.getElementById("journal-write-cancel").addEventListener("click", () => {
   journalEditor.classList.remove("on");
@@ -8492,6 +8563,37 @@ function initRead() {
 /* ===== AI:AIHOT(日报 / 精选 / 往期) ===== */
 const AIHOT_CACHE_KEY = "arinrin_aihot_cache_v2";
 let aiTab = "daily";
+let aiUsefulTab = "tool";
+let aiUsefulItems = [];
+let aiUsefulDate = "";
+
+const AI_USEFUL_RULES = {
+  tool: {
+    label: "工具",
+    terms: ["工具", "模型", "开源", "api", "插件", "agent", "智能体", "助手", "copilot", "应用", "claude", "chatgpt", "gemini", "deepseek", "codex", "cursor", "suno", "figma"],
+    reason: "可评估它能否直接加入你的建站、研究、知识整理或日常工作流。",
+  },
+  invest: {
+    label: "投资",
+    terms: ["投资", "融资", "估值", "财报", "营收", "收入", "利润", "成本", "股价", "股票", "市值", "订单", "芯片", "gpu", "算力", "数据中心", "能源", "监管", "收购", "并购", "ipo", "基金", "资本", "市场份额"],
+    reason: "值得继续观察它对相关公司的收入、成本、需求或竞争格局是否形成持续影响。",
+  },
+  product: {
+    label: "产品",
+    terms: ["产品", "功能", "交互", "设计", "网站", "网页", "开发", "编程", "代码", "自动化", "工作流", "用户", "体验", "平台", "浏览器", "搜索"],
+    reason: "可以作为网站功能、交互体验或自动化流程的产品参考。",
+  },
+  create: {
+    label: "创作",
+    terms: ["创作", "内容", "视频", "音频", "播客", "写作", "图像", "图片", "音乐", "生成", "剪辑", "媒体", "知识库", "转写", "设计师", "创作者"],
+    reason: "可能改善视频、播客、写作、视觉表达或知识管理的创作流程。",
+  },
+  career: {
+    label: "职业",
+    terms: ["职业", "岗位", "招聘", "就业", "求职", "工作", "技能", "教育", "学习", "办公", "团队", "员工", "开发者", "工程师", "人才", "薪资", "裁员"],
+    reason: "可能改变岗位需求或能力结构，适合判断是否需要补充相关技能。",
+  },
+};
 
 function expectedDailyDate() {
   // 日报每天北京时间 08:00 生成:08:00 前预期最新的是昨天那期
@@ -8508,7 +8610,20 @@ function initAITabs() {
     b.addEventListener("click", () => {
       aiTab = b.dataset.tab;
       document.querySelectorAll("#ai-tabs .ai-tab").forEach(x => x.classList.toggle("active", x === b));
+      document.getElementById("ai-useful-tabs").hidden = aiTab !== "useful";
       loadAIDaily();
+    });
+  });
+  document.getElementById("ai-useful-tabs").hidden = aiTab !== "useful";
+  document.querySelectorAll("#ai-useful-tabs .ai-useful-tab").forEach(button => {
+    if (button.dataset.bound) return;
+    button.dataset.bound = "1";
+    button.addEventListener("click", () => {
+      aiUsefulTab = button.dataset.usefulTab;
+      document.querySelectorAll("#ai-useful-tabs .ai-useful-tab").forEach(item => {
+        item.classList.toggle("active", item === button);
+      });
+      renderAIUseful();
     });
   });
 }
@@ -8542,6 +8657,7 @@ function aiItemHtml(it) {
 async function loadAIDaily(force) {
   initAITabs();
   const feedEl = document.getElementById("ai-daily-feed");
+  if (aiTab === "useful") return loadAIUseful(force);
   if (aiTab === "selected") return loadAISelected(force);
   if (aiTab === "flash") return loadAIFlash(force);
   if (aiTab === "dailies") return loadAIDailies(force);
@@ -8563,6 +8679,137 @@ async function loadAIDaily(force) {
   } catch (e) {
     aiHeader("📅 AI 日报", "");
     feedEl.innerHTML = '<div class="ai-loading">加载失败,可点下方链接直接前往 AI HOT。</div>';
+  }
+}
+
+function aiUsefulText(item) {
+  const tags = (item.tags || item.topics || []).map(tag =>
+    typeof tag === "string" ? tag : (tag && tag.name || "")
+  ).join(" ");
+  return [
+    item.title, item.summary, item.reason, item.recommendReason,
+    item.sectionLabel, item.sourceName, item.source, tags,
+  ].filter(Boolean).join(" ").toLowerCase();
+}
+
+function aiUsefulScore(item, rule) {
+  const text = aiUsefulText(item);
+  return rule.terms.reduce((score, term) => score + (text.includes(term) ? 1 : 0), 0);
+}
+
+function aiUsefulReason(item, key) {
+  const text = aiUsefulText(item);
+  if (key === "invest") {
+    if (["融资", "估值", "收购", "并购", "ipo", "资本"].some(term => text.includes(term))) {
+      return "这是资本动作信号，可继续观察资金流向、估值变化，以及它是否重塑行业竞争格局。";
+    }
+    if (["财报", "营收", "收入", "利润", "订单", "成本"].some(term => text.includes(term))) {
+      return "先看它是否真实改变收入、成本或订单，再判断影响是一次性的，还是能够持续进入业绩。";
+    }
+    if (["芯片", "gpu", "算力", "数据中心", "能源"].some(term => text.includes(term))) {
+      return "它位于 AI 基础设施链条，可继续追踪算力需求、供给约束和相关公司的议价能力。";
+    }
+    if (text.includes("监管")) {
+      return "监管变化可能影响产品准入、合规成本与市场空间，需要继续确认适用地区和落地时间。";
+    }
+  }
+  if (key === "tool") {
+    if (["开源", "api", "插件", "agent", "智能体"].some(term => text.includes(term))) {
+      return "具有直接接入工作流的可能，适合先确认价格、权限、数据去向和是否能真正减少步骤。";
+    }
+    return "可以小范围试用，重点比较它与现有工具相比是否更快、更稳，或能替代一项重复工作。";
+  }
+  if (key === "product") {
+    if (["自动化", "工作流", "agent", "智能体"].some(term => text.includes(term))) {
+      return "可借鉴其任务拆分与反馈方式，判断是否能简化你网站里的某一条操作路径。";
+    }
+    return "可以从功能结构、交互反馈和用户理解成本三个角度，提取适合个人网站的产品启发。";
+  }
+  if (key === "create") {
+    if (["视频", "音频", "播客", "转写", "剪辑"].some(term => text.includes(term))) {
+      return "可能改善音视频获取、转写或整理流程，适合比较它能否保留知识点与操作步骤。";
+    }
+    return "可观察它是否降低表达门槛、提高内容质量，或帮助素材更顺畅地进入你的知识库。";
+  }
+  if (key === "career") {
+    if (["招聘", "岗位", "就业", "求职", "裁员", "薪资"].some(term => text.includes(term))) {
+      return "这是岗位需求变化的信号，可继续核对具体行业、地区和所需能力，再决定是否调整求职准备。";
+    }
+    return "可能改变团队分工或能力要求，适合判断哪些工作会被自动化、哪些判断力需要继续积累。";
+  }
+  return AI_USEFUL_RULES[key]?.reason || "值得结合你的当前目标继续观察。";
+}
+
+function collectAIUsefulItems(data) {
+  const seen = new Set();
+  const items = [];
+  (data.sections || []).forEach(section => {
+    (section.items || []).forEach(item => items.push({ ...item, sectionLabel: section.label || "" }));
+  });
+  (data.flashes || []).forEach(item => items.push({ ...item, sectionLabel: "快讯" }));
+  return items.filter(item => {
+    const key = item.sourceUrl || item.url || item.originalUrl || item.link || item.permalink || item.title;
+    if (!key || seen.has(key)) return false;
+    seen.add(key);
+    return true;
+  });
+}
+
+function aiUsefulItemHtml(item, rule) {
+  const link = item.sourceUrl || item.url || item.originalUrl || item.link || item.permalink || "#";
+  const tags = item.tags || item.topics || [];
+  return '<a class="ai-news" href="' + escapeHtml(link) + '" target="_blank" rel="noopener">' +
+    '<div class="an-title">' + escapeHtml(item.title || "") + "</div>" +
+    (item.summary ? '<div class="an-summary">' + escapeHtml(item.summary) + "</div>" : "") +
+    '<div class="ai-useful-reason"><strong>与你的关系：</strong>' + escapeHtml(aiUsefulReason(item, aiUsefulTab)) + "</div>" +
+    '<div class="an-source"><span>' + escapeHtml(item.sourceName || item.source || item.sectionLabel || "AI HOT") + "</span>" +
+    (tags || []).slice(0, 2).map(tag =>
+      '<span class="an-tag">#' + escapeHtml(typeof tag === "string" ? tag : (tag.name || "")) + "</span>"
+    ).join("") + "</div></a>";
+}
+
+function renderAIUseful() {
+  const feedEl = document.getElementById("ai-daily-feed");
+  const rule = AI_USEFUL_RULES[aiUsefulTab] || AI_USEFUL_RULES.tool;
+  const matched = aiUsefulItems
+    .map(item => ({ item, score: aiUsefulScore(item, rule) }))
+    .filter(result => result.score > 0)
+    .sort((a, b) => b.score - a.score)
+    .slice(0, 10);
+  aiHeader("✦ " + (aiUsefulDate || "今日") + " · 今日与你有关", matched.length + " 条 · " + rule.label);
+  const intro = '<div class="ai-useful-intro">不是只看“值得知道”，而是筛选可能改变你近期行动、判断或资源分配的信息。每条内容仍建议打开原文核对。</div>';
+  feedEl.innerHTML = intro + (matched.length
+    ? matched.map(result => aiUsefulItemHtml(result.item, rule)).join("")
+    : '<div class="ai-loading">今天暂时没有筛到与“' + escapeHtml(rule.label) + '”直接相关的内容。</div>');
+}
+
+async function loadAIUseful(force) {
+  const feedEl = document.getElementById("ai-daily-feed");
+  document.getElementById("ai-useful-tabs").hidden = false;
+  if (!force) {
+    try {
+      const cached = JSON.parse(localStorage.getItem(AIHOT_CACHE_KEY));
+      if (cached && cached.data && cached.data.date === expectedDailyDate()) {
+        aiUsefulItems = collectAIUsefulItems(cached.data);
+        aiUsefulDate = cached.data.date || "";
+        renderAIUseful();
+        return;
+      }
+    } catch (e) {}
+  }
+  aiHeader("✦ 今日与你有关", "");
+  feedEl.innerHTML = '<div class="ai-loading">正在从今日要闻中筛选与你有关的内容…</div>';
+  try {
+    const response = await fetch("/api/aihot?type=daily" + (force ? "&t=" + Date.now() : ""), force ? { cache: "no-store" } : {});
+    const data = await response.json().catch(() => ({}));
+    if (!response.ok || !data.sections) throw new Error(data.error || "今日要闻暂时没有回应");
+    aiUsefulItems = collectAIUsefulItems(data);
+    aiUsefulDate = data.date || "";
+    try { localStorage.setItem(AIHOT_CACHE_KEY, JSON.stringify({ data, fetchedAt: Date.now() })); } catch (e) {}
+    renderAIUseful();
+  } catch (error) {
+    aiHeader("✦ 今日与你有关", "");
+    feedEl.innerHTML = '<div class="ai-loading">' + escapeHtml(error.message || "筛选失败，请稍后再试。") + "</div>";
   }
 }
 
