@@ -1685,7 +1685,7 @@
   .zen-music-title { font-size: 13px; font-weight: 600; letter-spacing: 0.08em; }
   .zen-music-status { font-size: 10px; color: rgba(255,255,255,0.55); }
   .zen-music-track { gap: 10px; }
-  .zen-music-play, .zen-music-next, .space-music-mini button {
+  .zen-music-play, .space-music-mini button {
     border: 1px solid rgba(255,255,255,0.2); background: rgba(255,255,255,0.1);
     color: rgba(255,255,255,0.9); cursor: pointer; font-family: inherit;
   }
@@ -1693,8 +1693,7 @@
     width: 34px; height: 34px; border-radius: 50%; flex: 0 0 auto;
     display: grid; place-items: center; padding: 0; font-size: 12px;
   }
-  .zen-music-next { width: 30px; height: 30px; border-radius: 50%; padding: 0; }
-  .zen-music-play:disabled, .zen-music-next:disabled { opacity: 0.38; cursor: default; }
+  .zen-music-play:disabled { opacity: 0.38; cursor: default; }
   .zen-music-meta { min-width: 0; flex: 1; }
   .zen-music-name { font-size: 12px; color: rgba(255,255,255,0.9); }
   .zen-music-by { margin-top: 2px; font-size: 10px; color: rgba(255,255,255,0.5); }
@@ -2766,15 +2765,14 @@
   <section class="zen-music" aria-labelledby="zen-music-title">
     <div class="zen-music-head">
       <div class="zen-music-title" id="zen-music-title">♫ 小屋音乐</div>
-      <div class="zen-music-status" id="zen-music-status">待接入</div>
+      <div class="zen-music-status" id="zen-music-status">单曲循环</div>
     </div>
     <div class="zen-music-track">
       <button class="zen-music-play" id="zen-music-play" type="button" aria-label="播放音乐" disabled>▶</button>
       <div class="zen-music-meta">
-        <div class="zen-music-name" id="zen-music-name">轻音乐</div>
-        <div class="zen-music-by" id="zen-music-by">曲库 · 待接入</div>
+        <div class="zen-music-name" id="zen-music-name">小屋音乐</div>
+        <div class="zen-music-by" id="zen-music-by">AI 生成音乐</div>
       </div>
-      <button class="zen-music-next" id="zen-music-next" type="button" aria-label="下一首" disabled>↻</button>
     </div>
     <div class="zen-music-controls">
       <label class="zen-music-broadcast">
@@ -4454,7 +4452,7 @@ async function applyBackground(force) {
   currentSlotKey = slot.key;
   document.getElementById("slot-line").textContent = slot.name + "好";
   applyCabinTheme(slot.key);
-  if (!musicManualOverride) loadMusicForSlot(slot.key);
+  loadSpaceMusic();
 
   const paint = (css, isPhoto) => {
     const front = document.getElementById("bg-" + activeLayer);
@@ -8921,7 +8919,6 @@ const spaceMusicAudio = document.getElementById("space-music-audio");
 const zenMusicBroadcast = document.getElementById("zen-music-broadcast");
 const zenMusicVolume = document.getElementById("zen-music-volume");
 const zenMusicPlay = document.getElementById("zen-music-play");
-const zenMusicNext = document.getElementById("zen-music-next");
 const spaceMusicMini = document.getElementById("space-music-mini");
 const spaceMusicMiniPlay = document.getElementById("space-music-mini-play");
 let spaceMusicPrefs = { broadcast: true, volume: 0.42 };
@@ -8944,7 +8941,6 @@ function syncSpaceMusicUI() {
   const hasTrack = hasSpaceMusicTrack();
   const playing = hasTrack && !spaceMusicAudio.paused;
   zenMusicPlay.disabled = !hasTrack;
-  zenMusicNext.disabled = false; // 六个时段轮播预览,不需要先有当前曲目才能切
   zenMusicPlay.textContent = playing ? "Ⅱ" : "▶";
   spaceMusicMiniPlay.textContent = playing ? "Ⅱ" : "▶";
   const showMini = playing && spaceMusicPrefs.broadcast && !zen.classList.contains("on");
@@ -8959,7 +8955,6 @@ function toggleSpaceMusic() {
 
 function setSpaceMusicTrack(track) {
   if (!track || !track.url) return;
-  // 黄昏与夜晚可能共用同一文件；只更新时段文案，不重新加载或打断播放。
   const currentUrl = spaceMusicAudio.getAttribute("src");
   if (!currentUrl || new URL(currentUrl, location.href).href !== new URL(track.url, location.href).href) {
     spaceMusicAudio.src = track.url;
@@ -8972,21 +8967,15 @@ function setSpaceMusicTrack(track) {
 }
 window.setSpaceMusicTrack = setSpaceMusicTrack;
 
-/* 小屋音乐:与背景图共用同一套 SLOTS(黎明/上午/正午/下午/黄昏/夜晚),黄昏与夜晚共用夜晚曲目。
-   把 Suno/Udio 生成的曲子导出为 mp3,按 /music/<时段>.mp3 放进仓库的 music 文件夹即可自动生效,
-   例如 /music/dawn.mp3、/music/night.mp3。没放文件 / 加载失败 → 播放器保持"待接入",不会报错。 */
-const MUSIC_ORDER = SLOTS.map(s => s.key);
-let currentMusicSlotKey = null;
-let requestedMusicSlotKey = null;
-let musicLoadRequestId = 0;
-let musicManualOverride = false;
+/* 小屋音乐固定使用同一首 night.mp3，与背景时段无关，并由 audio 的 loop 属性循环播放。 */
+const SPACE_MUSIC_TRACK = {
+  url: "/music/night.mp3",
+  name: "小屋音乐",
+  by: "AI 生成音乐",
+  slot: "单曲循环",
+};
+let spaceMusicLoading = null;
 const musicProbeCache = {};
-
-function musicTrackFor(slotKey) {
-  const slot = SLOTS.find(s => s.key === slotKey) || SLOTS[0];
-  const audioKey = slot.key === "dusk" ? "night" : slot.key;
-  return { key: slot.key, url: `/music/${audioKey}.mp3`, name: `小屋音乐 · ${slot.name}`, by: "AI 生成音乐", slot: slot.name };
-}
 
 function probeAudio(url) {
   return new Promise(resolve => {
@@ -9005,37 +8994,22 @@ function probeAudio(url) {
   });
 }
 
-async function loadMusicForSlot(slotKey, opts) {
-  opts = opts || {};
-  if (!opts.force && slotKey === currentMusicSlotKey) return;
-  const track = musicTrackFor(slotKey);
-  const requestId = ++musicLoadRequestId;
-  requestedMusicSlotKey = slotKey;
-  document.getElementById("zen-music-status").textContent = `${track.slot} · 加载中`;
-  // 按实际文件地址缓存 Promise；黄昏和夜晚共用 night.mp3 时只探测一次。
-  if (!(track.url in musicProbeCache)) musicProbeCache[track.url] = probeAudio(track.url);
-  const available = await musicProbeCache[track.url];
-  if (requestId !== musicLoadRequestId) return; // 连续切歌时忽略较慢的旧请求
-  if (!available) {
-    requestedMusicSlotKey = currentMusicSlotKey;
-    document.getElementById("zen-music-status").textContent = `${track.slot} · 暂不可用`;
-    return;
-  }
-  if (!opts.force && slotKey === currentMusicSlotKey) return; // 探测期间时段可能已经切回原样
-  const wasPlaying = hasSpaceMusicTrack() && !spaceMusicAudio.paused;
-  currentMusicSlotKey = slotKey;
-  requestedMusicSlotKey = slotKey;
-  setSpaceMusicTrack(track);
-  if (wasPlaying) spaceMusicAudio.play().catch(() => {});
-}
-
-/* 手动点「下一首」= 按时段顺序预览六首曲子,不再跟随当前时段自动切换(刷新页面后恢复自动) */
-function nextMusicSlot() {
-  const from = requestedMusicSlotKey || currentMusicSlotKey || getSlot(new Date().getHours()).key;
-  const idx = MUSIC_ORDER.indexOf(from);
-  const next = MUSIC_ORDER[(idx + 1 + MUSIC_ORDER.length) % MUSIC_ORDER.length];
-  musicManualOverride = true;
-  loadMusicForSlot(next, { force: true });
+async function loadSpaceMusic() {
+  if (hasSpaceMusicTrack()) return;
+  if (spaceMusicLoading) return spaceMusicLoading;
+  document.getElementById("zen-music-status").textContent = "加载中";
+  spaceMusicLoading = (async () => {
+    if (!(SPACE_MUSIC_TRACK.url in musicProbeCache)) {
+      musicProbeCache[SPACE_MUSIC_TRACK.url] = probeAudio(SPACE_MUSIC_TRACK.url);
+    }
+    const available = await musicProbeCache[SPACE_MUSIC_TRACK.url];
+    if (!available) {
+      document.getElementById("zen-music-status").textContent = "暂不可用";
+      return;
+    }
+    setSpaceMusicTrack(SPACE_MUSIC_TRACK);
+  })().finally(() => { spaceMusicLoading = null; });
+  return spaceMusicLoading;
 }
 
 zenMusicBroadcast.addEventListener("change", () => {
@@ -9049,7 +9023,6 @@ zenMusicVolume.addEventListener("input", () => {
   syncSpaceMusicUI();
 });
 zenMusicPlay.addEventListener("click", toggleSpaceMusic);
-zenMusicNext.addEventListener("click", nextMusicSlot);
 spaceMusicMiniPlay.addEventListener("click", toggleSpaceMusic);
 document.getElementById("space-music-mini-close").addEventListener("click", () => {
   spaceMusicPrefs.broadcast = false;
