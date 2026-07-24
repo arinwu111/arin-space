@@ -5344,9 +5344,10 @@ function drawTarot() {
         '<div class="tr-meaning">' + c.meaning + '</div></div></div>';
     }).join("") +
     '<div class="tarot-meaning" style="text-align:left;"><span style="opacity:0.7;">塔罗是一面镜子,牌意用来触发你自己的思考,而非预言结果。</span></div>' +
-    (hasAIKey()
-      ? '<button class="zen-mode-btn" id="tarot-ai-btn" style="width:100%;margin-top:10px;">让 AI 综合解读这个牌阵</button><div id="tarot-ai-out"></div>'
-      : "");
+    '<button class="zen-mode-btn" id="tarot-ai-btn" style="width:100%;margin-top:10px;">让 AI 综合解读这个牌阵</button>' +
+    '<div id="tarot-ai-out">' +
+      (hasAIKey() ? "" : '<div class="price-note" style="margin-top:8px;">使用前需要配置你自己的 AI Key。</div>') +
+    '</div>';
   document.getElementById("tarot-draw-btn").textContent = "重新抽牌";
   const aiBtn = document.getElementById("tarot-ai-btn");
   if (aiBtn) aiBtn.addEventListener("click", tarotAIReading);
@@ -5356,6 +5357,11 @@ async function tarotAIReading() {
   if (!tarotLast) return;
   const btn = document.getElementById("tarot-ai-btn");
   const out = document.getElementById("tarot-ai-out");
+  if (!hasAIKey()) {
+    out.innerHTML = '<div class="price-note" style="margin-top:8px;">先完成 AI 设置，保存后即可继续解读当前牌阵。</div>';
+    document.getElementById("ai-settings-fab").click();
+    return;
+  }
   btn.disabled = true; btn.textContent = "解读中…";
   const t = tarotLast;
   const prompt =
@@ -5368,7 +5374,7 @@ ${t.cards.map(function (c) { return c.pos + ":" + c.name + "(" + c.posText + ")�
     out.innerHTML = '<div class="align-verdict" style="margin-top:12px;text-align:left;">' + escapeHtml(reading) + "</div>";
     btn.style.display = "none";
   } catch (e) {
-    out.innerHTML = '<div class="price-note">解读暂时失败，请稍后重试。</div>';
+    out.innerHTML = '<div class="price-note">解读暂时失败：' + escapeHtml(e.message || "请稍后重试。") + "</div>";
     btn.disabled = false; btn.textContent = "让 AI 综合解读这个牌阵";
   }
 }
